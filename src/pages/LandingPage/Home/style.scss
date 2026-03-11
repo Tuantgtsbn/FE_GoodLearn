@@ -1,0 +1,36 @@
+.homeLandingPage-wrapper {
+  background-color: #ffffff;
+  /* Notebook paper grid pattern */
+  background-image: radial-gradient(#cbd5e1 1px, transparent 1px);
+  background-size: 30px 30px;
+
+  .brutal-card {
+    transition: all 0.2s ease;
+  }
+  .brutal-card:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 12px 12px 0px 0px #000;
+  }
+  .sticky-note-tape {
+    width: 60px;
+    height: 25px;
+    background: rgba(255, 255, 255, 0.6);
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+  }
+
+  @keyframes marquee {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-50%);
+    }
+  }
+  .animate-marquee {
+    animation: marquee 20s linear infinite;
+  }
+}
