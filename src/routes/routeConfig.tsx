@@ -5,6 +5,9 @@ import LandingPageLayout from '../components/layouts/LandingPage';
 import NotFound from '@/pages/NotFound';
 import MainLayout from '@/components/layouts/MainLayout';
 import AuthPage from '../pages/Auth';
+import TermOfUse from '@/pages/LandingPage/TermOfUse';
+import Privacy from '@/pages/LandingPage/Privacy';
+import ContactPage from '@/pages/LandingPage/Contact';
 
 export const routes = [
   {
@@ -36,6 +39,27 @@ export const routes = [
               title: 'GoodLearn - Bảng giá',
             },
           },
+          {
+            path: 'terms-of-use',
+            element: <TermOfUse />,
+            handle: {
+              title: 'GoodLearn - Điều khoản sử dụng',
+            },
+          },
+          {
+            path: 'privacy',
+            element: <Privacy />,
+            handle: {
+              title: 'GoodLearn - Chính sách bảo mật',
+            },
+          },
+          {
+            path: 'contact',
+            element: <ContactPage />,
+            handle: {
+              title: 'GoodLearn - Liên hệ',
+            },
+          },
         ],
       },
       {
@@ -45,6 +69,9 @@ export const routes = [
       {
         path: '*',
         element: <NotFound fallbackUrl="/" />,
+        handle: {
+          title: 'Không tìm thấy trang',
+        },
       },
     ],
   },

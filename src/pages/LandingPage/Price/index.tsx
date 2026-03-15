@@ -2,7 +2,7 @@ import './style.scss';
 
 function PriceLandingPage() {
   return (
-    <div className="min-neo-screen text-black font-heading priceLandingPage-wrapper">
+    <div className="min-neo-screen text-black font-heading mx_LandingPagePrice">
       <header className="py-16 px-4 text-center relative overflow-hidden">
         <div className="absolute top-10 left-10 text-4xl transform -rotate-12 hidden md:block">
           💰
@@ -18,13 +18,13 @@ function PriceLandingPage() {
         </div>
         <div className="max-w-4xl mx-auto">
           <h1 className="text-5xl md:text-7xl font-black mb-6 leading-tight">
-            Chọn Gói Của Cậu, <br />
+            Chọn Gói Liền Ngay, <br />
             <span className="bg-neo-pink px-4 neo-border shadow-brutal-sm inline-block transform -rotate-2">
-              'Hack' Điểm Cực Dễ! 🚀
+              'Hack' Điểm Cực Hay! 🚀
             </span>
           </h1>
           <p className="text-xl md:text-2xl font-bold text-gray-700 mt-8">
-            Nâng cấp trải nghiệm học tập không giới hạn cùng trợ lý AI siêu cấp.
+            Nâng cấp trải nghiệm học tập trong kỷ nguyên số.
           </p>
         </div>
       </header>
@@ -37,20 +37,26 @@ function PriceLandingPage() {
             <h3 className="text-2xl font-black mb-2">Gói Cơ Bản</h3>
             <p className="font-bold text-gray-500 mb-6">Dành cho người mới</p>
             <div className="text-4xl font-black mb-8">Miễn phí</div>
-            <ul className="space-y-4 mb-10 flex-grow">
+            <button className="w-full py-4 bg-white neo-border rounded-xl font-black text-lg shadow-brutal-sm hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all">
+              Dùng thử ngay
+            </button>
+            <ul className="space-y-4 mt-10 flex-grow">
               <li className="flex items-center gap-3 font-bold">
-                <span className="text-xl">✅</span> 5 lượt chat/ngày
+                <span className="text-xl">✅</span> 50 credit
+              </li>
+              <li className="flex items-center gap-3 font-bold">
+                <span className="text-xl">✅</span> 5 lượt chat
               </li>
               <li className="flex items-center gap-3 font-bold">
                 <span className="text-xl">✅</span> 1 bộ flashcard
               </li>
               <li className="flex items-center gap-3 font-bold">
-                <span className="text-xl">✅</span> Video 1 phút
+                <span className="text-xl">✅</span> 1 lượt tạo video
+              </li>
+              <li className="flex items-center gap-3 font-bold">
+                <span className="text-xl">✅</span> 1 lượt voice call
               </li>
             </ul>
-            <button className="w-full py-4 bg-white neo-border rounded-xl font-black text-lg shadow-brutal-sm hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all">
-              Dùng thử ngay
-            </button>
           </article>
           <article
             className="bg-neo-yellow neo-border rounded-2xl p-8 flex flex-col shadow-brutal relative transform md:scale-105"
@@ -64,9 +70,15 @@ function PriceLandingPage() {
             <div className="text-4xl font-black mb-8">
               300,000 <span className="text-xl">VND</span>
             </div>
-            <ul className="space-y-4 mb-10 flex-grow">
+            <button className="w-full py-4 bg-black text-white neo-border rounded-xl font-black text-lg shadow-brutal-sm hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all">
+              Nâng cấp ngay
+            </button>
+            <ul className="space-y-4 mt-10 flex-grow">
               <li className="flex items-center gap-3 font-bold">
-                <span className="text-xl">🔥</span> 300 credit hàng tháng
+                <span className="text-xl">🔥</span> 300 credit
+              </li>
+              <li className="flex items-center gap-3 font-bold">
+                <span className="text-xl">🔥</span> 10 lượt tạo flashcard
               </li>
               <li className="flex items-center gap-3 font-bold">
                 <span className="text-xl">🔥</span> 10 lượt tạo video
@@ -74,13 +86,7 @@ function PriceLandingPage() {
               <li className="flex items-center gap-3 font-bold">
                 <span className="text-xl">🔥</span> 10 lượt voice call
               </li>
-              <li className="flex items-center gap-3 font-bold">
-                <span className="text-xl">🔥</span> Chat không giới hạn
-              </li>
             </ul>
-            <button className="w-full py-4 bg-black text-white neo-border rounded-xl font-black text-lg shadow-brutal-sm hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all">
-              Nâng cấp ngay
-            </button>
           </article>
           <article
             className="bg-neo-cyan neo-border rounded-2xl p-8 flex flex-col shadow-brutal"
@@ -91,23 +97,23 @@ function PriceLandingPage() {
             <div className="text-4xl font-black mb-8">
               600,000 <span className="text-xl">VND</span>
             </div>
-            <ul className="space-y-4 mb-10 flex-grow">
-              <li className="flex items-center gap-3 font-bold">
-                <span className="text-xl">⚡</span> 1000 credit hàng tháng
-              </li>
-              <li className="flex items-center gap-3 font-bold">
-                <span className="text-xl">⚡</span> Video không giới hạn
-              </li>
-              <li className="flex items-center gap-3 font-bold">
-                <span className="text-xl">⚡</span> Voice AI không giới hạn
-              </li>
-              <li className="flex items-center gap-3 font-bold">
-                <span className="text-xl">⚡</span> Ưu tiên hỗ trợ 24/7
-              </li>
-            </ul>
             <button className="w-full py-4 bg-white neo-border rounded-xl font-black text-lg shadow-brutal-sm hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all">
               Chọn gói này
             </button>
+            <ul className="space-y-4 mt-10 flex-grow">
+              <li className="flex items-center gap-3 font-bold">
+                <span className="text-xl">🔥</span> 700 credit
+              </li>
+              <li className="flex items-center gap-3 font-bold">
+                <span className="text-xl">🔥</span> 30 lượt tạo flashcard
+              </li>
+              <li className="flex items-center gap-3 font-bold">
+                <span className="text-xl">🔥</span> 30 lượt tạo video
+              </li>
+              <li className="flex items-center gap-3 font-bold">
+                <span className="text-xl">🔥</span> 30 lượt voice call
+              </li>
+            </ul>
           </article>
         </div>
       </section>
@@ -116,20 +122,17 @@ function PriceLandingPage() {
           Câu hỏi thường gặp
         </h2>
         <div className="space-y-6">
-          <details
-            className="group neo-border rounded-2xl bg-white shadow-brutal-sm"
-            open=""
-          >
+          <details className="group neo-border rounded-2xl bg-white shadow-brutal-sm">
             <summary className="flex justify-between items-center p-6 cursor-pointer font-black text-xl list-none">
               Credit dùng để làm gì?
               <span className="transform group-open:rotate-180 transition-transform">
                 ▼
               </span>
             </summary>
-            <div className="p-6 pt-0 font-bold text-gray-700 leading-relaxed border-t-2 border-black">
-              Credit được dùng để đổi các dịch vụ cao cấp như Tạo Video bài
-              giảng, Voice AI (gọi điện luyện tiếng anh) và giải các bài tập
-              chuyên sâu. Mỗi tính năng sẽ tiêu tốn một lượng credit nhất định.
+            <div className="p-6 pt-2 font-bold text-gray-700 leading-relaxed border-t-2 border-black">
+              Credit được dùng để sử dụng các dịch vụ cao cấp như Trò chuyện hỏi
+              đáp với AI, Tạo Video bài giảng, Voice AI (gọi điện luyện tiếng
+              anh). Mỗi tính năng sẽ tiêu tốn một lượng credit nhất định.
             </div>
           </details>
           <details className="group neo-border rounded-2xl bg-white shadow-brutal-sm">
@@ -139,10 +142,11 @@ function PriceLandingPage() {
                 ▼
               </span>
             </summary>
-            <div className="p-6 pt-0 font-bold text-gray-700 leading-relaxed border-t-2 border-black">
-              Hoàn toàn có thể! Bạn có thể hủy gia hạn bất cứ lúc nào trong cài
-              đặt tài khoản. Quyền lợi của gói vẫn sẽ được giữ cho đến hết chu
-              kỳ thanh toán hiện tại.
+            <div className="p-6 pt-2 font-bold text-gray-700 leading-relaxed border-t-2 border-black">
+              Sau khi đăng ký, bạn không thể hủy gói đã mua. Tuy nhiên, chúng
+              mình cam kết mang đến giá trị xứng đáng với số tiền bạn bỏ ra. Nếu
+              có bất kỳ vấn đề nào, đừng ngần ngại liên hệ với đội ngũ hỗ trợ
+              của chúng mình để được giải quyết nhanh chóng nhé!
             </div>
           </details>
           <details className="group neo-border rounded-2xl bg-white shadow-brutal-sm">
@@ -152,10 +156,26 @@ function PriceLandingPage() {
                 ▼
               </span>
             </summary>
-            <div className="p-6 pt-0 font-bold text-gray-700 leading-relaxed border-t-2 border-black">
-              Chúng mình luôn có những đợt flash sale dành riêng cho mùa thi.
-              Hãy theo dõi Fanpage hoặc đăng ký email để không bỏ lỡ voucher 50%
-              nhé!
+            <div className="p-6 pt-2 font-bold text-gray-700 leading-relaxed border-t-2 border-black">
+              Chúng mình luôn có những đợt flash sale vào các dịp như đầu năm
+              học, Giáng sinh, Tết, Black Friday. Hãy theo dõi Fanpage hoặc đăng
+              ký email để không bỏ lỡ voucher ưu đãi nhé!
+            </div>
+          </details>
+          <details className="group neo-border rounded-2xl bg-white shadow-brutal-sm">
+            <summary className="flex justify-between items-center p-6 cursor-pointer font-black text-xl list-none">
+              Tôi có thể mua thêm credit không?
+              <span className="transform group-open:rotate-180 transition-transform">
+                ▼
+              </span>
+            </summary>
+            <div className="p-6 pt-2 font-bold text-gray-700 leading-relaxed border-t-2 border-black">
+              Hoàn toàn có thể!. Khi bạn đăng ký một gói trả phí, bạn sẽ nhận
+              được một lượng credit nhất định. Nếu bạn sử dụng hết credit đó và
+              muốn tiếp tục trải nghiệm các tính năng cao cấp, bạn có thể mua
+              thêm credit thông qua trang quản lý tài khoản của mình. Chúng mình
+              cung cấp nhiều gói credit với mức giá linh hoạt để bạn dễ dàng lựa
+              chọn phù hợp với nhu cầu học tập của mình nhé!
             </div>
           </details>
         </div>

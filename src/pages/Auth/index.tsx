@@ -1,5 +1,4 @@
 import React from 'react';
-import '../../styles/index.css';
 import './style.scss';
 import ICFavicon from '@/components/Icon/ICFavicon';
 import ICGoogle from '@/components/Icon/ICGoogle';

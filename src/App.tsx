@@ -1,10 +1,15 @@
-import "./App.css";
+import { Suspense } from 'react';
+import LoadingScreen from './components/LoadingScreen';
+import { RouterProvider } from 'react-router-dom';
+import router from './routes';
+import './styles/main.css';
+import './styles/index.scss';
 
 function App() {
   return (
-    <>
-      <h1 className="text-3xl font-bold underline">Hello world!</h1>
-    </>
+    <Suspense fallback={<LoadingScreen />}>
+      <RouterProvider router={router} />
+    </Suspense>
   );
 }
 

@@ -1,4 +1,7 @@
-@import 'tailwindcss';
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+@import "@fontsource-variable/geist";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -191,5 +194,25 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+@layer components {
+  .neo-brutal-card {
+    @apply border-2 border-black rounded-2xl shadow-brutal transition-all duration-200;
+  }
+
+  .neo-brutal-card:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 10px 10px 0px 0px rgba(0, 0, 0, 1);
+  }
+
+  .neo-brutal-btn {
+    @apply border-2 border-black px-6 py-3 font-extrabold rounded-xl shadow-brutal-sm transition-all active:translate-x-[2px] active:translate-y-[2px] active:shadow-none uppercase tracking-tight;
+  }
+
+  .neo-brutal-btn:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 4px 4px 0px 0px rgba(0, 0, 0, 1);
   }
 }

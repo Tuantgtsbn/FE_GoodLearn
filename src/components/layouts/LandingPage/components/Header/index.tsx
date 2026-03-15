@@ -1,13 +1,18 @@
-import { NavLink } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 
 export default function Header() {
   return (
     <header
-      className="max-w-7xl mx-auto flex sticky top-5 z-10 items-center justify-between bg-white border-2 border-black rounded-2xl p-4 shadow-brutal"
+      className="max-w-[95%] lg:max-w-7xl mx-auto flex sticky top-5 z-10 items-center justify-between bg-white border-2 border-black rounded-2xl p-4 shadow-brutal"
       data-purpose="main-nav"
     >
       <div className="flex items-center gap-2">
-        <span className="font-heading text-2xl tracking-tight">GoodLearn</span>
+        <Link
+          to="/"
+          className="font-heading text-2xl tracking-tight cursor-pointer"
+        >
+          GoodLearn
+        </Link>
       </div>
       <ul className="hidden md:flex gap-8 font-extrabold text-sm uppercase tracking-wide">
         <li>

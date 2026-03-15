@@ -1,8 +1,11 @@
+import { useNavigate } from 'react-router-dom';
 import './style.scss';
 
 function HomeLandingPage() {
+  const navigate = useNavigate();
+
   return (
-    <div className="font-body text-slate-900 overflow-x-hidden homeLandingPage-wrapper">
+    <div className="font-body text-slate-900 overflow-x-hidden mx_LandingPageHome">
       <main
         className="max-w-7xl mx-auto px-4 py-12 md:py-20 flex flex-col md:flex-row items-center gap-12"
         data-purpose="hero-section"
@@ -21,15 +24,20 @@ function HomeLandingPage() {
             </span>
           </div>
           <p className="text-xl md:text-2xl font-semibold text-slate-700 max-w-xl">
-            Gia sư AI đồng hành cùng bạn 24/7. Giải đáp mọi thắc mắc, luyện đề
-            thi thử và tóm tắt kiến thức trong 1 nốt nhạc.
+            Gia sư AI đồng hành cùng bạn 24/7. Giải đáp mọi thắc mắc, tóm tắt
+            kiến thức trong 1 nốt nhạc.
           </p>
           <div className="flex flex-wrap gap-4">
             <button className="bg-black text-white px-8 py-4 border-2 border-black rounded-2xl font-extrabold text-lg shadow-brutal hover:bg-brandPurple transition-colors">
               Bắt đầu miễn phí
             </button>
-            <button className="bg-white px-8 py-4 border-2 border-black rounded-2xl font-extrabold text-lg shadow-brutal-sm hover:shadow-brutal transition-all">
-              Xem Demo
+            <button
+              onClick={() => {
+                navigate('/feature');
+              }}
+              className="bg-white px-8 py-4 border-2 border-black rounded-2xl font-extrabold text-lg shadow-brutal-sm hover:shadow-brutal transition-all"
+            >
+              Tìm hiểu thêm
             </button>
           </div>
         </section>
@@ -40,13 +48,11 @@ function HomeLandingPage() {
           <div className="bg-brandPink border-2 border-black rounded-2xl p-6 shadow-brutal relative z-10">
             <div className="space-y-4">
               <div className="bg-white border-2 border-black p-3 rounded-xl max-w-[80%] shadow-brutal-sm">
-                <p className="font-bold">
-                  AI ơi, giải giúp mình bài tích phân này với! 🤔
-                </p>
+                <p className="font-bold">AI ơi, định lý Pi-ta-go là gì? 🤔</p>
               </div>
               <div className="bg-brandCyan border-2 border-black p-3 rounded-xl max-w-[80%] ml-auto shadow-brutal-sm">
                 <p className="font-bold">
-                  Dễ thôi! Để mình hướng dẫn bạn từng bước nhé... ✨
+                  Dễ thôi! Để mình hướng dẫn bạn nhé... ✨
                 </p>
               </div>
             </div>
@@ -75,7 +81,7 @@ function HomeLandingPage() {
             <span className="text-brandCyan">★</span> 50,000+ Học sinh tin dùng
           </span>
           <span className="flex items-center gap-4">
-            <span className="text-brandPink">★</span> Top 1 App Giáo Dục AI
+            <span className="text-brandPink">★</span> Top 1 Web Giáo Dục AI
           </span>
           <span className="flex items-center gap-4">
             <span className="text-brandPurple">★</span> 98% Phụ huynh hài lòng
@@ -103,31 +109,33 @@ function HomeLandingPage() {
             <div className="text-4xl mb-4">💬</div>
             <h3 className="text-2xl font-heading mb-2">Hỏi đáp AI</h3>
             <p className="font-semibold opacity-80">
-              Chụp ảnh bài tập, nhận lời giải chi tiết và giảng giải từng bước
-              ngay lập tức.
+              Hỏi đáp mọi môn học, mọi cấp độ, AI sẽ giải thích cho bạn chi tiết
+              dễ hiểu trong tích tắc.
             </p>
           </div>
           <div className="brutal-card bg-brandPink border-2 border-black p-8 rounded-2xl shadow-brutal">
             <div className="text-4xl mb-4">📝</div>
             <h3 className="text-2xl font-heading mb-2">Quiz Tương Tác</h3>
             <p className="font-semibold opacity-80">
-              Tự động tạo bộ câu hỏi trắc nghiệm từ tài liệu bạn tải lên để ôn
-              tập.
+              Tự động tạo bộ câu hỏi trắc nghiệm từ bài học, giúp bạn ôn tập
+              hiệu quả và kiểm tra kiến thức ngay lập tức.
             </p>
           </div>
           <div className="brutal-card bg-brandCyan border-2 border-black p-8 rounded-2xl shadow-brutal">
             <div className="text-4xl mb-4">🗣️</div>
             <h3 className="text-2xl font-heading mb-2">Voice Speak</h3>
             <p className="font-semibold opacity-80">
-              Luyện phát âm tiếng Anh chuẩn xác với công nghệ nhận diện giọng
-              nói AI.
+              Trò chuyện trực tiếp với AI bằng giọng nói, tạo cảm giác như đang
+              học cùng một gia sư thực thụ, giúp bạn hiểu bài nhanh hơn và nhớ
+              lâu hơn.
             </p>
           </div>
           <div className="brutal-card bg-white border-2 border-black p-8 rounded-2xl shadow-brutal">
             <div className="text-4xl mb-4">📹</div>
-            <h3 className="text-2xl font-heading mb-2">Flashcards Video</h3>
+            <h3 className="text-2xl font-heading mb-2">Flashcards, Video</h3>
             <p className="font-semibold opacity-80">
-              Ghi nhớ kiến thức qua các video ngắn sinh động, dễ hiểu, dễ thuộc.
+              Ghi nhớ kiến thức qua các thẻ Flashcard và video ngắn sinh động,
+              dễ hiểu, dễ thuộc.
             </p>
           </div>
         </div>
@@ -156,8 +164,8 @@ function HomeLandingPage() {
               </div>
             </div>
             <p className="font-hand text-xl">
-              "Từ khi dùng HọcTậpAI, mình không còn sợ môn Toán nữa. Giải thích
-              rất dễ hiểu!"
+              "Từ khi dùng GoodLearn, mình không còn sợ môn Toán nữa, mình tiến
+              bộ lên rất nhiều. Giải thích rất dễ hiểu!"
             </p>
           </div>
           <div className="relative bg-emerald-100 border-2 border-black p-6 rounded-sm shadow-brutal rotate-3 hover:rotate-0 transition-transform">
@@ -176,8 +184,8 @@ function HomeLandingPage() {
               </div>
             </div>
             <p className="font-hand text-xl">
-              "App xịn thực sự, nhất là phần Flashcard video. Mình học tiếng Anh
-              nhanh hơn hẳn."
+              "Website xịn thực sự, nhất là phần tạo video. Mình đã tạo các
+              video nói về môn Lịch sử để ôn tập, rất hữu ích!"
             </p>
           </div>
           <div className="relative bg-pink-100 border-2 border-black p-6 rounded-sm shadow-brutal -rotate-1 hover:rotate-0 transition-transform">
@@ -219,13 +227,13 @@ function HomeLandingPage() {
                 d="M20 180Q50 150 80 180T140 180"
                 stroke="black"
                 strokeLinecap="round"
-                stroke-width="8"
+                strokeWidth="8"
               ></path>
               <path
                 d="M50 50L80 80M80 50L50 80"
                 stroke="black"
                 strokeLinecap="round"
-                stroke-width="8"
+                strokeWidth="8"
               ></path>
             </svg>
           </div>
@@ -234,11 +242,11 @@ function HomeLandingPage() {
           </h2>
           <p className="text-xl font-bold mb-10 max-w-2xl mx-auto">
             Tham gia cùng hàng nghìn học sinh đang bứt phá điểm số mỗi ngày với
-            HọcTậpAI.
+            GoodLearn nào.
           </p>
           <form className="flex flex-col md:flex-row gap-4 max-w-lg mx-auto">
             <input
-              className="flex-1 px-6 py-4 border-2 border-black rounded-2xl font-bold focus:ring-0 focus:border-brandPurple shadow-brutal-sm"
+              className="flex-1 px-6 py-4 border-2 border-black rounded-2xl font-bold shadow-brutal-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
               placeholder="Email của bạn là..."
               type="email"
             />
@@ -246,8 +254,8 @@ function HomeLandingPage() {
               Bắt Đầu Ngay
             </button>
           </form>
-          <p className="mt-6 font-hand text-xl">
-            Đăng ký ngay, dùng thử miễn phí 7 ngày! 🚀
+          <p className="mt-6 font-hand italic font-bold">
+            * Đăng ký ngay, nhận ưu đãi 25 credit miễn phí! 🚀
           </p>
         </div>
       </section>

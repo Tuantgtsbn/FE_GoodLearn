@@ -27,3 +27,8 @@ dist-ssr
 # TypeScript cache
 *.tsbuildinfo
 .tsbuildinfo
+
+# AI Agents
+.agents/
+.github/prompts/
+.github/skills/
