@@ -1,232 +1,409 @@
-<!DOCTYPE html>
+<!doctype html>
 
-<html class="light" lang="en"><head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>AI Study Chatbot - Active Session</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<script id="tailwind-config">
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    colors: {
-                        "primary": "#18181b",
-                        "background-light": "#ffffff",
-                        "background-dark": "#18181a",
-                        "surface-light": "#f4f4f5",
-                    },
-                    fontFamily: {
-                        "display": ["Inter", "sans-serif"]
-                    },
-                    borderRadius: {
-                        "DEFAULT": "0.5rem", 
-                        "lg": "0.75rem", 
-                        "xl": "1rem", 
-                        "full": "9999px"
-                    },
-                },
+<html class="light" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>AI Study Chatbot - Active Session</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            colors: {
+              primary: '#18181b',
+              'background-light': '#ffffff',
+              'background-dark': '#18181a',
+              'surface-light': '#f4f4f5',
             },
-        }
+            fontFamily: {
+              display: ['Inter', 'sans-serif'],
+            },
+            borderRadius: {
+              DEFAULT: '0.5rem',
+              lg: '0.75rem',
+              xl: '1rem',
+              full: '9999px',
+            },
+          },
+        },
+      };
     </script>
-<style>
-        /* Custom scrollbar for a cleaner look */
-        ::-webkit-scrollbar {
-            width: 6px;
-        }
-        ::-webkit-scrollbar-track {
-            background: transparent;
-        }
-        ::-webkit-scrollbar-thumb {
-            background-color: #e4e4e7;
-            border-radius: 20px;
-        }
-        .material-symbols-outlined {
-            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-        }
-        .material-symbols-outlined.fill {
-            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-        }
+    <style>
+      /* Custom scrollbar for a cleaner look */
+      ::-webkit-scrollbar {
+        width: 6px;
+      }
+      ::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      ::-webkit-scrollbar-thumb {
+        background-color: #e4e4e7;
+        border-radius: 20px;
+      }
+      .material-symbols-outlined {
+        font-variation-settings:
+          'FILL' 0,
+          'wght' 400,
+          'GRAD' 0,
+          'opsz' 24;
+      }
+      .material-symbols-outlined.fill {
+        font-variation-settings:
+          'FILL' 1,
+          'wght' 400,
+          'GRAD' 0,
+          'opsz' 24;
+      }
     </style>
-</head>
-<body class="bg-background-light text-primary font-display h-screen flex overflow-hidden">
-<!-- Sidebar -->
-<aside class="w-72 bg-white border-r flex flex-col h-full hidden md:flex shrink-0 z-20 border-zinc-300">
-<div class="p-6 pb-2">
-<div class="flex items-center gap-3 mb-6">
-<div class="bg-primary text-white rounded-lg p-1.5 shadow-sm">
-<span class="material-symbols-outlined text-2xl">school</span>
-</div>
-<div>
-<h1 class="text-primary text-base font-bold leading-none">Study Bot</h1>
-<p class="text-zinc-500 text-xs font-medium mt-1">Premium Plan</p>
-</div>
-</div>
-<button class="w-full flex items-center justify-center gap-2 bg-primary text-white rounded-lg py-2.5 px-4 hover:bg-zinc-800 transition-colors shadow-sm">
-<span class="material-symbols-outlined text-[20px]">add</span>
-<span class="text-sm font-semibold">New Chat</span>
-</button>
-</div>
-<div class="flex-1 overflow-y-auto px-3 py-2 space-y-1">
-<div class="px-3 py-2 text-xs font-semibold text-zinc-400 uppercase tracking-wider">Recent Sessions</div>
-<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-zinc-600 hover:bg-surface-light hover:text-primary transition-colors group" href="#">
-<span class="material-symbols-outlined text-zinc-400 group-hover:text-primary">chat_bubble</span>
-<span class="text-sm font-medium truncate">Biology 101: Cells</span>
-</a>
-<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-zinc-600 hover:bg-surface-light hover:text-primary transition-colors group" href="#">
-<span class="material-symbols-outlined text-zinc-400 group-hover:text-primary">calculate</span>
-<span class="text-sm font-medium truncate">Calculus Limits</span>
-</a>
-<!-- Active Item -->
-<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-surface-light text-primary font-medium border border-zinc-100 shadow-sm" href="#">
-<span class="material-symbols-outlined fill text-primary">history_edu</span>
-<span class="text-sm truncate">European History</span>
-</a>
-<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-zinc-600 hover:bg-surface-light hover:text-primary transition-colors group" href="#">
-<span class="material-symbols-outlined text-zinc-400 group-hover:text-primary">translate</span>
-<span class="text-sm font-medium truncate">Spanish Vocabulary</span>
-</a>
-</div>
-</aside>
-<!-- Main Content -->
-<main class="flex-1 flex flex-col h-full relative bg-white"><nav class="flex items-center justify-between px-6 py-3 border-b border-zinc-200 bg-white sticky top-0 z-30">
-<div class="flex items-center gap-8">
-<a class="text-sm font-bold text-primary flex items-center gap-2" href="#"><span class="material-symbols-outlined text-[20px]">chat</span>
-            Chatbot</a>
-<a class="text-sm font-semibold text-zinc-500 hover:text-primary transition-colors flex items-center gap-2" href="#"><span class="material-symbols-outlined text-[20px]">movie_edit</span>
-            Tạo video &amp; flash card</a>
-<a class="text-sm font-semibold text-zinc-500 hover:text-primary transition-colors flex items-center gap-2" href="#"><span class="material-symbols-outlined text-[20px]">keyboard_voice</span>
-            Voice AI</a><a class="text-sm font-semibold text-zinc-500 hover:text-primary transition-colors flex items-center gap-2" href="#">
-<span class="material-symbols-outlined text-[20px]">quiz</span>
-            Thi trắc nghiệm
-        </a><a class="text-sm font-semibold text-zinc-500 hover:text-primary transition-colors flex items-center gap-1" href="#">
+  </head>
+  <body
+    class="bg-background-light text-primary font-display h-screen flex overflow-hidden"
+  >
+    <!-- Sidebar -->
+    <aside
+      class="w-72 bg-white border-r flex flex-col h-full hidden md:flex shrink-0 z-20 border-zinc-300"
+    >
+      <div class="p-6 pb-2">
+        <div class="flex items-center gap-3 mb-6">
+          <div class="bg-primary text-white rounded-lg p-1.5 shadow-sm">
+            <span class="material-symbols-outlined text-2xl">school</span>
+          </div>
+          <div>
+            <h1 class="text-primary text-base font-bold leading-none">
+              Study Bot
+            </h1>
+            <p class="text-zinc-500 text-xs font-medium mt-1">Premium Plan</p>
+          </div>
+        </div>
+        <button
+          class="w-full flex items-center justify-center gap-2 bg-primary text-white rounded-lg py-2.5 px-4 hover:bg-zinc-800 transition-colors shadow-sm"
+        >
+          <span class="material-symbols-outlined text-[20px]">add</span>
+          <span class="text-sm font-semibold">New Chat</span>
+        </button>
+      </div>
+      <div class="flex-1 overflow-y-auto px-3 py-2 space-y-1">
+        <div
+          class="px-3 py-2 text-xs font-semibold text-zinc-400 uppercase tracking-wider"
+        >
+          Recent Sessions
+        </div>
+        <a
+          class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-zinc-600 hover:bg-surface-light hover:text-primary transition-colors group"
+          href="#"
+        >
+          <span
+            class="material-symbols-outlined text-zinc-400 group-hover:text-primary"
+            >chat_bubble</span
+          >
+          <span class="text-sm font-medium truncate">Biology 101: Cells</span>
+        </a>
+        <a
+          class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-zinc-600 hover:bg-surface-light hover:text-primary transition-colors group"
+          href="#"
+        >
+          <span
+            class="material-symbols-outlined text-zinc-400 group-hover:text-primary"
+            >calculate</span
+          >
+          <span class="text-sm font-medium truncate">Calculus Limits</span>
+        </a>
+        <!-- Active Item -->
+        <a
+          class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-surface-light text-primary font-medium border border-zinc-100 shadow-sm"
+          href="#"
+        >
+          <span class="material-symbols-outlined fill text-primary"
+            >history_edu</span
+          >
+          <span class="text-sm truncate">European History</span>
+        </a>
+        <a
+          class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-zinc-600 hover:bg-surface-light hover:text-primary transition-colors group"
+          href="#"
+        >
+          <span
+            class="material-symbols-outlined text-zinc-400 group-hover:text-primary"
+            >translate</span
+          >
+          <span class="text-sm font-medium truncate">Spanish Vocabulary</span>
+        </a>
+      </div>
+    </aside>
+    <!-- Main Content -->
+    <main class="flex-1 flex flex-col h-full relative bg-white">
+      <nav
+        class="flex items-center justify-between px-6 py-3 border-b border-zinc-200 bg-white sticky top-0 z-30"
+      >
+        <div class="flex items-center gap-8">
+          <a
+            class="text-sm font-bold text-primary flex items-center gap-2"
+            href="#"
+            ><span class="material-symbols-outlined text-[20px]">chat</span>
+            Chatbot</a
+          >
+          <a
+            class="text-sm font-semibold text-zinc-500 hover:text-primary transition-colors flex items-center gap-2"
+            href="#"
+            ><span class="material-symbols-outlined text-[20px]"
+              >movie_edit</span
+            >
+            Tạo video &amp; flash card</a
+          >
+          <a
+            class="text-sm font-semibold text-zinc-500 hover:text-primary transition-colors flex items-center gap-2"
+            href="#"
+            ><span class="material-symbols-outlined text-[20px]"
+              >keyboard_voice</span
+            >
+            Voice AI</a
+          ><a
+            class="text-sm font-semibold text-zinc-500 hover:text-primary transition-colors flex items-center gap-2"
+            href="#"
+          >
+            <span class="material-symbols-outlined text-[20px]">quiz</span>
+            Thi trắc nghiệm </a
+          ><a
+            class="text-sm font-semibold text-zinc-500 hover:text-primary transition-colors flex items-center gap-1"
+            href="#"
+          >
             Mở rộng
-            <span class="material-symbols-outlined text-[18px]">expand_more</span>
-</a>
-</div>
-<div class="flex items-center gap-3">
-<div class="text-right hidden sm:block">
-<p class="text-xs font-bold text-primary leading-none">Alex Student</p>
-<p class="text-[10px] text-zinc-400 mt-1">alex@university.edu</p>
-</div>
-<div class="w-8 h-8 rounded-full border border-zinc-200 bg-cover bg-center" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCTJ6hlQJ7mi2-dd6KlbqaCE9YG8N3BrB6fgSNjuYSMbfEyIAiQeGTVB_zTvAT7plPYIYwGqHpeql4jjXFsN92ZCLyffikqqg1HJdThfXP-V2eUqxbC-U38JcdCebET3G1Xe7z5JDFNI6REi6vjeLJxP4yLNC3RThic7NfoAj3yBuTGqc5GX_Ud8julx346PCzaRZkeYkZxoK1Y8nPTi41sRRpxCRkKeTvhZERGFibT8pMFMxtOvWFY5KSgZpxvPQAMJguMkwECjBU');"></div>
-</div>
-</nav>
-<!-- Header -->
-<header class="flex items-center justify-between px-6 py-4 border-b border-zinc-100 bg-zinc-50 sticky top-[53px] z-10">
-<div class="flex items-center gap-4">
-<button class="md:hidden p-2 -ml-2 text-zinc-500 hover:text-primary">
-<span class="material-symbols-outlined">menu</span>
-</button>
-<div>
-<h2 class="text-lg font-bold text-primary flex items-center gap-2">
-                        European History Review
-                        <span class="w-2 h-2 rounded-full bg-green-500"></span>
-</h2>
-<p class="text-xs text-zinc-500">Active Session • Last edited just now</p>
-</div>
-</div>
-<div class="flex items-center gap-2">
-<button class="p-2 text-zinc-400 hover:text-primary hover:bg-surface-light rounded-lg transition-colors" title="View Details">
-<span class="material-symbols-outlined">info</span>
-</button>
-<button class="p-2 text-zinc-400 hover:text-primary hover:bg-surface-light rounded-lg transition-colors" title="Export Chat">
-<span class="material-symbols-outlined">ios_share</span>
-</button>
-</div>
-</header>
-<!-- Chat Area -->
-<div class="flex-1 overflow-y-auto p-4 md:p-8 space-y-8 scroll-smooth" id="chat-container">
-<!-- Date Separator -->
-<div class="flex justify-center">
-<span class="text-xs font-medium text-zinc-400 bg-surface-light px-3 py-1 rounded-full">Today, 10:23 AM</span>
-</div>
-<!-- Bot Message -->
-<div class="flex items-start gap-4 max-w-3xl mx-auto w-full group">
-<div class="w-8 h-8 rounded-full bg-surface-light border border-zinc-200 flex items-center justify-center shrink-0 text-primary mt-1">
-<span class="material-symbols-outlined text-[18px]">smart_toy</span>
-</div>
-<div class="flex flex-col gap-1.5 max-w-[85%]">
-<span class="text-xs font-semibold text-zinc-500 ml-1">Study Bot</span>
-<div class="bg-surface-light text-primary rounded-2xl rounded-tl-none px-5 py-3.5 text-[15px] leading-relaxed shadow-sm">
-<p>Here is a quick summary of the French Revolution. It was a period of radical political and societal change in France that began with the Estates General of 1789 and ended with the formation of the French Consulate in November 1799. Would you like to review the key dates?</p>
-</div>
-</div>
-</div>
-<!-- User Message -->
-<div class="flex items-start justify-end gap-4 max-w-3xl mx-auto w-full group">
-<div class="flex flex-col items-end gap-1.5 max-w-[85%]">
-<span class="text-xs font-semibold text-zinc-500 mr-1">You</span>
-<div class="bg-primary text-white rounded-2xl rounded-tr-none px-5 py-3.5 text-[15px] leading-relaxed shadow-md">
-<p>Yes, please test me on the key dates. I always mix up the early events.</p>
-</div>
-</div>
-<div class="w-8 h-8 rounded-full bg-zinc-200 border border-zinc-300 flex items-center justify-center shrink-0 overflow-hidden mt-1">
-<div class="w-full h-full bg-cover bg-center" data-alt="User avatar thumbnail" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBb-KaPdJ58IUnk5Bnk5a9KfP0TUKCe4YpzIDa6wmj93AV2r31w3pT0pNqrwb5JwTQtAqpza3FYy4nkYYGwUpqbhvKo_mZLF0C-pLXLveb_QUag7A9eLJeXm9ZuvYeips-HMm40KEeybU6MxvSL5u05QBl6HsvlLwlgypXblCWtpsUHn0hAyzz55wQZdX82Z1DWJ2nOsZHOm2ixB1HqkSn5MPJfbTED4ECGSbOjvSPbDjMaqe86C_ugYveQ5oWIKscSjBUqNPPol6U');"></div>
-</div>
-</div>
-<!-- Bot Message with Flashcard -->
-<div class="flex items-start gap-4 max-w-3xl mx-auto w-full group">
-<div class="w-8 h-8 rounded-full bg-surface-light border border-zinc-200 flex items-center justify-center shrink-0 text-primary mt-1">
-<span class="material-symbols-outlined text-[18px]">smart_toy</span>
-</div>
-<div class="flex flex-col gap-1.5 w-full max-w-[85%] md:max-w-[70%]">
-<span class="text-xs font-semibold text-zinc-500 ml-1">Study Bot</span>
-<div class="bg-surface-light text-primary rounded-2xl rounded-tl-none px-5 py-3.5 text-[15px] leading-relaxed shadow-sm mb-2">
-<p>Sure! Let's start with a pivotal moment. Can you identify the date of this event?</p>
-</div>
-<!-- Flashcard Component -->
-<div class="relative w-full bg-white border-2 border-dashed border-zinc-300 rounded-xl p-6 transition-all hover:border-zinc-400 group/card">
-<div class="absolute -top-3 -right-3 rotate-12 bg-white rounded-lg shadow-sm border border-zinc-100 p-1.5 z-10">
-<span class="material-symbols-outlined text-zinc-900 text-3xl">style</span>
-</div>
-<div class="flex flex-col gap-4">
-<div class="flex items-center gap-2 mb-1">
-<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-zinc-100 text-zinc-600 uppercase tracking-wide border border-zinc-200">History</span>
-<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-zinc-100 text-zinc-600 uppercase tracking-wide border border-zinc-200">Flashcard</span>
-</div>
-<h3 class="text-xl font-bold text-primary tracking-tight">Storming of the Bastille</h3>
-<div class="w-full h-px bg-zinc-100"></div>
-<div class="flex items-center justify-between pt-1">
-<p class="text-zinc-500 text-sm italic">Tap to reveal the date...</p>
-<button class="flex items-center gap-2 px-4 py-2 bg-primary text-white text-sm font-semibold rounded-lg hover:bg-zinc-800 transition-all shadow-sm active:scale-95">
-<span class="material-symbols-outlined text-[18px]">flip</span>
-                                    Reveal Answer
-                                </button>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="h-4"></div> <!-- Spacer for scroll -->
-</div>
-<!-- Input Area -->
-<div class="p-4 md:px-8 md:pb-8 bg-white z-20">
-<div class="max-w-3xl mx-auto relative">
-<div class="absolute bottom-full left-0 mb-2 flex gap-2">
-<button class="bg-primary/5 hover:bg-primary/10 text-primary text-xs font-medium px-3 py-1.5 rounded-full border border-primary/10 transition-colors">
-                        Give me a hint
-                    </button>
-<button class="bg-primary/5 hover:bg-primary/10 text-primary text-xs font-medium px-3 py-1.5 rounded-full border border-primary/10 transition-colors">
-                        Skip card
-                    </button>
-</div>
-<div class="relative flex items-end gap-2 bg-white rounded-2xl border-2 border-primary shadow-sm p-2 transition-all ring-offset-2">
-<button class="p-2 text-zinc-400 hover:text-primary hover:bg-zinc-100 rounded-xl transition-colors shrink-0 self-end mb-0.5" title="Upload file">
-<span class="material-symbols-outlined">add_circle</span>
-</button>
-<textarea class="w-full py-3 px-1 max-h-32 bg-transparent border-none focus:ring-0 text-primary placeholder-zinc-400 resize-none text-[15px] leading-relaxed self-center" placeholder="Type your answer..." rows="1" style="min-height: 44px;"></textarea>
-<button class="p-2 bg-primary hover:bg-zinc-800 text-white rounded-xl shadow-sm transition-colors shrink-0 self-end mb-0.5">
-<span class="material-symbols-outlined fill">arrow_upward</span>
-</button>
-</div>
-<p class="text-center text-[10px] text-zinc-400 mt-3 font-medium">
-                    AI can make mistakes. Check important info.
-                </p>
-</div>
-</div>
-</main>
-</body></html>
+            <span class="material-symbols-outlined text-[18px]"
+              >expand_more</span
+            >
+          </a>
+        </div>
+        <div class="flex items-center gap-3">
+          <div class="text-right hidden sm:block">
+            <p class="text-xs font-bold text-primary leading-none">
+              Alex Student
+            </p>
+            <p class="text-[10px] text-zinc-400 mt-1">alex@university.edu</p>
+          </div>
+          <div
+            class="w-8 h-8 rounded-full border border-zinc-200 bg-cover bg-center"
+            style="
+              background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCTJ6hlQJ7mi2-dd6KlbqaCE9YG8N3BrB6fgSNjuYSMbfEyIAiQeGTVB_zTvAT7plPYIYwGqHpeql4jjXFsN92ZCLyffikqqg1HJdThfXP-V2eUqxbC-U38JcdCebET3G1Xe7z5JDFNI6REi6vjeLJxP4yLNC3RThic7NfoAj3yBuTGqc5GX_Ud8julx346PCzaRZkeYkZxoK1Y8nPTi41sRRpxCRkKeTvhZERGFibT8pMFMxtOvWFY5KSgZpxvPQAMJguMkwECjBU');
+            "
+          ></div>
+        </div>
+      </nav>
+      <!-- Header -->
+      <header
+        class="flex items-center justify-between px-6 py-4 border-b border-zinc-100 bg-zinc-50 sticky top-[53px] z-10"
+      >
+        <div class="flex items-center gap-4">
+          <button class="md:hidden p-2 -ml-2 text-zinc-500 hover:text-primary">
+            <span class="material-symbols-outlined">menu</span>
+          </button>
+          <div>
+            <h2 class="text-lg font-bold text-primary flex items-center gap-2">
+              European History Review
+              <span class="w-2 h-2 rounded-full bg-green-500"></span>
+            </h2>
+            <p class="text-xs text-zinc-500">
+              Active Session • Last edited just now
+            </p>
+          </div>
+        </div>
+        <div class="flex items-center gap-2">
+          <button
+            class="p-2 text-zinc-400 hover:text-primary hover:bg-surface-light rounded-lg transition-colors"
+            title="View Details"
+          >
+            <span class="material-symbols-outlined">info</span>
+          </button>
+          <button
+            class="p-2 text-zinc-400 hover:text-primary hover:bg-surface-light rounded-lg transition-colors"
+            title="Export Chat"
+          >
+            <span class="material-symbols-outlined">ios_share</span>
+          </button>
+        </div>
+      </header>
+      <!-- Chat Area -->
+      <div
+        class="flex-1 overflow-y-auto p-4 md:p-8 space-y-8 scroll-smooth"
+        id="chat-container"
+      >
+        <!-- Date Separator -->
+        <div class="flex justify-center">
+          <span
+            class="text-xs font-medium text-zinc-400 bg-surface-light px-3 py-1 rounded-full"
+            >Today, 10:23 AM</span
+          >
+        </div>
+        <!-- Bot Message -->
+        <div class="flex items-start gap-4 max-w-3xl mx-auto w-full group">
+          <div
+            class="w-8 h-8 rounded-full bg-surface-light border border-zinc-200 flex items-center justify-center shrink-0 text-primary mt-1"
+          >
+            <span class="material-symbols-outlined text-[18px]">smart_toy</span>
+          </div>
+          <div class="flex flex-col gap-1.5 max-w-[85%]">
+            <span class="text-xs font-semibold text-zinc-500 ml-1"
+              >Study Bot</span
+            >
+            <div
+              class="bg-surface-light text-primary rounded-2xl rounded-tl-none px-5 py-3.5 text-[15px] leading-relaxed shadow-sm"
+            >
+              <p>
+                Here is a quick summary of the French Revolution. It was a
+                period of radical political and societal change in France that
+                began with the Estates General of 1789 and ended with the
+                formation of the French Consulate in November 1799. Would you
+                like to review the key dates?
+              </p>
+            </div>
+          </div>
+        </div>
+        <!-- User Message -->
+        <div
+          class="flex items-start justify-end gap-4 max-w-3xl mx-auto w-full group"
+        >
+          <div class="flex flex-col items-end gap-1.5 max-w-[85%]">
+            <span class="text-xs font-semibold text-zinc-500 mr-1">You</span>
+            <div
+              class="bg-primary text-white rounded-2xl rounded-tr-none px-5 py-3.5 text-[15px] leading-relaxed shadow-md"
+            >
+              <p>
+                Yes, please test me on the key dates. I always mix up the early
+                events.
+              </p>
+            </div>
+          </div>
+          <div
+            class="w-8 h-8 rounded-full bg-zinc-200 border border-zinc-300 flex items-center justify-center shrink-0 overflow-hidden mt-1"
+          >
+            <div
+              class="w-full h-full bg-cover bg-center"
+              data-alt="User avatar thumbnail"
+              style="
+                background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBb-KaPdJ58IUnk5Bnk5a9KfP0TUKCe4YpzIDa6wmj93AV2r31w3pT0pNqrwb5JwTQtAqpza3FYy4nkYYGwUpqbhvKo_mZLF0C-pLXLveb_QUag7A9eLJeXm9ZuvYeips-HMm40KEeybU6MxvSL5u05QBl6HsvlLwlgypXblCWtpsUHn0hAyzz55wQZdX82Z1DWJ2nOsZHOm2ixB1HqkSn5MPJfbTED4ECGSbOjvSPbDjMaqe86C_ugYveQ5oWIKscSjBUqNPPol6U');
+              "
+            ></div>
+          </div>
+        </div>
+        <!-- Bot Message with Flashcard -->
+        <div class="flex items-start gap-4 max-w-3xl mx-auto w-full group">
+          <div
+            class="w-8 h-8 rounded-full bg-surface-light border border-zinc-200 flex items-center justify-center shrink-0 text-primary mt-1"
+          >
+            <span class="material-symbols-outlined text-[18px]">smart_toy</span>
+          </div>
+          <div class="flex flex-col gap-1.5 w-full max-w-[85%] md:max-w-[70%]">
+            <span class="text-xs font-semibold text-zinc-500 ml-1"
+              >Study Bot</span
+            >
+            <div
+              class="bg-surface-light text-primary rounded-2xl rounded-tl-none px-5 py-3.5 text-[15px] leading-relaxed shadow-sm mb-2"
+            >
+              <p>
+                Sure! Let's start with a pivotal moment. Can you identify the
+                date of this event?
+              </p>
+            </div>
+            <!-- Flashcard Component -->
+            <div
+              class="relative w-full bg-white border-2 border-dashed border-zinc-300 rounded-xl p-6 transition-all hover:border-zinc-400 group/card"
+            >
+              <div
+                class="absolute -top-3 -right-3 rotate-12 bg-white rounded-lg shadow-sm border border-zinc-100 p-1.5 z-10"
+              >
+                <span class="material-symbols-outlined text-zinc-900 text-3xl"
+                  >style</span
+                >
+              </div>
+              <div class="flex flex-col gap-4">
+                <div class="flex items-center gap-2 mb-1">
+                  <span
+                    class="px-2 py-0.5 rounded text-[10px] font-bold bg-zinc-100 text-zinc-600 uppercase tracking-wide border border-zinc-200"
+                    >History</span
+                  >
+                  <span
+                    class="px-2 py-0.5 rounded text-[10px] font-bold bg-zinc-100 text-zinc-600 uppercase tracking-wide border border-zinc-200"
+                    >Flashcard</span
+                  >
+                </div>
+                <h3 class="text-xl font-bold text-primary tracking-tight">
+                  Storming of the Bastille
+                </h3>
+                <div class="w-full h-px bg-zinc-100"></div>
+                <div class="flex items-center justify-between pt-1">
+                  <p class="text-zinc-500 text-sm italic">
+                    Tap to reveal the date...
+                  </p>
+                  <button
+                    class="flex items-center gap-2 px-4 py-2 bg-primary text-white text-sm font-semibold rounded-lg hover:bg-zinc-800 transition-all shadow-sm active:scale-95"
+                  >
+                    <span class="material-symbols-outlined text-[18px]"
+                      >flip</span
+                    >
+                    Reveal Answer
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="h-4"></div>
+        <!-- Spacer for scroll -->
+      </div>
+      <!-- Input Area -->
+      <div class="p-4 md:px-8 md:pb-8 bg-white z-20">
+        <div class="max-w-3xl mx-auto relative">
+          <div class="absolute bottom-full left-0 mb-2 flex gap-2">
+            <button
+              class="bg-primary/5 hover:bg-primary/10 text-primary text-xs font-medium px-3 py-1.5 rounded-full border border-primary/10 transition-colors"
+            >
+              Give me a hint
+            </button>
+            <button
+              class="bg-primary/5 hover:bg-primary/10 text-primary text-xs font-medium px-3 py-1.5 rounded-full border border-primary/10 transition-colors"
+            >
+              Skip card
+            </button>
+          </div>
+          <div
+            class="relative flex items-end gap-2 bg-white rounded-2xl border-2 border-primary shadow-sm p-2 transition-all ring-offset-2"
+          >
+            <button
+              class="p-2 text-zinc-400 hover:text-primary hover:bg-zinc-100 rounded-xl transition-colors shrink-0 self-end mb-0.5"
+              title="Upload file"
+            >
+              <span class="material-symbols-outlined">add_circle</span>
+            </button>
+            <textarea
+              class="w-full py-3 px-1 max-h-32 bg-transparent border-none focus:ring-0 text-primary placeholder-zinc-400 resize-none text-[15px] leading-relaxed self-center"
+              placeholder="Type your answer..."
+              rows="1"
+              style="min-height: 44px"
+            ></textarea>
+            <button
+              class="p-2 bg-primary hover:bg-zinc-800 text-white rounded-xl shadow-sm transition-colors shrink-0 self-end mb-0.5"
+            >
+              <span class="material-symbols-outlined fill">arrow_upward</span>
+            </button>
+          </div>
+          <p class="text-center text-[10px] text-zinc-400 mt-3 font-medium">
+            AI can make mistakes. Check important info.
+          </p>
+        </div>
+      </div>
+    </main>
+  </body>
+</html>

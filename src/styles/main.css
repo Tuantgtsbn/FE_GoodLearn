@@ -1,7 +1,7 @@
-@import "tailwindcss";
-@import "tw-animate-css";
-@import "shadcn/tailwind.css";
-@import "@fontsource-variable/geist";
+@import 'tailwindcss';
+@import 'tw-animate-css';
+@import 'shadcn/tailwind.css';
+@import '@fontsource-variable/geist';
 
 @custom-variant dark (&:is(.dark *));
 
@@ -187,10 +187,10 @@
   --shadow-brutal: 8px 8px 0px 0px #000;
   --shadow-brutal-sm: 4px 4px 0px 0px #000;
   --shadow-brutal-hover: 2px 2px 0px 0px #000;
-  --zinc-950: #18181B;
+  --zinc-950: #18181b;
   --zinc-200: #e4e4e7;
   --zinc-100: #f4f4f5;
-  --zinc-900: #09090B;
+  --zinc-900: #09090b;
 }
 
 @layer base {

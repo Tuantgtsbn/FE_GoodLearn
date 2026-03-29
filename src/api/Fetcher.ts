@@ -1,4 +1,8 @@
-import axios, { AxiosError, type AxiosRequestConfig, type AxiosResponse } from 'axios';
+import axios, {
+  AxiosError,
+  type AxiosRequestConfig,
+  type AxiosResponse,
+} from 'axios';
 import { toast } from 'react-toastify';
 import Config from '../config';
 import qs from 'qs';
@@ -24,7 +28,7 @@ enum ResponseCode {
   VALIDATION_ERROR = '10008',
   INTERNAL_ERROR = '10009',
   BAD_REQUEST = '10010',
-  RATE_LIMIT = '10029'
+  RATE_LIMIT = '10029',
 }
 
 export interface IDataError<T = ValidationErrorDetail> {

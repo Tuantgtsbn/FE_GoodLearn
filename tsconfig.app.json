@@ -41,8 +41,8 @@
       "@hooks/*": ["./src/hooks/*"],
       "@dto/*": ["./src/dto/*"],
       "@layouts/*": ["./src/layouts/*"],
-      "@types/*": ["./src/types/*"],
+      "@types/*": ["./src/types/*"]
     }
   },
-  "include": ["src"],
+  "include": ["src"]
 }

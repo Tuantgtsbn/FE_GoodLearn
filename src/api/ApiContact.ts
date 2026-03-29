@@ -3,19 +3,19 @@ import { fetcher } from './Fetcher';
 import { type IContact } from 'src/types';
 
 const path = {
-    baseContact: '/contacts',
-    sendContact: '/contacts',
-    adminGetContacts: '/contacts',
+  baseContact: '/contacts',
+  sendContact: '/contacts',
+  adminGetContacts: '/contacts',
 };
 
 const sendContact = (data: ContactDataDto) => {
-    return fetcher<IContact>({
-        url: path.sendContact,
-        method: 'POST',
-        data,
-    });
+  return fetcher<IContact>({
+    url: path.sendContact,
+    method: 'POST',
+    data,
+  });
 };
 
 export default {
-    sendContact,
+  sendContact,
 };
