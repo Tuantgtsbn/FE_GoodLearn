@@ -2,6 +2,16 @@ const QUERY_KEY = {
     USER: {
         GET_USER_BY_ID: 'GET_USER_BY_ID',
     },
+    CONTACT: {
+        SEND_CONTACT: 'SEND_CONTACT',
+        GET_CONTACTS: 'GET_CONTACTS',
+        GET_MY_CONTACTS: 'GET_MY_CONTACTS',
+    },
+    REVIEW: {
+        GET_REVIEW_STATS: 'GET_REVIEW_STATS',
+        GET_REVIEWS: 'GET_REVIEWS',
+        SUBMIT_REVIEW: 'SUBMIT_REVIEW',
+    },
 }
 
 export default QUERY_KEY;

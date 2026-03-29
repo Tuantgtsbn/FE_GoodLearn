@@ -1,6 +1,49 @@
+import { useForm } from 'react-hook-form';
 import './style.scss';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { ContactDto, type ContactDataDto } from '@/dto/contact.dto';
+import { useSelector } from 'react-redux';
+import type { IRootState } from '@/redux/store';
+import { useMutation } from '@tanstack/react-query';
+import ApiContact from '@/api/ApiContact';
+import QUERY_KEY from '@/api/QueryKey';
+import { toast } from 'react-toastify';
+import ErrorMessage from '@/components/ErrorMessage';
+import { CircularProgress } from '@mui/material';
 
 export default function ContactPage() {
+  const { user } = useSelector((state: IRootState) => state.auth);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm({
+    defaultValues: {
+      fullName: user?.fullName || undefined,
+      email: user?.email || undefined,
+      phone: user?.phone || undefined,
+      content: '',
+    },
+    resolver: zodResolver(ContactDto),
+  });
+
+  const { mutate, isPending } = useMutation({
+    mutationFn: (data: ContactDataDto) => ApiContact.sendContact(data),
+    mutationKey: [QUERY_KEY.CONTACT.SEND_CONTACT],
+    onSuccess: () => {
+      toast.success('Gửi phản hồi thành công');
+      reset();
+    },
+    onError: () => {
+      toast.error('Gửi phản hồi thất bại');
+    },
+  });
+
+  const onSubmit = (data: ContactDataDto) => {
+    mutate(data);
+  };
+
   return (
     <>
       <header className="relative pt-20 pb-12 px-4 overflow-hidden">
@@ -99,7 +142,7 @@ export default function ContactPage() {
                     Gửi tin nhắn
                   </h2>
                 </div>
-                <form action="#" className="space-y-8">
+                <form onClick={handleSubmit(onSubmit)} className="space-y-8">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <div className="flex flex-col">
                       <label
@@ -109,10 +152,14 @@ export default function ContactPage() {
                         Tên của bạn
                       </label>
                       <input
-                        className="border-4 border-black p-4 rounded-brutal focus:ring-0 focus:bg-brandYellow/10 transition-all shadow-brutal-sm outline-none font-bold placeholder:text-black/30"
+                        className="mb-1 border-4 border-black p-4 rounded-brutal focus:ring-0 focus:bg-brandYellow/10 transition-all shadow-brutal-sm outline-none font-bold placeholder:text-black/30"
                         id="name"
                         placeholder="Nguyễn Văn A"
                         type="text"
+                        {...register('fullName')}
+                      />
+                      <ErrorMessage
+                        message={(errors.fullName?.message as string) || ''}
                       />
                     </div>
                     <div className="flex flex-col">
@@ -123,10 +170,14 @@ export default function ContactPage() {
                         Email
                       </label>
                       <input
-                        className="border-4 border-black p-4 rounded-brutal focus:ring-0 focus:bg-brutal-blue/10 transition-all shadow-brutal-sm outline-none font-bold placeholder:text-black/30"
+                        className="mb-1 border-4 border-black p-4 rounded-brutal focus:ring-0 focus:bg-brutal-blue/10 transition-all shadow-brutal-sm outline-none font-bold placeholder:text-black/30 truncate"
                         id="email"
                         placeholder="example@email.com"
                         type="email"
+                        {...register('email')}
+                      />
+                      <ErrorMessage
+                        message={(errors.email?.message as string) || ''}
                       />
                     </div>
                   </div>
@@ -138,17 +189,25 @@ export default function ContactPage() {
                       Lời nhắn cho chúng tớ
                     </label>
                     <textarea
-                      className="border-4 border-black p-4 rounded-brutal focus:ring-0 focus:bg-brandYellow/10 transition-all shadow-brutal-sm outline-none font-bold placeholder:text-black/30 min-h-[160px]"
+                      className="mb-1 border-4 border-black p-4 rounded-brutal focus:ring-0 focus:bg-brandYellow/10 transition-all shadow-brutal-sm outline-none font-bold placeholder:text-black/30 min-h-[160px]"
                       id="message"
                       placeholder="Bạn muốn hỏi gì về AI?"
                       rows={5}
+                      {...register('content')}
                     ></textarea>
+                    <ErrorMessage
+                      message={(errors.content?.message as string) || ''}
+                    />
                   </div>
                   <button
                     className="w-full bg-brandYellow border-4 border-black py-5 rounded-brutal text-2xl font-black shadow-brutal hover:translate-x-[4px] hover:translate-y-[4px] hover:shadow-none transition-all uppercase tracking-wider"
                     type="submit"
+                    disabled={isPending}
                   >
-                    Gửi
+                    Gửi{' '}
+                    {isPending && (
+                      <CircularProgress size={20} color="inherit" />
+                    )}
                   </button>
                 </form>
               </section>

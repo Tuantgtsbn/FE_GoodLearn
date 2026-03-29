@@ -4,15 +4,29 @@ import PriceLandingPage from '../pages/LandingPage/Price';
 import LandingPageLayout from '../components/layouts/LandingPage';
 import NotFound from '@/pages/NotFound';
 import MainLayout from '@/components/layouts/MainLayout';
-import AuthPage from '../pages/Auth';
 import TermOfUse from '@/pages/LandingPage/TermOfUse';
 import Privacy from '@/pages/LandingPage/Privacy';
 import ContactPage from '@/pages/LandingPage/Contact';
+import AuthLayout from '@/components/layouts/Auth';
+import SignUp from '@/pages/Auth/SignUp';
+import ForgotPasswordPage from '@/pages/Auth/ForgotPassword';
+import { Navigate, Outlet } from 'react-router-dom';
+import Login from '@/pages/Auth/Login';
+import LoginGoogleCallback from '@/pages/Auth/Login/GoogleCallback';
+import ProtectedRoute from './ProtectedRoute';
+import { ERole } from '@/types';
+import UserMainPage from '@/pages/App';
+import { DialogProvider } from '@/context/DialogContext';
+import UserLayout from '@/components/layouts/User';
 
 export const routes = [
   {
     path: '/',
-    element: <MainLayout />,
+    element: (
+      <DialogProvider>
+        <MainLayout />
+      </DialogProvider>
+    ),
     children: [
       {
         path: '',
@@ -64,7 +78,49 @@ export const routes = [
       },
       {
         path: 'auth',
-        element: <AuthPage />,
+        element: (
+          <AuthLayout>
+            <Outlet />
+          </AuthLayout>
+        ),
+        children: [
+          {
+            index: true,
+            element: <Navigate to="login" replace />,
+          },
+          {
+            path: 'login',
+            element: <Login />,
+          },
+          {
+            path: 'register',
+            element: <SignUp />,
+          },
+          {
+            path: 'forgot-password',
+            element: <ForgotPasswordPage />,
+          },
+        ],
+      },
+      {
+        path: '/app',
+        element: (
+          <ProtectedRoute allowedRoles={[ERole.USER]}>
+            <UserLayout>
+              <Outlet />
+            </UserLayout>
+          </ProtectedRoute>
+        ),
+        children: [
+          {
+            index: true,
+            element: <UserMainPage />,
+          },
+        ],
+      },
+      {
+        path: 'login/google/callback',
+        element: <LoginGoogleCallback />,
       },
       {
         path: '*',

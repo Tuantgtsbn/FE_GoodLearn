@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-const useScreenWidth = () => {
+export const useScreenWidth = () => {
   const [width, setWidth] = useState(window.innerWidth);
   useEffect(() => {
     let timer: ReturnType<typeof setTimeout> | null = null;
@@ -23,4 +23,8 @@ const useScreenWidth = () => {
   return width;
 };
 
-export default useScreenWidth;
+export function useLayout() {
+  const width = useScreenWidth();
+  const isMobile = width < 640;
+  return { isMobile };
+}

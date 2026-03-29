@@ -11,16 +11,16 @@ export default function NotFound({ fallbackUrl }: INotFoundProps) {
   return (
     <div
       id="error-page"
-      className="flex gap-4 flex-col items-center justify-center"
+      className="flex gap-4 flex-col items-center justify-center min-h-screen"
     >
-      <div className="flex flex-col justify-center items-center gap-2 sm:w-[500px]">
-        <IC404 className="w-full h-full" />
-        <span className="text-[#2d2d2d] md:text-2xl text-sm">
-          Trang bạn đang tìm kiếm không tồn tại.
-        </span>
+      <div className="gap-2">
+        <IC404 className="w-[400px]" />
       </div>
+      <span className="text-[#2d2d2d] md:text-2xl text-sm">
+        Trang bạn đang tìm kiếm không tồn tại.
+      </span>
       <Button
-        className="sm:text-2xl text-sm"
+        className="font-bold pl-6 pr-6"
         onClick={() => navigate(fallbackUrl)}
       >
         Quay lại trang chủ

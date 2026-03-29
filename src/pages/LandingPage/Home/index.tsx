@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import './style.scss';
+import ModalReviewApp from '@/components/ModalReviewApp';
 
 function HomeLandingPage() {
   const navigate = useNavigate();
@@ -211,7 +212,7 @@ function HomeLandingPage() {
         </div>
       </section>
       <section
-        className="max-w-5xl mx-auto px-4 py-20"
+        className="max-w-7xl mx-auto px-4 py-20 bg-slate-50/50 border-b-2 border-black border-dashed"
         data-purpose="cta-block"
       >
         <div className="bg-brandYellow border-4 border-black rounded-3xl p-8 md:p-16 text-center shadow-brutal relative overflow-hidden">
@@ -258,6 +259,9 @@ function HomeLandingPage() {
             * Đăng ký ngay, nhận ưu đãi 25 credit miễn phí! 🚀
           </p>
         </div>
+      </section>
+      <section className="max-w-7xl px-4 py-20 flex flex-col items-center">
+        <ModalReviewApp isOpen={true} />
       </section>
     </div>
   );

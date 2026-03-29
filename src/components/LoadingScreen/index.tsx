@@ -14,7 +14,7 @@ const LoadingScreen = ({ className }: ILoadingScreenProps) => {
     >
       {/* Logo */}
       <img
-        src="/vite.svg" // đổi theo logo của bạn
+        src="/favicon.svg" // đổi theo logo của bạn
         alt="Logo"
         className="w-16 h-16 object-contain"
       />

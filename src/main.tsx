@@ -8,26 +8,60 @@ import LoadingScreen from './components/LoadingScreen/index.tsx';
 import store, { persistor } from './redux/store.ts';
 import { queryClient } from './config/queryClient.ts';
 import App from './App.tsx';
+import ErrorBoundary from './components/ui/ErrorBoudary.tsx';
+import { createTheme, ThemeProvider } from '@mui/material';
+import '@fontsource/google-sans'; // Defaults to weight 400
+import '@fontsource/google-sans/400.css'; // Specify weight
+import '@fontsource/google-sans/400-italic.css'; // Specify weight and style
+
+const theme = createTheme({
+  typography: {
+    fontFamily: '"Google Sans", ui-sans-serif, sans-serif, system-ui',
+  },
+  components: {
+    MuiInput: {
+      styleOverrides: {
+        root: {
+          borderRadius: '8px',
+          border: '1px solid #d1d5db',
+          '&:hover': {
+            borderColor: '#2563eb',
+          },
+          '&.Mui-focused': {
+            borderColor: '#2563eb',
+          },
+        },
+        input: {
+          padding: '10px',
+        },
+      },
+    },
+  },
+});
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <QueryClientProvider client={queryClient}>
-      <Provider store={store}>
-        <PersistGate loading={<LoadingScreen />} persistor={persistor}>
-          <Suspense fallback={<LoadingScreen />}>
-            <App />
-          </Suspense>
-        </PersistGate>
-      </Provider>
-    </QueryClientProvider>
-    <ToastContainer
-      position="top-right"
-      draggable
-      pauseOnFocusLoss
-      autoClose={3000}
-      hideProgressBar
-      newestOnTop
-      pauseOnHover
-    />
+    <ThemeProvider theme={theme}>
+      <ErrorBoundary>
+        <QueryClientProvider client={queryClient}>
+          <Provider store={store}>
+            <PersistGate loading={<LoadingScreen />} persistor={persistor}>
+              <Suspense fallback={<LoadingScreen />}>
+                <App />
+              </Suspense>
+            </PersistGate>
+          </Provider>
+        </QueryClientProvider>
+        <ToastContainer
+          position="top-right"
+          draggable
+          pauseOnFocusLoss
+          autoClose={3000}
+          hideProgressBar
+          newestOnTop
+          pauseOnHover
+        />
+      </ErrorBoundary>
+    </ThemeProvider>
   </StrictMode>
 );

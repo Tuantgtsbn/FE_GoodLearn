@@ -1,8 +1,8 @@
 import { useMatches } from "react-router-dom";
 import { useEffect } from "react";
 
-type RouteHandle = {
-    title?: string;
+type RouteHandle<T = any> = {
+    title?: string | ((data: T) => string);
 };
 
 export default function useDocumentTitle(): void {
@@ -14,7 +14,8 @@ export default function useDocumentTitle(): void {
         const handle = lastMatch?.handle as RouteHandle | undefined;
 
         if (handle?.title) {
-            document.title = handle.title;
+            const title = typeof handle.title === 'function' ? handle.title(lastMatch.data) : handle.title;
+            document.title = title;
         }
     }, [matches]);
 }

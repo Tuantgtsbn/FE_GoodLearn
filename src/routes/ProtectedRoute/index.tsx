@@ -2,11 +2,11 @@ import React from 'react';
 import { Navigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { type IRootState } from '@redux/store';
-import { EUserRole } from '../../types';
+import { ERole } from '../../types';
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
-  allowedRoles?: EUserRole[];
+  allowedRoles?: ERole[];
   requireAuth?: boolean;
   guestOnly?: boolean;
 }
@@ -20,16 +20,16 @@ function ProtectedRoute({
   const { user, accessToken, isAuthenticated } = useSelector(
     (state: IRootState) => state.auth
   );
-  const userRole = user?.role?.name;
+  const userRole = user?.role;
   if (requireAuth && !accessToken) {
     return <Navigate to="/auth/login" replace />;
   }
 
   if (guestOnly && isAuthenticated && user && userRole) {
     switch (userRole) {
-      case EUserRole.USER:
+      case ERole.USER:
         return <Navigate to="/" replace />;
-      case EUserRole.ADMIN:
+      case ERole.ADMIN:
         return <Navigate to="/admin" replace />;
       default:
         return <Navigate to="/" replace />;
@@ -38,9 +38,9 @@ function ProtectedRoute({
 
   if (allowedRoles.length > 0 && userRole && !allowedRoles.includes(userRole)) {
     switch (userRole) {
-      case EUserRole.USER:
+      case ERole.USER:
         return <Navigate to="/" replace />;
-      case EUserRole.ADMIN:
+      case ERole.ADMIN:
         return <Navigate to="/admin" replace />;
       default:
         return <Navigate to="/auth/login" replace />;

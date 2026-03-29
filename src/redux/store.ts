@@ -1,4 +1,5 @@
 import AuthReducer from './slices/AuthSlice';
+import SettingReducer from './slices/SettingSlice';
 import { configureStore } from '@reduxjs/toolkit';
 import { combineReducers } from 'redux';
 import {
@@ -22,6 +23,11 @@ const authPersistConfig = {
 
 const appReducers = combineReducers({
     auth: persistReducer(authPersistConfig, AuthReducer),
+    setting: persistReducer({
+        key: 'setting',
+        version: 1,
+        storage: storage,
+    }, SettingReducer),
 });
 
 const rootReducers = (state: any, action: any) => {

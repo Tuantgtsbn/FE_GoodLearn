@@ -1,6 +1,12 @@
-import { Link, NavLink } from 'react-router-dom';
+import { useAuthAction } from '@/hooks/useAuthAction';
+import { Link, NavLink, useNavigate } from 'react-router-dom';
 
 export default function Header() {
+  const navigate = useNavigate();
+  const handleClickLogin = useAuthAction(() => {
+    navigate('/app');
+  });
+
   return (
     <header
       className="max-w-[95%] lg:max-w-7xl mx-auto flex sticky top-5 z-10 items-center justify-between bg-white border-2 border-black rounded-2xl p-4 shadow-brutal"
@@ -9,7 +15,7 @@ export default function Header() {
       <div className="flex items-center gap-2">
         <Link
           to="/"
-          className="font-heading text-2xl tracking-tight cursor-pointer"
+          className="font-heading text-2xl tracking-tight cursor-pointer font-bold"
         >
           GoodLearn
         </Link>
@@ -46,7 +52,10 @@ export default function Header() {
           </NavLink>
         </li>
       </ul>
-      <button className="bg-brandYellow px-6 py-2 border-2 border-black rounded-xl font-extrabold shadow-brutal-sm hover:-translate-y-0.5 hover:shadow-brutal transition-all active:translate-y-[2px] active:shadow-none">
+      <button
+        onClick={handleClickLogin}
+        className="bg-brandYellow px-6 py-2 border-2 border-black rounded-xl font-extrabold shadow-brutal-sm hover:-translate-y-0.5 hover:shadow-brutal transition-all active:translate-y-[2px] active:shadow-none"
+      >
         Vào Học Ngay
       </button>
     </header>

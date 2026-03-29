@@ -1,0 +1,12 @@
+.mx_AuthPage {
+    .graph-paper {
+            background-color: #ffffff;
+            background-image: linear-gradient(#F4F4F5 1px, transparent 1px), linear-gradient(90deg, #F4F4F5 1px, transparent 1px);
+            background-size: 30px 30px;
+    }
+    .neo-brutalism-hover:hover {
+            box-shadow: 4px 4px 0px #000;
+            transform: translate(-2px, -2px);
+            transition: all 0.2s ease;
+    }
+}
