@@ -16,8 +16,14 @@ import LoginGoogleCallback from '@/pages/Auth/Login/GoogleCallback';
 import ProtectedRoute from './ProtectedRoute';
 import { ERole } from '@/types';
 import UserMainPage from '@/pages/App';
+import QuizzListPage from '@/pages/App/Quizz';
+import DoExamPage from '@/pages/App/Quizz/DoExam';
+import LeaderboardPage from '@/pages/App/Quizz/Leaderboard';
 import { DialogProvider } from '@/context/DialogContext';
 import UserLayout from '@/components/layouts/User';
+import Voicecall from '@/pages/App/VoiceCall';
+import FlashcardListPage from '@/pages/App/Flashcard';
+import DoFlashcardPlayer from '@/pages/App/Flashcard/DoFlashcard';
 
 export const routes = [
   {
@@ -79,9 +85,11 @@ export const routes = [
       {
         path: 'auth',
         element: (
-          <AuthLayout>
-            <Outlet />
-          </AuthLayout>
+          <ProtectedRoute requireAuth={false} guestOnly>
+            <AuthLayout>
+              <Outlet />
+            </AuthLayout>
+          </ProtectedRoute>
         ),
         children: [
           {
@@ -115,6 +123,48 @@ export const routes = [
           {
             index: true,
             element: <UserMainPage />,
+          },
+          {
+            path: 'quizz',
+            element: <QuizzListPage />,
+            handle: {
+              title: 'Danh sách bài thi trắc nghiệm',
+            },
+          },
+          {
+            path: 'quizz/:quizId/do',
+            element: <DoExamPage />,
+            handle: {
+              title: 'Làm bài thi',
+            },
+          },
+          {
+            path: 'quizz/:quizId/leaderboard',
+            element: <LeaderboardPage />,
+            handle: {
+              title: 'Bảng xếp hạng bài thi',
+            },
+          },
+          {
+            path: 'voice',
+            element: <Voicecall />,
+            handle: {
+              title: 'GoodLearn | Trò chuyện trực tiếp',
+            },
+          },
+          {
+            path: 'flashcards',
+            element: <FlashcardListPage />,
+            handle: {
+              title: 'GoodLearn | Thư viện Flashcard',
+            },
+          },
+          {
+            path: 'flashcards/:setId',
+            element: <DoFlashcardPlayer />,
+            handle: {
+              title: 'GoodLearn | Học Flashcard',
+            },
           },
         ],
       },

@@ -29,7 +29,10 @@ function HomeLandingPage() {
             kiến thức trong 1 nốt nhạc.
           </p>
           <div className="flex flex-wrap gap-4">
-            <button className="bg-black text-white px-8 py-4 border-2 border-black rounded-2xl font-extrabold text-lg shadow-brutal hover:bg-brandPurple transition-colors">
+            <button
+              onClick={() => navigate('/app')}
+              className="bg-black text-white px-8 py-4 border-2 border-black rounded-2xl font-extrabold text-lg shadow-brutal hover:bg-brandPurple transition-colors"
+            >
               Bắt đầu miễn phí
             </button>
             <button
@@ -46,7 +49,7 @@ function HomeLandingPage() {
           className="flex-1 relative w-full max-w-md md:max-w-none"
           data-purpose="hero-illustration"
         >
-          <div className="bg-brandPink border-2 border-black rounded-2xl p-6 shadow-brutal relative z-10">
+          <div className="bg-brandPink border-2 border-black rounded-2xl p-6 shadow-brutal relative z-[9]">
             <div className="space-y-4">
               <div className="bg-white border-2 border-black p-3 rounded-xl max-w-[80%] shadow-brutal-sm">
                 <p className="font-bold">AI ơi, định lý Pi-ta-go là gì? 🤔</p>
@@ -58,7 +61,7 @@ function HomeLandingPage() {
               </div>
             </div>
           </div>
-          <div className="absolute -top-6 -left-6 w-16 h-16 bg-brandYellow border-2 border-black rounded-full flex items-center justify-center text-3xl shadow-brutal-sm z-20 animate-bounce">
+          <div className="absolute -top-6 -left-6 w-16 h-16 bg-brandYellow border-2 border-black rounded-full flex items-center justify-center text-3xl shadow-brutal-sm z-9 animate-bounce">
             💡
           </div>
           <div className="absolute -bottom-4 right-4 w-12 h-12 bg-white border-2 border-black rounded-lg flex items-center justify-center text-2xl shadow-brutal-sm z-20">
@@ -260,7 +263,7 @@ function HomeLandingPage() {
           </p>
         </div>
       </section>
-      <section className="max-w-7xl px-4 py-20 flex flex-col items-center">
+      <section className="px-4 py-20 flex flex-col items-center">
         <ModalReviewApp isOpen={true} />
       </section>
     </div>

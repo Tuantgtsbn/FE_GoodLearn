@@ -38,7 +38,7 @@ export default function ThemeSetting() {
               checked={theme === 'light'}
               onChange={() => handleChangeTheme('light')}
             />
-            <div className="flex flex-col items-center justify-center p-6 rounded-xl border-2 border-slate-200 bg-white transition-all peer-checked:border-black peer-checked:border-[3px] peer-checked:neo-shadow">
+            <div className="flex flex-col items-center justify-center p-6 rounded-xl border-2 border-slate-200 bg-white transition-all peer-checked:border-black peer-checked:neo-shadow">
               <Sun size={32} className="mb-2" />
               <span className="font-bold text-sm text-center">
                 Giấy trắng (Sáng)
@@ -53,7 +53,7 @@ export default function ThemeSetting() {
               checked={theme === 'dark'}
               onChange={() => handleChangeTheme('dark')}
             />
-            <div className="flex flex-col items-center justify-center p-6 rounded-xl border-2 border-slate-200 bg-white transition-all peer-checked:border-black peer-checked:border-[3px] peer-checked:neo-shadow">
+            <div className="flex flex-col items-center justify-center p-6 rounded-xl border-2 border-slate-200 bg-white transition-all peer-checked:border-black peer-checked:neo-shadow">
               <Moon size={32} className="mb-2" />
               <span className="font-bold text-sm text-center text-slate-500 peer-checked:text-black">
                 Bảng đen (Tối)

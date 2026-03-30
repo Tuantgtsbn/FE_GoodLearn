@@ -118,7 +118,7 @@ function PriceLandingPage() {
         </div>
       </section>
       <section className="max-w-4xl mx-auto px-4 py-20">
-        <h2 className="text-4xl font-black mb-12 text-center underline decoration-neo-purple decoration-8 underline-offset-8">
+        <h2 className="text-4xl font-black mb-12 text-center underline decoration-neo-purple decoration-8 underline-offset-[13px]">
           Câu hỏi thường gặp
         </h2>
         <div className="space-y-6">

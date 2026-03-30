@@ -15,6 +15,28 @@ import '@fontsource/google-sans/400.css'; // Specify weight
 import '@fontsource/google-sans/400-italic.css'; // Specify weight and style
 
 const theme = createTheme({
+  palette: {
+    primary: {
+      main: '#2563eb', // Modern Blue
+      light: '#60a5fa',
+      dark: '#1e40af',
+      // @ts-ignore - custom property for premium backgrounds
+      lighter: 'rgba(37, 99, 235, 0.08)',
+    },
+    secondary: {
+      main: '#7c3aed', // Purple
+      light: '#a78bfa',
+      dark: '#5b21b6',
+    },
+    text: {
+      primary: '#111827',
+      secondary: '#4b5563',
+    },
+    background: {
+      default: '#f9fafb',
+      paper: '#ffffff',
+    },
+  },
   typography: {
     fontFamily: '"Google Sans", ui-sans-serif, sans-serif, system-ui',
   },

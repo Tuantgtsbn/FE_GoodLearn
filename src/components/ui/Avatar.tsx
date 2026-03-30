@@ -16,18 +16,7 @@ interface AvatarProps extends React.HTMLAttributes<HTMLDivElement> {
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
-const COLOR_PAIRS: [string, string][] = [
-  ['#FF6B6B', '#C0392B'],
-  ['#FF8E53', '#E55B10'],
-  ['#FFC857', '#D4A017'],
-  ['#6BCB77', '#1E8A2E'],
-  ['#4D96FF', '#1A5CC8'],
-  ['#9B5DE5', '#6A1FB5'],
-  ['#F15BB5', '#B5177A'],
-  ['#00BBF9', '#0077A8'],
-  ['#00F5D4', '#00967E'],
-  ['#FB5607', '#B53D00'],
-];
+const COLOR_PAIRS: [string, string][] = [['#FF6B6B', '#C0392B']];
 
 const SIZE_CONFIG: Record<
   AvatarSize,
@@ -125,12 +114,22 @@ const Avatar = React.forwardRef<HTMLDivElement, AvatarProps>(
     },
     ref
   ) => {
-    const [imgError, setImgError] = useState(false);
-    const [imgLoaded, setImgLoaded] = useState(false);
+    const [failedSrc, setFailedSrc] = useState<string | null>(null);
+    const [loadedSrc, setLoadedSrc] = useState<string | null>(null);
+
+    const normalizedSrc = (() => {
+      if (!src) return null;
+      const trimmedSrc = src.trim();
+      const lowerSrc = trimmedSrc.toLowerCase();
+      if (!trimmedSrc || lowerSrc === 'null' || lowerSrc === 'undefined') {
+        return null;
+      }
+      return trimmedSrc;
+    })();
 
     const cfg = SIZE_CONFIG[size];
     const shapeClass = SHAPE_CLASSES[shape];
-    const showImage = Boolean(src && !imgError);
+    const showImage = Boolean(normalizedSrc && failedSrc !== normalizedSrc);
     const initials = getInitials(name);
     const [c1, c2] = getColorPair(name);
 
@@ -168,17 +167,10 @@ const Avatar = React.forwardRef<HTMLDivElement, AvatarProps>(
         )}
         {...props}
       >
-        {/* Glow ring */}
-        <div
-          className={cn('absolute z-0', shapeClass)}
-          style={glowStyle}
-          aria-hidden="true"
-        />
-
         {/* Avatar body */}
         <div
           className={cn(
-            'relative w-full h-full overflow-hidden z-10 flex items-center justify-center',
+            'relative w-full h-full overflow-hidden flex items-center justify-center',
             shapeClass,
             showImage && 'bg-black'
           )}
@@ -198,15 +190,24 @@ const Avatar = React.forwardRef<HTMLDivElement, AvatarProps>(
           )}
 
           {/* Image */}
-          {src && (
+          {normalizedSrc && (
             <img
-              src={src}
+              src={normalizedSrc}
               alt={name || 'avatar'}
-              onError={() => setImgError(true)}
-              onLoad={() => setImgLoaded(true)}
+              onError={() => {
+                if (normalizedSrc) {
+                  setFailedSrc(normalizedSrc);
+                }
+              }}
+              onLoad={() => {
+                if (normalizedSrc) {
+                  setLoadedSrc(normalizedSrc);
+                  setFailedSrc(null);
+                }
+              }}
               className={cn(
                 'absolute inset-0 w-full h-full object-cover transition-opacity duration-300',
-                imgLoaded ? 'opacity-100' : 'opacity-0'
+                loadedSrc === normalizedSrc ? 'opacity-100' : 'opacity-0'
               )}
             />
           )}

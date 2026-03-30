@@ -65,22 +65,39 @@ const MenuItemWithChildren: React.FC<{
           onClick={handleClick}
           selected={isSelected}
           sx={{
-            borderRadius: '6px',
-            minHeight: '36px',
-            gap: '6px',
-            px: 1.5,
-            py: 0.5,
-            transition: 'all 0.2s',
+            borderRadius: '8px',
+            minHeight: '40px',
+            gap: '8px',
+            px: 2,
+            py: 0.75,
+            transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
             width: '100%',
+            color: isSelected ? 'primary.main' : 'text.secondary',
+            backgroundColor: isSelected ? 'primary.lighter' : 'transparent',
+            '&:hover': {
+              backgroundColor: isSelected ? 'primary.lighter' : 'rgba(0, 0, 0, 0.04)',
+              transform: 'translateY(-1px)',
+            },
+            '&.Mui-selected': {
+              backgroundColor: 'primary.lighter',
+              color: 'primary.main',
+              fontWeight: 600,
+            },
           }}
         >
           {item.icon && (
-            <ListItemIcon sx={{ minWidth: 'auto', color: 'inherit' }}>
+            <ListItemIcon 
+              sx={{ 
+                minWidth: 'auto', 
+                color: 'inherit',
+                fontSize: 20
+              }}
+            >
               {React.isValidElement(item.icon)
                 ? React.cloneElement(
                     item.icon as React.ReactElement,
                     {
-                      size: 18,
+                      size: 20,
                     } as any
                   )
                 : item.icon}
@@ -90,19 +107,36 @@ const MenuItemWithChildren: React.FC<{
             primary={item.label}
             primaryTypographyProps={{
               fontSize: '0.875rem',
-              fontWeight: 500,
+              fontWeight: isSelected ? 600 : 500,
               noWrap: true,
             }}
           />
-          <ExpandMore sx={{ fontSize: 16, opacity: 0.7 }} />
+          <ExpandMore 
+            sx={{ 
+              fontSize: 18, 
+              opacity: 0.7,
+              transform: Boolean(anchorEl) ? 'rotate(180deg)' : 'none',
+              transition: 'transform 0.2s'
+            }} 
+          />
         </ListItemButton>
         <Menu
           anchorEl={anchorEl}
           open={Boolean(anchorEl)}
           onClose={handleClose}
+          elevation={4}
           anchorOrigin={{
             vertical: 'bottom',
             horizontal: 'left',
+          }}
+          sx={{
+            '& .MuiPaper-root': {
+              borderRadius: '12px',
+              mt: 1,
+              minWidth: 180,
+              boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
+              border: '1px solid rgba(0,0,0,0.05)',
+            }
           }}
         >
           {item.children?.map((child, idx) => (
@@ -113,10 +147,14 @@ const MenuItemWithChildren: React.FC<{
                 handleClose();
               }}
               sx={{
-                backgroundColor:
-                  child.to && currentPath.startsWith(child.to)
-                    ? '#ccc'
-                    : 'inherit',
+                mx: 1,
+                my: 0.5,
+                borderRadius: '8px',
+                transition: 'all 0.2s',
+                '&:hover': {
+                  backgroundColor: 'primary.lighter',
+                  color: 'primary.main',
+                },
               }}
             >
               <MenuItem
@@ -133,26 +171,58 @@ const MenuItemWithChildren: React.FC<{
 
   return (
     <>
-      <ListItem>
+      <ListItem sx={{ px: 1, py: 0.5 }}>
         <ListItemButton
           onClick={handleClick}
+          selected={isSelected}
           sx={{
-            '&.Mui-selected': {
-              backgroundColor: '#ccc',
+            borderRadius: '10px',
+            transition: 'all 0.2s ease-in-out',
+            color: isSelected ? 'primary.main' : 'text.secondary',
+            py: 1,
+            '&:hover': {
+              backgroundColor: isSelected ? 'primary.lighter' : 'rgba(0, 0, 0, 0.04)',
+              '& .MuiListItemIcon-root': {
+                transform: 'scale(1.1)',
+              }
             },
-            '&.MuiListItemButton-root': {
-              borderRadius: '8px',
+            '&.Mui-selected': {
+              backgroundColor: 'primary.lighter',
+              '&:hover': {
+                backgroundColor: 'primary.lighter',
+              },
+              '&::before': {
+                content: '""',
+                position: 'absolute',
+                left: 0,
+                width: '4px',
+                height: '60%',
+                backgroundColor: 'primary.main',
+                borderRadius: '0 4px 4px 0',
+              }
             },
             width: '100%',
           }}
         >
           {item.icon && (
-            <ListItemIcon sx={{ minWidth: '24px', gap: '0px' }}>
+            <ListItemIcon 
+              sx={{ 
+                minWidth: '38px', 
+                color: 'inherit',
+                transition: 'transform 0.2s'
+              }}
+            >
               {item.icon}
             </ListItemIcon>
           )}
-          <ListItemText primary={item.label} />
-          {open ? <ExpandLess /> : <ExpandMore />}
+          <ListItemText 
+            primary={item.label} 
+            primaryTypographyProps={{
+              fontWeight: isSelected ? 600 : 500,
+              fontSize: '0.925rem'
+            }}
+          />
+          {open ? <ExpandLess sx={{ fontSize: 20 }} /> : <ExpandMore sx={{ fontSize: 20 }} />}
         </ListItemButton>
       </ListItem>
       <Collapse in={open} timeout="auto" unmountOnExit>
@@ -203,13 +273,37 @@ const MenuItem: React.FC<{
         selected={isSelected}
         sx={{
           flex: 'initial',
-          borderRadius: '6px',
-          gap: orientation === 'horizontal' ? '8px' : '10px',
-          px: 1.5,
-          py: 0.5,
+          borderRadius: '8px',
+          gap: orientation === 'horizontal' ? '8px' : '12px',
+          px: 2,
+          py: orientation === 'horizontal' ? 0.75 : 1,
           whiteSpace: 'nowrap',
-          transition: 'all 0.2s',
+          transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
           width: orientation === 'horizontal' ? 'auto' : '100%',
+          color: isSelected ? 'primary.main' : 'text.secondary',
+          '&:hover': {
+            backgroundColor: isSelected ? 'primary.lighter' : 'rgba(0,0,0,0.04)',
+            transform: orientation === 'horizontal' ? 'translateY(-1px)' : 'none',
+            '& .MuiListItemIcon-root': {
+              color: 'primary.main',
+            }
+          },
+          '&.Mui-selected': {
+            backgroundColor: 'primary.lighter',
+            color: 'primary.main',
+            '&:hover': {
+              backgroundColor: 'primary.lighter',
+            },
+            '&::before': orientation === 'vertical' ? {
+              content: '""',
+              position: 'absolute',
+              left: 4,
+              width: '4px',
+              height: '50%',
+              backgroundColor: 'primary.main',
+              borderRadius: '4px',
+            } : undefined
+          },
         }}
       >
         {item.icon && (
@@ -219,11 +313,13 @@ const MenuItem: React.FC<{
               color: 'inherit',
               display: 'flex',
               alignItems: 'center',
+              fontSize: 20,
+              transition: 'color 0.2s'
             }}
           >
             {React.isValidElement(item.icon)
               ? React.cloneElement(item.icon as React.ReactElement, {
-                  size: 18,
+                  size: 20,
                 })
               : item.icon}
           </ListItemIcon>
@@ -258,7 +354,7 @@ const SideBar: React.FC<ISideBarProps> = ({
   if (orientation === 'horizontal') {
     return (
       <header
-        className={`w-full bg-gray-200 border-b border-gray-200 flex items-center px-4 ${className || ''}`}
+        className={`w-full bg-white border-b border-gray-100 flex items-center px-4 shadow-sm ${className || ''}`}
         style={{ height: '64px' }}
       >
         {header}
@@ -282,7 +378,7 @@ const SideBar: React.FC<ISideBarProps> = ({
 
   return (
     <aside
-      className={`h-full bg-gray-200 pt-4 border-r border-gray-200 flex flex-col justify-between ${className || ''}`}
+      className={`h-full bg-gray-50 pt-4 border-r border-gray-100 flex flex-col justify-between shadow-sm ${className || ''}`}
     >
       {header}
       <List className="flex-1" sx={{ py: 0, overflowY: 'auto' }}>
@@ -297,7 +393,7 @@ const SideBar: React.FC<ISideBarProps> = ({
       </List>
 
       {footer && (
-        <div className="border-t border-gray-200 text-sm text-gray-500">
+        <div className="border-t border-gray-100 py-4 px-2 text-sm text-gray-500">
           {footer}
         </div>
       )}

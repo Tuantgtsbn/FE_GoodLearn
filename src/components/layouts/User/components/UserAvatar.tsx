@@ -1,4 +1,5 @@
 import ApiAuth from '@/api/ApiAuth';
+import ModalConfirmLogout from '@/components/ModalConfirmLogout';
 import ModalReviewApp from '@/components/ModalReviewApp';
 import UserSetting from '@/components/Settings';
 import Avatar from '@/components/ui/Avatar';
@@ -47,14 +48,7 @@ export default function UserAvatar() {
   };
 
   const handleLogout = async () => {
-    const [res, err] = await tryCatch(ApiAuth.logOut());
-    if (err) {
-      toast.error(err.errorMessage || 'Đăng xuất thất bại');
-      return;
-    }
-    if (res) {
-      logout();
-    }
+    createDialog(ModalConfirmLogout, {}, 'exclusive');
   };
 
   return (

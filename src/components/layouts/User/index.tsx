@@ -87,11 +87,11 @@ const UserLayout = ({ children }: IPatientLayoutProps) => {
       requireAuth: true,
       children: [
         {
-          label: 'Tài liệu tham khảo',
-          to: '/app/reference',
+          label: 'Flashcard',
+          to: '/app/flashcards',
           icon: <BookOpenText />,
           action: () => {
-            navigate('/app/reference');
+            navigate('/app/flashcards');
             setDrawerOpen(false);
           },
         },

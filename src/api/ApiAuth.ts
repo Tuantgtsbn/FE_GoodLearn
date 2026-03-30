@@ -3,7 +3,7 @@ import { fetcher } from './Fetcher';
 import { type LoginDataDto } from 'src/dto/auth.dto';
 
 const path = {
-  registerEmailPassword: '/auth/patient/register/byEmail',
+  registerEmailPassword: '/auth/register/byEmail',
   loginEmailPassword: '/auth/login/byEmail',
   requestForgotPassword: '/auth/forgot-password/request',
   verifyForgotPassword: '/auth/forgot-password/verify',
@@ -14,6 +14,7 @@ const path = {
   logout: '/auth/logout',
   googleLogin: '/auth/google/url',
   googleCallback: '/auth/google/callback',
+  changePassword: '/auth/change-password',
 };
 
 type RegisterByEmailPasswordDto = {
@@ -169,6 +170,17 @@ const resetPassword = (payload: { email: string; password: string }) => {
   });
 };
 
+const changePassword = (payload: {
+  currentPassword: string;
+  newPassword: string;
+}) => {
+  return fetcher<{ message: string }>({
+    url: path.changePassword,
+    method: 'POST',
+    data: payload,
+  });
+}
+
 export default {
   registerByEmailPassword,
   loginByEmailPassword,
@@ -181,4 +193,5 @@ export default {
   requestForgotPassword,
   verifyForgotPassword,
   resetPassword,
+  changePassword,
 };
