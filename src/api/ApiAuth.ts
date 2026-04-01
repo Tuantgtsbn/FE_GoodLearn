@@ -179,7 +179,7 @@ const changePassword = (payload: {
     method: 'POST',
     data: payload,
   });
-}
+};
 
 export default {
   registerByEmailPassword,

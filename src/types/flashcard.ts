@@ -44,7 +44,11 @@ export interface IFlashcardListApiQuery {
   isPublic?: boolean;
 }
 
-export type FlashcardType = 'BASIC' | 'MULTIPLE_CHOICE' | 'TRUE_FALSE' | 'FILL_IN_THE_BLANK';
+export type FlashcardType =
+  | 'BASIC'
+  | 'MULTIPLE_CHOICE'
+  | 'TRUE_FALSE'
+  | 'FILL_IN_THE_BLANK';
 
 export interface IFlashcardOption {
   id: string;
@@ -58,7 +62,7 @@ export interface IFlashcardItem {
   type: FlashcardType;
   frontContent: string;
   backContent: string;
-  options: IFlashcardOption[] | null; 
+  options: IFlashcardOption[] | null;
   explanation: string | null;
   displayOrder: number;
   tags: string[];

@@ -1,6 +1,9 @@
 import ApiFlashcard from '@/api/ApiFlashcard';
 import QUERY_KEY from '@/api/QueryKey';
-import type { IFlashcardListApiQuery, IFlashcardSetListItem } from '@/types/flashcard';
+import type {
+  IFlashcardListApiQuery,
+  IFlashcardSetListItem,
+} from '@/types/flashcard';
 import { useQuery } from '@tanstack/react-query';
 import {
   BookOpen,
@@ -12,6 +15,8 @@ import {
   Search,
   Sparkles,
   Plus,
+  ChevronUp,
+  ChevronDown,
 } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import clsx from 'clsx';
@@ -24,6 +29,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import ApiSubject from '@/api/ApiSubject';
 
 const ITEMS_PER_PAGE = 12;
 const GRADE_OPTIONS = Array.from({ length: 12 }, (_, i) => i + 1);
@@ -139,7 +145,12 @@ const FlashcardCard = ({
               </span>
             )}
             {statusBadge && (
-              <span className={clsx('rounded-full px-2 py-0.5 text-xs font-semibold', statusBadge.class)}>
+              <span
+                className={clsx(
+                  'rounded-full px-2 py-0.5 text-xs font-semibold',
+                  statusBadge.class
+                )}
+              >
                 {statusBadge.label}
               </span>
             )}
@@ -175,7 +186,11 @@ const FlashcardCard = ({
       <div className="mt-4 h-1 w-full overflow-hidden rounded-full bg-slate-100">
         <div
           className="h-full rounded-full transition-all"
-          style={{ width: set.cardCount > 0 ? '100%' : '0%', backgroundColor: accentColor, opacity: 0.6 }}
+          style={{
+            width: set.cardCount > 0 ? '100%' : '0%',
+            backgroundColor: accentColor,
+            opacity: 0.6,
+          }}
         />
       </div>
 
@@ -225,8 +240,11 @@ const FlashcardListPage = () => {
   const [debouncedSearch, setDebouncedSearch] = useState('');
   const [subjectId, setSubjectId] = useState('');
   const [gradeLevel, setGradeLevel] = useState('');
-  const [sortBy, setSortBy] = useState<'createdAt' | 'viewCount' | 'likeCount'>('createdAt');
+  const [sortBy, setSortBy] = useState<'createdAt' | 'viewCount' | 'likeCount'>(
+    'createdAt'
+  );
   const [page, setPage] = useState(1);
+  const [isOpenFilter, setIsOpenFilter] = useState(false);
 
   useEffect(() => {
     const timer = window.setTimeout(() => {
@@ -257,18 +275,10 @@ const FlashcardListPage = () => {
   const metadata = data?.metadata;
   const totalPages = metadata?.totalPages ?? 1;
 
-  const subjectOptions = useMemo(() => {
-    const seen = new Map<string, { id: string; name: string }>();
-    sets.forEach((s) => {
-      if (s.subject?.subjectId) {
-        seen.set(s.subject.subjectId, {
-          id: s.subject.subjectId,
-          name: s.subject.subjectName,
-        });
-      }
-    });
-    return Array.from(seen.values());
-  }, [sets]);
+  const { data: subjectsData } = useQuery({
+    queryKey: [QUERY_KEY.SUBJECT.LIST_SUBJECTS],
+    queryFn: () => ApiSubject.getSubjects({}),
+  });
 
   const resetFilters = () => {
     setSearchInput('');
@@ -286,7 +296,6 @@ const FlashcardListPage = () => {
 
   return (
     <div className="mx-auto w-full max-w-300 px-4 py-8 md:px-6 lg:px-8">
-
       {/* ─── Hero Banner ──────────────────────────────────────────────── */}
       <section className="mb-6 rounded-3xl bg-black px-6 py-7 text-white shadow-xl md:px-8 md:py-9">
         <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
@@ -299,7 +308,8 @@ const FlashcardListPage = () => {
               Bộ thẻ của bạn
             </h1>
             <p className="mt-2 text-sm text-blue-50 md:text-base">
-              Quản lý và ôn tập flashcard thông minh. Tạo bộ thẻ mới bằng AI chỉ trong vài giây.
+              Quản lý và ôn tập flashcard thông minh. Tạo bộ thẻ mới bằng AI chỉ
+              trong vài giây.
             </p>
           </div>
           <div className="flex flex-wrap gap-3">
@@ -328,74 +338,108 @@ const FlashcardListPage = () => {
               type="text"
               value={searchInput}
               onChange={(e) => setSearchInput(e.target.value)}
-              placeholder='Tìm theo tiêu đề bộ thẻ...'
+              placeholder="Tìm theo tiêu đề bộ thẻ..."
               className="w-full rounded-xl border border-slate-200 bg-slate-50 py-2.5 pl-10 pr-3 text-sm font-medium outline-none transition focus:border-blue-500 focus:bg-white"
             />
           </label>
 
           {/* Subject */}
-          <Select value={subjectId || '_all'} onValueChange={onFilter((v) => setSubjectId(v === '_all' ? '' : v))}>
-            <SelectTrigger className="w-full bg-white border-slate-300">
-              <SelectValue placeholder="Môn học" />
-            </SelectTrigger>
-            <SelectContent position="popper">
-              <SelectGroup>
-                <SelectItem value="_all">Tất cả môn</SelectItem>
-                {subjectOptions.map((s) => (
-                  <SelectItem key={s.id} value={s.id}>
-                    {s.name}
-                  </SelectItem>
-                ))}
-              </SelectGroup>
-            </SelectContent>
-          </Select>
+          <div className={`${isOpenFilter ? 'block' : 'hidden'}`}>
+            <Select
+              value={subjectId || '_all'}
+              onValueChange={onFilter((v) =>
+                setSubjectId(v === '_all' ? '' : v)
+              )}
+            >
+              <SelectTrigger className="w-full bg-white border-slate-300">
+                <SelectValue placeholder="Môn học" />
+              </SelectTrigger>
+              <SelectContent position="popper">
+                <SelectGroup>
+                  <SelectItem value="_all">Tất cả môn</SelectItem>
+                  {subjectsData?.data.map((s) => (
+                    <SelectItem key={s.subjectId} value={s.subjectId}>
+                      {s.subjectName}
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          </div>
 
           {/* Grade */}
-          <Select value={gradeLevel || '_all'} onValueChange={onFilter((v) => setGradeLevel(v === '_all' ? '' : v))}>
-            <SelectTrigger className="w-full bg-white border-slate-300">
-              <SelectValue placeholder="Khối lớp" />
-            </SelectTrigger>
-            <SelectContent position="popper">
-              <SelectGroup>
-                <SelectItem value="_all">Tất cả lớp</SelectItem>
-                {GRADE_OPTIONS.map((g) => (
-                  <SelectItem key={g} value={String(g)}>
-                    Lớp {g}
-                  </SelectItem>
-                ))}
-              </SelectGroup>
-            </SelectContent>
-          </Select>
+          <div className={`${isOpenFilter ? 'block' : 'hidden'}`}>
+            <Select
+              value={gradeLevel || '_all'}
+              onValueChange={onFilter((v) =>
+                setGradeLevel(v === '_all' ? '' : v)
+              )}
+            >
+              <SelectTrigger className="w-full bg-white border-slate-300">
+                <SelectValue placeholder="Khối lớp" />
+              </SelectTrigger>
+              <SelectContent position="popper">
+                <SelectGroup>
+                  <SelectItem value="_all">Tất cả lớp</SelectItem>
+                  {GRADE_OPTIONS.map((g) => (
+                    <SelectItem key={g} value={String(g)}>
+                      Lớp {g}
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          </div>
 
           {/* Sort */}
-          <Select value={sortBy} onValueChange={onFilter(setSortBy)}>
-            <SelectTrigger className="w-full bg-white border-slate-300">
-              <SelectValue placeholder="Sắp xếp" />
-            </SelectTrigger>
-            <SelectContent position="popper">
-              <SelectGroup>
-                <SelectItem value="createdAt">Mới nhất</SelectItem>
-                <SelectItem value="viewCount">Xem nhiều nhất</SelectItem>
-                <SelectItem value="likeCount">Yêu thích nhất</SelectItem>
-              </SelectGroup>
-            </SelectContent>
-          </Select>
+          <div className={`${isOpenFilter ? 'block' : 'hidden'}`}>
+            <Select value={sortBy} onValueChange={onFilter(setSortBy)}>
+              <SelectTrigger className="w-full bg-white border-slate-300">
+                <SelectValue placeholder="Sắp xếp" />
+              </SelectTrigger>
+              <SelectContent position="popper">
+                <SelectGroup>
+                  <SelectItem value="createdAt">Mới nhất</SelectItem>
+                  <SelectItem value="viewCount">Xem nhiều nhất</SelectItem>
+                  <SelectItem value="likeCount">Yêu thích nhất</SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="w-full flex justify-center mt-[20px]">
+            <button
+              onClick={() => setIsOpenFilter((prev) => !prev)}
+              className=""
+            >
+              {isOpenFilter ? <ChevronUp /> : <ChevronDown />}
+            </button>
+          </div>
         </div>
 
         {/* Active filters summary */}
-        {(debouncedSearch || subjectId || gradeLevel || sortBy !== 'createdAt') && (
+        {(debouncedSearch ||
+          subjectId ||
+          gradeLevel ||
+          sortBy !== 'createdAt') && (
           <div className="mt-3 flex flex-wrap items-center gap-2">
-            <span className="text-xs text-slate-500 font-medium">Đang lọc:</span>
+            <span className="text-xs text-slate-500 font-medium">
+              Đang lọc:
+            </span>
             {debouncedSearch && (
               <span className="rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-semibold text-blue-700">
                 "{debouncedSearch}"
               </span>
             )}
-            {subjectId && subjectOptions.find((s) => s.id === subjectId) && (
-              <span className="rounded-full bg-purple-100 px-2.5 py-0.5 text-xs font-semibold text-purple-700">
-                {subjectOptions.find((s) => s.id === subjectId)?.name}
-              </span>
-            )}
+            {subjectId &&
+              subjectsData?.data.find((s) => s.subjectId === subjectId) && (
+                <span className="rounded-full bg-purple-100 px-2.5 py-0.5 text-xs font-semibold text-purple-700">
+                  {
+                    subjectsData.data.find((s) => s.subjectId === subjectId)
+                      ?.subjectName
+                  }
+                </span>
+              )}
             {gradeLevel && (
               <span className="rounded-full bg-emerald-100 px-2.5 py-0.5 text-xs font-semibold text-emerald-700">
                 Lớp {gradeLevel}
@@ -421,7 +465,9 @@ const FlashcardListPage = () => {
       ) : sets.length === 0 ? (
         <section className="rounded-3xl bg-white px-6 py-14 text-center ring-1 ring-slate-200">
           <BookOpen className="mx-auto mb-4 text-slate-300" size={52} />
-          <h2 className="text-xl font-bold text-slate-800">Không tìm thấy bộ thẻ nào</h2>
+          <h2 className="text-xl font-bold text-slate-800">
+            Không tìm thấy bộ thẻ nào
+          </h2>
           <p className="mt-2 text-sm text-slate-500">
             Thử đổi từ khóa hoặc đặt lại bộ lọc.
           </p>

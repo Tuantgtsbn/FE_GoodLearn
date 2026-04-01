@@ -22,14 +22,13 @@ import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { type IRootState } from '@redux/store';
-import { tryCatch } from '@utils/handleError';
-import ApiAuth from '@api/ApiAuth';
-import { toast } from 'react-toastify';
-import { logout } from '@utils/auth';
 import clsx from 'clsx';
 import Footer from '../LandingPage/components/Footer';
 import ICLogo from '@/components/Icon/ICLogo';
 import UserAvatar from './components/UserAvatar';
+import { useDialog } from '@/context/DialogContext';
+import ModalConfirmLogout from '@/components/ModalConfirmLogout';
+import NotificationPopover from './components/Notification';
 
 interface IPatientLayoutProps {
   children: React.ReactNode;
@@ -40,6 +39,7 @@ const UserLayout = ({ children }: IPatientLayoutProps) => {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const isMobile = useMediaQuery('(max-width:768px)');
   const navigate = useNavigate();
+  const { createDialog } = useDialog();
   const pathName = useLocation().pathname;
   const sideBarItems = [
     {
@@ -100,14 +100,8 @@ const UserLayout = ({ children }: IPatientLayoutProps) => {
   ];
 
   const handleLogout = async () => {
-    const [res, err] = await tryCatch(ApiAuth.logOut());
-    if (err) {
-      toast.error(err.errorMessage || 'Đăng xuất thất bại');
-      return;
-    }
-    if (res) {
-      logout();
-    }
+    setDrawerOpen(false);
+    createDialog(ModalConfirmLogout as React.FC, {}, 'exclusive');
   };
 
   return (
@@ -186,7 +180,12 @@ const UserLayout = ({ children }: IPatientLayoutProps) => {
                 <p className="text-xl font-bold whitespace-nowrap">GoodLearn</p>
               </div>
             }
-            footer={<UserAvatar />}
+            footer={
+              <>
+                <NotificationPopover />
+                <UserAvatar />
+              </>
+            }
           />
         )}
 

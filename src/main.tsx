@@ -1,4 +1,4 @@
-import { StrictMode, Suspense } from 'react';
+import { Suspense } from 'react';
 import { createRoot } from 'react-dom/client';
 import { ToastContainer } from 'react-toastify';
 import { Provider } from 'react-redux';
@@ -17,23 +17,23 @@ import '@fontsource/google-sans/400-italic.css'; // Specify weight and style
 const theme = createTheme({
   palette: {
     primary: {
-      main: '#2563eb', // Modern Blue
-      light: '#60a5fa',
-      dark: '#1e40af',
-      // @ts-ignore - custom property for premium backgrounds
-      lighter: 'rgba(37, 99, 235, 0.08)',
+      main: '#111111',
+      light: '#2b2b2b',
+      dark: '#000000',
+      // @ts-expect-error - custom property for subtle selected backgrounds
+      lighter: 'rgba(17, 17, 17, 0.08)',
     },
     secondary: {
-      main: '#7c3aed', // Purple
-      light: '#a78bfa',
-      dark: '#5b21b6',
+      main: '#525252',
+      light: '#737373',
+      dark: '#262626',
     },
     text: {
-      primary: '#111827',
-      secondary: '#4b5563',
+      primary: '#111111',
+      secondary: '#525252',
     },
     background: {
-      default: '#f9fafb',
+      default: '#f5f5f5',
       paper: '#ffffff',
     },
   },
@@ -45,12 +45,12 @@ const theme = createTheme({
       styleOverrides: {
         root: {
           borderRadius: '8px',
-          border: '1px solid #d1d5db',
+          border: '1px solid #d4d4d4',
           '&:hover': {
-            borderColor: '#2563eb',
+            borderColor: '#111111',
           },
           '&.Mui-focused': {
-            borderColor: '#2563eb',
+            borderColor: '#111111',
           },
         },
         input: {
@@ -62,28 +62,26 @@ const theme = createTheme({
 });
 
 createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-    <ThemeProvider theme={theme}>
-      <ErrorBoundary>
-        <QueryClientProvider client={queryClient}>
-          <Provider store={store}>
-            <PersistGate loading={<LoadingScreen />} persistor={persistor}>
-              <Suspense fallback={<LoadingScreen />}>
-                <App />
-              </Suspense>
-            </PersistGate>
-          </Provider>
-        </QueryClientProvider>
-        <ToastContainer
-          position="top-right"
-          draggable
-          pauseOnFocusLoss
-          autoClose={3000}
-          hideProgressBar
-          newestOnTop
-          pauseOnHover
-        />
-      </ErrorBoundary>
-    </ThemeProvider>
-  </StrictMode>
+  <ThemeProvider theme={theme}>
+    <ErrorBoundary>
+      <QueryClientProvider client={queryClient}>
+        <Provider store={store}>
+          <PersistGate loading={<LoadingScreen />} persistor={persistor}>
+            <Suspense fallback={<LoadingScreen />}>
+              <App />
+            </Suspense>
+          </PersistGate>
+        </Provider>
+      </QueryClientProvider>
+      <ToastContainer
+        position="top-right"
+        draggable
+        pauseOnFocusLoss
+        autoClose={3000}
+        hideProgressBar
+        newestOnTop
+        pauseOnHover
+      />
+    </ErrorBoundary>
+  </ThemeProvider>
 );

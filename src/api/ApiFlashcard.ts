@@ -1,5 +1,9 @@
 import { fetcher, fetcherWithMetadata } from './Fetcher';
-import type { IFlashcardListApiQuery, IFlashcardSetListItem, IFlashcardSetDetailResponse } from '@/types/flashcard';
+import type {
+  IFlashcardListApiQuery,
+  IFlashcardSetListItem,
+  IFlashcardSetDetailResponse,
+} from '@/types/flashcard';
 
 const path = {
   list: '/flashcard-sets',

@@ -1,4 +1,3 @@
-import ApiAuth from '@/api/ApiAuth';
 import ModalConfirmLogout from '@/components/ModalConfirmLogout';
 import ModalReviewApp from '@/components/ModalReviewApp';
 import UserSetting from '@/components/Settings';
@@ -10,8 +9,6 @@ import {
 } from '@/components/ui/popover';
 import { useDialog } from '@/context/DialogContext';
 import type { IRootState } from '@/redux/store';
-import { logout } from '@/utils/auth';
-import { tryCatch } from '@/utils/handleError';
 import {
   CirclePoundSterling,
   LogOut,
@@ -22,7 +19,6 @@ import {
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { toast } from 'react-toastify';
 
 export default function UserAvatar() {
   const { user } = useSelector((state: IRootState) => state.auth);
@@ -48,13 +44,13 @@ export default function UserAvatar() {
   };
 
   const handleLogout = async () => {
-    createDialog(ModalConfirmLogout, {}, 'exclusive');
+    createDialog(ModalConfirmLogout as React.FC, {}, 'exclusive');
   };
 
   return (
     <div className="flex items-center gap-3 px-4 py-2 cursor-pointer">
       <div>
-        <p className="text-[14px] font-bold text-primary leading-none">
+        <p className="text-[14px] font-bold text-black leading-none">
           {user?.username}
         </p>
         <p className="text-[12px] text-zinc-400 mt-1">{user?.email}</p>

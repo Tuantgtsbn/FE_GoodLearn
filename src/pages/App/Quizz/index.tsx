@@ -28,6 +28,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import ApiSubject from '@/api/ApiSubject';
 
 const ITEMS_PER_PAGE = 9;
 
@@ -162,18 +163,15 @@ const QuizzListPage = () => {
   const exams = useMemo(() => data?.data ?? [], [data?.data]);
   const metadata = data?.metadata;
 
-  const subjectOptions = useMemo(() => {
-    const seen = new Map<string, { id: string; name: string }>();
-    exams.forEach((exam) => {
-      if (exam.subject?.subjectId) {
-        seen.set(exam.subject.subjectId, {
-          id: exam.subject.subjectId,
-          name: exam.subject.subjectName,
-        });
-      }
-    });
-    return Array.from(seen.values());
-  }, [exams]);
+  const { data: subjectsData } = useQuery({
+    queryKey: [QUERY_KEY.SUBJECT.LIST_SUBJECTS],
+    queryFn: () => ApiSubject.getSubjects({}),
+  });
+
+  const onFilter = (setter: (v: any) => void) => (v: any) => {
+    setter(v);
+    setPage(1);
+  };
 
   const filteredExams = useMemo(() => {
     return exams.filter((exam) => {
@@ -311,17 +309,20 @@ const QuizzListPage = () => {
 
           <div className={` ${isOpenFilter ? 'block' : 'hidden'}`}>
             <Select
-              value={subjectId}
-              onValueChange={onSelectFilter(setSubjectId)}
+              value={subjectId || '_all'}
+              onValueChange={onFilter((v) =>
+                setSubjectId(v === '_all' ? '' : v)
+              )}
             >
               <SelectTrigger className="w-full bg-white border-slate-300">
                 <SelectValue placeholder="Môn học" />
               </SelectTrigger>
-              <SelectContent position="popper" className="w-full">
+              <SelectContent position="popper">
                 <SelectGroup>
-                  {subjectOptions.map((subject) => (
-                    <SelectItem key={subject.id} value={subject.id}>
-                      {subject.name}
+                  <SelectItem value="_all">Tất cả môn</SelectItem>
+                  {subjectsData?.data.map((s) => (
+                    <SelectItem key={s.subjectId} value={s.subjectId}>
+                      {s.subjectName}
                     </SelectItem>
                   ))}
                 </SelectGroup>

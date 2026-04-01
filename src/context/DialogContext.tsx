@@ -5,6 +5,7 @@ import {
   useEffect,
   useState,
   type ComponentType,
+  type ComponentProps,
 } from 'react';
 
 type DialogWithClose<TResult = unknown> = {
@@ -12,17 +13,30 @@ type DialogWithClose<TResult = unknown> = {
   onClose?: (result?: TResult) => void;
 };
 
-type DialogComponent<
-  TResult = unknown,
-  TProps extends Record<string, unknown> = Record<string, never>,
-> = ComponentType<TProps & DialogWithClose<TResult>>;
+type AnyDialogComponent = ComponentType<any>;
+
+type DialogExternalProps<TComponent extends AnyDialogComponent> = Omit<
+  ComponentProps<TComponent>,
+  keyof DialogWithClose
+>;
+
+type CreateDialogArgs<TComponent extends AnyDialogComponent> =
+  keyof DialogExternalProps<TComponent> extends never
+    ? [
+        Component: TComponent,
+        props?: DialogExternalProps<TComponent>,
+        mode?: ModeOpenDialog,
+      ]
+    : [
+        Component: TComponent,
+        props: DialogExternalProps<TComponent>,
+        mode?: ModeOpenDialog,
+      ];
 
 type DialogContextType = {
   stack: IStack[];
-  createDialog: (
-    Component: DialogComponent,
-    props?: Record<string, unknown>,
-    mode?: ModeOpenDialog
+  createDialog: <TComponent extends AnyDialogComponent>(
+    ...args: CreateDialogArgs<TComponent>
   ) => Promise<unknown>;
   closeDialog: (id: string, result: unknown) => void;
   closeAll: () => void;
@@ -34,7 +48,7 @@ type ModeOpenDialog = 'stack' | 'replace' | 'exclusive';
 
 interface IStack {
   id: string;
-  Component: DialogComponent;
+  Component: AnyDialogComponent;
   props: Record<string, unknown>;
   resolve: (value: unknown) => void;
 }
@@ -42,30 +56,44 @@ interface IStack {
 export function DialogProvider({ children }) {
   const [stack, setStack] = useState<IStack[]>([]);
 
-  const createDialog = useCallback((Component, props = {}, mode = 'stack') => {
-    return new Promise((resolve) => {
-      const id = crypto.randomUUID();
-      setStack((prev) => {
-        if (mode === 'exclusive') {
-          prev.forEach((dialog) => dialog.resolve(undefined));
-          return [
-            {
-              id,
-              Component,
-              props,
-              resolve,
-            },
-          ];
-        }
-        if (mode === 'replace' && prev.length > 0) {
-          const top = prev[prev.length - 1];
-          top.resolve(undefined);
-          return [...prev.slice(0, -1), { id, Component, props, resolve }];
-        }
-        return [...prev, { id, Component, props, resolve }];
+  const createDialog: DialogContextType['createDialog'] = useCallback(
+    <TComponent extends AnyDialogComponent>(
+      ...args: CreateDialogArgs<TComponent>
+    ) => {
+      const [Component, props, mode = 'stack'] = args;
+
+      return new Promise((resolve) => {
+        const id = crypto.randomUUID();
+        const safeProps = (props ?? {}) as Record<string, unknown>;
+
+        setStack((prev) => {
+          if (mode === 'exclusive') {
+            prev.forEach((dialog) => dialog.resolve(undefined));
+            return [
+              {
+                id,
+                Component,
+                props: safeProps,
+                resolve,
+              },
+            ];
+          }
+
+          if (mode === 'replace' && prev.length > 0) {
+            const top = prev[prev.length - 1];
+            top.resolve(undefined);
+            return [
+              ...prev.slice(0, -1),
+              { id, Component, props: safeProps, resolve },
+            ];
+          }
+
+          return [...prev, { id, Component, props: safeProps, resolve }];
+        });
       });
-    });
-  }, []);
+    },
+    []
+  );
 
   const closeDialog = useCallback((id, result) => {
     setStack((prev) => {
