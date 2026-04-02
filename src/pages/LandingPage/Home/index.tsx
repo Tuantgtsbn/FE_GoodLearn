@@ -1,9 +1,24 @@
 import { useNavigate } from 'react-router-dom';
 import './style.scss';
 import ModalReviewApp from '@/components/ModalReviewApp';
+import { useState } from 'react';
+import { useSelector } from 'react-redux';
+import type { IRootState } from '@/redux/store';
+import { toast } from 'react-toastify';
 
 function HomeLandingPage() {
   const navigate = useNavigate();
+  const { isAuthenticated } = useSelector((state: IRootState) => state.auth);
+  const [inputEmail, setInputEmail] = useState('');
+
+  const handleClickRegister = (e: React.MouseEvent<HTMLButtonElement>) => {
+    if (isAuthenticated) {
+      toast.info('Bạn đã đăng xuất để đăng ký tài khoản mới nhé!');
+    } else {
+      e.preventDefault();
+      navigate(`/auth/register?email=${encodeURIComponent(inputEmail)}`);
+    }
+  };
 
   return (
     <div className="font-body text-slate-900 overflow-x-hidden mx_LandingPageHome">
@@ -15,7 +30,7 @@ function HomeLandingPage() {
           <div className="relative inline-block">
             <h1 className="text-5xl md:text-7xl font-heading leading-tight">
               Học Giỏi Hơn <br /> Cùng AI -{' '}
-              <span className="bg-brandCyan px-2 border-2 border-black">
+              <span className="bg-brandCyan px-2 border-2 border-black text-[50px]">
                 Không Lo
               </span>{' '}
               Buồn Ngủ!
@@ -253,13 +268,19 @@ function HomeLandingPage() {
               className="flex-1 px-6 py-4 border-2 border-black rounded-2xl font-bold shadow-brutal-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
               placeholder="Email của bạn là..."
               type="email"
+              value={inputEmail}
+              onChange={(e) => setInputEmail(e.target.value)}
             />
-            <button className="bg-black text-white px-8 py-4 border-2 border-black rounded-2xl font-extrabold shadow-brutal-sm hover:translate-y-[-2px] hover:shadow-brutal transition-all">
-              Bắt Đầu Ngay
+            <button
+              type="button"
+              onClick={handleClickRegister}
+              className="bg-black text-white px-8 py-4 border-2 border-black rounded-2xl font-extrabold shadow-brutal-sm hover:translate-y-[-2px] hover:shadow-brutal transition-all"
+            >
+              Đăng ký ngay
             </button>
           </form>
           <p className="mt-6 font-hand italic font-bold">
-            * Đăng ký ngay, nhận ưu đãi 25 credit miễn phí! 🚀
+            * Đăng ký ngay, nhận nhiều ưu đãi miễn phí! 🚀
           </p>
         </div>
       </section>

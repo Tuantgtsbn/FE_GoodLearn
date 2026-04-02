@@ -159,7 +159,7 @@ export default function AccountSetting() {
     return () => {
       window.clearTimeout(timerId);
     };
-  }, [dispatch, isChangePasswordSuccess, navigate]);
+  }, [dispatch, isChangePasswordSuccess, navigate, closeAll]);
 
   const { mutate: updateProfile, isPending: isPendingUpdateProfile } =
     useMutation({
@@ -253,7 +253,7 @@ export default function AccountSetting() {
                 <button
                   type="button"
                   onClick={openFileDialog}
-                  className="px-3 py-1.5 text-xs font-bold border border-border-muted rounded bg-white hover:bg-zinc-50 transition-colors"
+                  className="px-3 py-1.5 text-xs font-bold border border-border-muted rounded bg-foreground text-background hover:bg-zinc-50 transition-colors"
                 >
                   Tải lên
                 </button>
@@ -364,7 +364,7 @@ export default function AccountSetting() {
               Lớp
             </label>
             <input
-              className="w-full px-4 py-2.5 border-2 border-border-muted dark:border-zinc-800 rounded-lg focus:border-primary dark:focus:border-white focus:ring-0 transition-all font-medium bg-zinc-50 cursor-not-allowed"
+              className="w-full px-4 py-2.5 border-2 border-border-muted dark:border-zinc-800 rounded-lg focus:border-primary dark:focus:border-white focus:ring-0 transition-all font-medium"
               type="number"
               readOnly
               {...registerProfile('gradeLevel')}
@@ -406,7 +406,7 @@ export default function AccountSetting() {
               isPendingUpdateProfile ||
               (!isProfileDirty && !avatarFileRef?.current)
             }
-            className="w-fit px-6 py-2.5 bg-primary disabled:bg-gray-300 dark:bg-white text-white dark:text-primary font-bold rounded-lg custom-shadow hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-none transition-all"
+            className="w-fit px-6 py-2.5 bg-primary disabled:bg-gray-300 dark:bg-white text-white dark:text-background font-bold rounded-lg custom-shadow hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-none transition-all"
           >
             Lưu thay đổi
           </button>
@@ -461,7 +461,7 @@ export default function AccountSetting() {
           <button
             type="submit"
             disabled={isPendingChangePassword}
-            className="w-fit px-6 py-2.5 bg-primary dark:bg-white text-white dark:text-primary font-bold rounded-lg custom-shadow hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-none transition-all"
+            className="w-fit px-6 py-2.5 bg-primary dark:bg-white text-white dark:text-background font-bold rounded-lg custom-shadow hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-none transition-all"
           >
             Cập nhật mật khẩu
           </button>

@@ -1,0 +1,27 @@
+.notification-item-root {
+  transition: background-color 0.2s ease;
+}
+
+.notification-item-root:hover {
+  background-color: rgba(0, 0, 0, 0.04);
+}
+
+.notification-item-root:not(.read):hover {
+  background-color: rgba(59, 130, 246, 0.1);
+}
+
+.notification-item-root:hover .notification-unread-indicator {
+  opacity: 0;
+}
+
+.notification-item-root:hover .notification-delete-button {
+  opacity: 1;
+}
+
+.notification-unread-indicator {
+  transition: opacity 0.2s;
+}
+
+.notification-delete-button {
+  opacity: 0;
+}

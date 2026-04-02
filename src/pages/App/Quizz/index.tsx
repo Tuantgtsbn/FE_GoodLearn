@@ -239,6 +239,7 @@ const QuizzListPage = () => {
     navigate(`/app/quizz/${exam.id}/leaderboard`, {
       state: {
         examTitle: exam.title,
+        from: 'quizz_list',
       },
     });
   };

@@ -143,13 +143,17 @@ const LeaderboardPage = () => {
     <div className="mx-auto w-full max-w-7xl px-4 py-6 md:px-6">
       <header className="mb-5 rounded-3xl bg-linear-to-r from-cyan-600 via-blue-600 to-indigo-700 px-5 py-5 text-white shadow-xl md:px-6">
         <button
-          onClick={() =>
-            navigate(`/app/quizz/${quizId}/do`, { state: { examTitle } })
-          }
+          onClick={() => {
+            if (state.from === 'quizz_list') {
+              navigate('/app/quizz');
+            } else {
+              navigate(`/app/quizz/${quizId}/do`, { state: { examTitle } });
+            }
+          }}
           className="mb-3 inline-flex items-center gap-1.5 text-sm font-semibold text-white/90 hover:text-white"
         >
           <ArrowLeft size={16} />
-          Quay lại làm bài
+          Quay lại
         </button>
 
         <div className="flex flex-wrap items-end justify-between gap-3">

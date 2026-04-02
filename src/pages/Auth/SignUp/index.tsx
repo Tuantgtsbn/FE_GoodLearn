@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { FormProvider, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from 'react';
@@ -19,6 +19,9 @@ import ICLogo from '@/components/Icon/ICLogo';
 
 export default function SignUp() {
   const navigate = useNavigate();
+  const { search } = useLocation();
+  const queryParams = new URLSearchParams(search);
+  const emailFromUrl = queryParams.get('email') || '';
   const [step, setStep] = useState(1);
   const totalSteps = 4;
   const formSteps = 3;
@@ -28,7 +31,7 @@ export default function SignUp() {
     resolver: zodResolver(RegisterUserDto),
     defaultValues: {
       fullName: '',
-      email: '',
+      email: emailFromUrl,
       username: '',
       password: '',
       confirmPassword: '',

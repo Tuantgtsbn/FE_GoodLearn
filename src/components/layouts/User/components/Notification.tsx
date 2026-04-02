@@ -1,7 +1,9 @@
 import { useState, useRef, useEffect } from 'react';
 import { Divider, CircularProgress } from '@mui/material';
 import { Bell, CheckCheck } from 'lucide-react';
+import type { IDataWithMeta } from '@/api/Fetcher';
 import {
+  type InfiniteData,
   useQuery,
   useMutation,
   useQueryClient,
@@ -58,12 +60,30 @@ export default function NotificationPopover() {
   const markAllAsReadMutation = useMutation({
     mutationFn: () => ApiNotification.markAllAsRead(),
     onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: [QUERY_KEY.NOTIFICATION.GET_NOTIFICATIONS],
-      });
-      queryClient.invalidateQueries({
-        queryKey: [QUERY_KEY.NOTIFICATION.GET_UNREAD_COUNT],
-      });
+      queryClient.setQueryData<InfiniteData<IDataWithMeta<INotification[]>>>(
+        [QUERY_KEY.NOTIFICATION.GET_NOTIFICATIONS],
+        (oldData) => {
+          if (!oldData) {
+            return oldData;
+          }
+
+          return {
+            ...oldData,
+            pages: oldData.pages.map((page) => ({
+              ...page,
+              data: page.data.map((notification) => ({
+                ...notification,
+                isRead: true,
+              })),
+            })),
+          };
+        }
+      );
+
+      queryClient.setQueryData<{ unreadCount: number }>(
+        [QUERY_KEY.NOTIFICATION.GET_UNREAD_COUNT],
+        { unreadCount: 0 }
+      );
     },
   });
   const notifications: INotification[] =
@@ -103,7 +123,7 @@ export default function NotificationPopover() {
     <>
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
-          <Button>
+          <Button className="cursor-pointer">
             <Bell size={22} />
           </Button>
         </PopoverTrigger>

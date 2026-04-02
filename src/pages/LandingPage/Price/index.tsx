@@ -1,6 +1,73 @@
+import ApiPackage from '@/api/ApiPackage';
+import ApiPayment from '@/api/ApiPayment';
+import QUERY_KEY from '@/api/QueryKey';
+import { useAuthAction } from '@/hooks/useAuthAction';
+import type { IPackage } from '@/types';
+import { useQuery } from '@tanstack/react-query';
+import { useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
+import PackageItem from './PackageItem';
+import PaymentQrModal from './PaymentQrModal';
 import './style.scss';
 
+type PaymentModalData = Awaited<ReturnType<typeof ApiPayment.createPayment>> & {
+  packageInfo?: Pick<
+    IPackage,
+    'name' | 'type' | 'maxCredits' | 'maxCreateVideos' | 'maxVoiceCalls'
+  >;
+};
+
 function PriceLandingPage() {
+  const [buyingPackageId, setBuyingPackageId] = useState<string | null>(null);
+  const [paymentModalData, setPaymentModalData] =
+    useState<PaymentModalData | null>(null);
+  const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
+
+  const {
+    data: packages = [],
+    isPending,
+    isError,
+  } = useQuery({
+    queryKey: [QUERY_KEY.PACKAGE.LIST_PACKAGES],
+    queryFn: () => ApiPackage.getPackageList(),
+    staleTime: 1000 * 60 * 5,
+    refetchOnMount: false,
+  });
+
+  useEffect(() => {
+    if (isError) {
+      toast.error('Không thể tải danh sách gói. Vui lòng thử lại sau.');
+    }
+  }, [isError]);
+
+  const handleClickBuyPackage = useAuthAction(async (packageId: string) => {
+    try {
+      setBuyingPackageId(packageId);
+      const selectedPackage = packages.find(
+        (pkg) => pkg.packageId === packageId
+      );
+      const payment = await ApiPayment.createPayment({ packageId });
+      setPaymentModalData({
+        ...payment,
+        packageInfo: selectedPackage
+          ? {
+              name: selectedPackage.name,
+              type: selectedPackage.type,
+              maxCredits: selectedPackage.maxCredits,
+              maxCreateVideos: selectedPackage.maxCreateVideos,
+              maxVoiceCalls: selectedPackage.maxVoiceCalls,
+            }
+          : undefined,
+      });
+      setIsPaymentModalOpen(true);
+      toast.success('Đã tạo thanh toán. Vui lòng quét mã QR để hoàn tất.');
+    } catch {
+      toast.error('Không thể tạo thanh toán. Vui lòng thử lại.');
+    } finally {
+      setBuyingPackageId(null);
+    }
+  });
+
   return (
     <div className="min-neo-screen text-black font-heading mx_LandingPagePrice">
       <header className="py-16 px-4 text-center relative overflow-hidden">
@@ -29,96 +96,26 @@ function PriceLandingPage() {
         </div>
       </header>
       <section className="max-w-7xl mx-auto px-4 py-16">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-10 items-stretch">
-          <article
-            className="bg-white neo-border rounded-2xl p-8 flex flex-col shadow-brutal"
-            data-purpose="pricing-card"
-          >
-            <h3 className="text-2xl font-black mb-2">Gói Cơ Bản</h3>
-            <p className="font-bold text-gray-500 mb-6">Dành cho người mới</p>
-            <div className="text-4xl font-black mb-8">Miễn phí</div>
-            <button className="w-full py-4 bg-white neo-border rounded-xl font-black text-lg shadow-brutal-sm hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all">
-              Dùng thử ngay
-            </button>
-            <ul className="space-y-4 mt-10 flex-grow">
-              <li className="flex items-center gap-3 font-bold">
-                <span className="text-xl">✅</span> 50 credit
-              </li>
-              <li className="flex items-center gap-3 font-bold">
-                <span className="text-xl">✅</span> 5 lượt chat
-              </li>
-              <li className="flex items-center gap-3 font-bold">
-                <span className="text-xl">✅</span> 1 bộ flashcard
-              </li>
-              <li className="flex items-center gap-3 font-bold">
-                <span className="text-xl">✅</span> 1 lượt tạo video
-              </li>
-              <li className="flex items-center gap-3 font-bold">
-                <span className="text-xl">✅</span> 1 lượt voice call
-              </li>
-            </ul>
-          </article>
-          <article
-            className="bg-neo-yellow neo-border rounded-2xl p-8 flex flex-col shadow-brutal relative transform md:scale-105"
-            data-purpose="pricing-card-featured"
-          >
-            <div className="absolute -top-6 left-1/2 -translate-x-1/2 bg-black text-white px-6 py-2 rounded-full font-black text-sm uppercase tracking-widest neo-border">
-              PHỔ BIẾN NHẤT
-            </div>
-            <h3 className="text-2xl font-black mb-2">Gói Học Bá</h3>
-            <p className="font-bold text-black/60 mb-6">Tăng tốc học tập</p>
-            <div className="text-4xl font-black mb-8">
-              300,000 <span className="text-xl">VND</span>
-            </div>
-            <button className="w-full py-4 bg-black text-white neo-border rounded-xl font-black text-lg shadow-brutal-sm hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all">
-              Nâng cấp ngay
-            </button>
-            <ul className="space-y-4 mt-10 flex-grow">
-              <li className="flex items-center gap-3 font-bold">
-                <span className="text-xl">🔥</span> 300 credit
-              </li>
-              <li className="flex items-center gap-3 font-bold">
-                <span className="text-xl">🔥</span> 10 lượt tạo flashcard
-              </li>
-              <li className="flex items-center gap-3 font-bold">
-                <span className="text-xl">🔥</span> 10 lượt tạo video
-              </li>
-              <li className="flex items-center gap-3 font-bold">
-                <span className="text-xl">🔥</span> 10 lượt voice call
-              </li>
-            </ul>
-          </article>
-          <article
-            className="bg-neo-cyan neo-border rounded-2xl p-8 flex flex-col shadow-brutal"
-            data-purpose="pricing-card"
-          >
-            <h3 className="text-2xl font-black mb-2">Gói Siêu Cấp</h3>
-            <p className="font-bold text-black/60 mb-6">Đỉnh cao trí tuệ</p>
-            <div className="text-4xl font-black mb-8">
-              600,000 <span className="text-xl">VND</span>
-            </div>
-            <button className="w-full py-4 bg-white neo-border rounded-xl font-black text-lg shadow-brutal-sm hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all">
-              Chọn gói này
-            </button>
-            <ul className="space-y-4 mt-10 flex-grow">
-              <li className="flex items-center gap-3 font-bold">
-                <span className="text-xl">🔥</span> 700 credit
-              </li>
-              <li className="flex items-center gap-3 font-bold">
-                <span className="text-xl">🔥</span> 30 lượt tạo flashcard
-              </li>
-              <li className="flex items-center gap-3 font-bold">
-                <span className="text-xl">🔥</span> 30 lượt tạo video
-              </li>
-              <li className="flex items-center gap-3 font-bold">
-                <span className="text-xl">🔥</span> 30 lượt voice call
-              </li>
-            </ul>
-          </article>
-        </div>
+        {isPending ? (
+          <div className="neo-border rounded-2xl bg-white p-8 text-center font-black text-xl shadow-brutal-sm">
+            Đang tải danh sách gói...
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-10 items-stretch">
+            {packages.map((pkg, index) => (
+              <PackageItem
+                key={pkg.packageId}
+                pkg={pkg}
+                index={index}
+                isBuying={buyingPackageId === pkg.packageId}
+                onBuy={handleClickBuyPackage}
+              />
+            ))}
+          </div>
+        )}
       </section>
       <section className="max-w-4xl mx-auto px-4 py-20">
-        <h2 className="text-4xl font-black mb-12 text-center underline decoration-neo-purple decoration-8 underline-offset-[13px]">
+        <h2 className="text-4xl font-black mb-12 text-center underline decoration-neo-purple decoration-8 underline-offset-13">
           Câu hỏi thường gặp
         </h2>
         <div className="space-y-6">
@@ -180,6 +177,12 @@ function PriceLandingPage() {
           </details>
         </div>
       </section>
+
+      <PaymentQrModal
+        open={isPaymentModalOpen}
+        onOpenChange={setIsPaymentModalOpen}
+        payment={paymentModalData}
+      />
     </div>
   );
 }

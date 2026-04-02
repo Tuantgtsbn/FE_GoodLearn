@@ -1,6 +1,8 @@
+import { useNavigate } from 'react-router-dom';
 import './style.scss';
 
 export default function Privacy() {
+  const navigate = useNavigate();
   return (
     <div className="mx_Privacy">
       <header className="max-w-4xl mx-auto mt-12 mb-16 px-4 text-center">
@@ -155,12 +157,12 @@ export default function Privacy() {
             Đừng ngần ngại gửi thư cho chúng mình nếu bạn cần giải đáp thêm về
             bảo mật.
           </p>
-          <a
+          <button
+            onClick={() => navigate('/contact')}
             className="inline-block bg-white brutal-border px-8 py-4 rounded-2xl font-black text-2xl brutal-shadow brutal-shadow-hover transition-all"
-            href="mailto:privacy@hoctapai.vn"
           >
             Gửi Email Ngay!
-          </a>
+          </button>
         </section>
       </main>
     </div>

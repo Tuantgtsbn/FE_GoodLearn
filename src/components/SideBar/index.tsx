@@ -109,7 +109,7 @@ const MenuItemWithChildren: React.FC<{
             primary={item.label}
             primaryTypographyProps={{
               fontSize: '0.875rem',
-              fontWeight: isSelected ? 600 : 500,
+              fontWeight: isSelected ? 700 : 600,
               noWrap: true,
             }}
           />
@@ -222,7 +222,7 @@ const MenuItemWithChildren: React.FC<{
           <ListItemText
             primary={item.label}
             primaryTypographyProps={{
-              fontWeight: isSelected ? 600 : 500,
+              fontWeight: isSelected ? 700 : 600,
               fontSize: '0.925rem',
             }}
           />
@@ -346,7 +346,7 @@ const MenuItem: React.FC<{
           primaryTypographyProps={{
             noWrap: true,
             fontSize: '0.875rem',
-            fontWeight: isSelected ? 600 : 500,
+            fontWeight: isSelected ? 700 : 600,
           }}
         />
       </ListItemButton>

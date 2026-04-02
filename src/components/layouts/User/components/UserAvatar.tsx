@@ -50,7 +50,7 @@ export default function UserAvatar() {
   return (
     <div className="flex items-center gap-3 px-4 py-2 cursor-pointer">
       <div>
-        <p className="text-[14px] font-bold text-black leading-none">
+        <p className="text-[14px] font-bold text-background leading-none">
           {user?.username}
         </p>
         <p className="text-[12px] text-zinc-400 mt-1">{user?.email}</p>
@@ -67,19 +67,19 @@ export default function UserAvatar() {
         <PopoverContent align="end" className="w-70 p-0 overflow-hidden">
           <nav className="flex flex-col">
             <div className="flex flex-col px-[25px] pt-[25px] py-4">
-              <h2 className="text-xl font-extrabold text-black uppercase tracking-tight leading-none">
+              <h2 className="text-xl font-extrabold text-foreground uppercase tracking-tight leading-none">
                 {user?.username}
               </h2>
               <div className="mt-1 flex items-center gap-1">
                 <CirclePoundSterling size={16} className="text-yellow-500" />
-                <p className="text-sm font-medium text-slate-900">
+                <p className="text-sm font-medium text-foreground/90">
                   1,250 Credits
                 </p>
               </div>
             </div>
             <div
               onClick={() => handleClickMenu(handleClickBuyPackage)}
-              className="group cursor-pointer flex items-center justify-between px-[25px] py-4 hover:bg-[#efebeb] transition-all duration-200"
+              className="group cursor-pointer flex items-center justify-between px-[25px] py-4 hover:bg-[#efebeb] dark:hover:bg-gray-700 transition-all duration-200"
             >
               <div className="flex items-center gap-4">
                 <Package />
@@ -90,7 +90,7 @@ export default function UserAvatar() {
             </div>
             <div
               onClick={() => handleClickMenu(handleClickSetting)}
-              className="group cursor-pointer flex items-center justify-between px-[25px] py-4 hover:bg-[#efebeb] transition-all duration-200"
+              className="group cursor-pointer flex items-center justify-between px-[25px] py-4 hover:bg-[#efebeb] dark:hover:bg-gray-700 transition-all duration-200"
             >
               <div className="flex items-center gap-4">
                 <Settings />
@@ -101,7 +101,7 @@ export default function UserAvatar() {
             </div>
             <div
               onClick={() => handleClickMenu(handleClickRating)}
-              className="group cursor-pointer flex items-center justify-between px-[25px] py-4 hover:bg-[#efebeb] transition-all duration-200"
+              className="group cursor-pointer flex items-center justify-between px-[25px] py-4 hover:bg-[#efebeb] dark:hover:bg-gray-700 transition-all duration-200"
             >
               <div className="flex items-center gap-4">
                 <Star />
@@ -112,7 +112,7 @@ export default function UserAvatar() {
             </div>
             <div
               onClick={() => handleClickMenu(handleLogout)}
-              className="group cursor-pointer flex items-center justify-between px-[25px] py-4 hover:bg-[#efebeb] transition-all duration-200"
+              className="group cursor-pointer flex items-center justify-between px-[25px] py-4 hover:bg-[#efebeb] dark:hover:bg-gray-700 transition-all duration-200"
             >
               <div className="flex items-center gap-4">
                 <LogOut />

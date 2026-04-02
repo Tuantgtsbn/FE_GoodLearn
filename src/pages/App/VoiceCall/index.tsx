@@ -39,7 +39,7 @@ export default function Voicecall() {
         </div>
       </main>
       <footer className="relative z-10 w-full pb-10 pt-4 px-6">
-        <div className="mx-auto flex max-w-[400px] items-center justify-between gap-6">
+        <div className="mx-auto flex max-w-[400px] items-center justify-center gap-6">
           <button
             aria-label="Toggle Microphone"
             className="group flex size-14 items-center justify-center rounded-full border-2 border-[#111318] dark:border-white bg-transparent hover:bg-black/5 dark:hover:bg-white/10 transition-all active:scale-95"

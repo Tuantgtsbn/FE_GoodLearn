@@ -1,16 +1,58 @@
-import { Box, Typography, IconButton } from '@mui/material';
 import { X, Bell, FileText, Clock, CircleAlert } from 'lucide-react';
+import { useState } from 'react';
+import './NotificationItem.css';
 import type { INotification } from '@/types';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import type { IDataWithMeta } from '@/api/Fetcher';
+import {
+  type InfiniteData,
+  useMutation,
+  useQueryClient,
+} from '@tanstack/react-query';
 import ApiNotification from '@api/ApiNotification';
 import QUERY_KEY from '@api/QueryKey';
 import { formatDateTimeFromIso } from '@/utils/datetime';
+import { Button } from '@/components/ui/button';
 
 interface NotificationItemProps {
   notification: INotification;
   onClick: () => void;
   onClose?: () => void;
 }
+
+const updateUnreadCountCache = (
+  queryClient: ReturnType<typeof useQueryClient>,
+  updater: (currentCount: number) => number
+) => {
+  queryClient.setQueryData<{ unreadCount: number }>(
+    [QUERY_KEY.NOTIFICATION.GET_UNREAD_COUNT],
+    (oldData) => {
+      const currentCount = oldData?.unreadCount ?? 0;
+      return { unreadCount: Math.max(0, updater(currentCount)) };
+    }
+  );
+};
+
+const updateNotificationListCache = (
+  queryClient: ReturnType<typeof useQueryClient>,
+  updater: (notifications: INotification[]) => INotification[]
+) => {
+  queryClient.setQueryData<InfiniteData<IDataWithMeta<INotification[]>>>(
+    [QUERY_KEY.NOTIFICATION.GET_NOTIFICATIONS],
+    (oldData) => {
+      if (!oldData) {
+        return oldData;
+      }
+
+      return {
+        ...oldData,
+        pages: oldData.pages.map((page) => ({
+          ...page,
+          data: updater(page.data),
+        })),
+      };
+    }
+  );
+};
 
 // Format relative time (2 phút trước, 1 giờ trước...)
 const formatRelativeTime = (dateString: string | Date): string => {
@@ -29,17 +71,20 @@ const formatRelativeTime = (dateString: string | Date): string => {
 };
 
 // Get icon based on notification title/content
-const getNotificationIcon = (notification: INotification) => {
+const getNotificationIcon = (
+  notification: INotification,
+  className: string
+) => {
   const notificationType = notification.notificationType.toLowerCase();
   switch (notificationType) {
     case 'quiz_result':
-      return <FileText size={20} />;
+      return <FileText className={className} size={20} />;
     case 'system_alert':
-      return <CircleAlert size={20} />;
+      return <CircleAlert className={className} size={20} />;
     case 'reminder':
-      return <Clock size={20} />;
+      return <Clock className={className} size={20} />;
     default:
-      return <Bell size={20} />;
+      return <Bell className={className} size={20} />;
   }
 };
 
@@ -53,28 +98,36 @@ export function NotificationDetail({
   onClose,
 }: NotificationDetailProps) {
   const queryClient = useQueryClient();
+  const [isReadLocal, setIsReadLocal] = useState(notification.isRead);
 
   const markAsReadMutation = useMutation({
     mutationFn: () => ApiNotification.markAsRead(notification.notificationId),
     onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: [QUERY_KEY.NOTIFICATION.GET_NOTIFICATIONS],
-      });
-      queryClient.invalidateQueries({
-        queryKey: [QUERY_KEY.NOTIFICATION.GET_UNREAD_COUNT],
-      });
+      updateNotificationListCache(queryClient, (notifications) =>
+        notifications.map((item) =>
+          item.notificationId === notification.notificationId
+            ? { ...item, isRead: true }
+            : item
+        )
+      );
+
+      if (!notification.isRead) {
+        updateUnreadCountCache(queryClient, (count) => count - 1);
+      }
+
+      setIsReadLocal(true);
     },
   });
 
   const handleMarkAsRead = () => {
-    if (!notification.isRead) {
+    if (!isReadLocal && !markAsReadMutation.isPending) {
       markAsReadMutation.mutate();
     }
   };
 
   return (
-    <Box
-      sx={{
+    <div
+      style={{
         position: 'fixed',
         top: 0,
         left: 0,
@@ -92,11 +145,11 @@ export function NotificationDetail({
         onClose();
       }}
     >
-      <Box
-        sx={{
+      <div
+        style={{
           backgroundColor: 'white',
-          borderRadius: 2,
-          p: 3,
+          borderRadius: 16,
+          padding: 24,
           maxWidth: 500,
           width: '90%',
           maxHeight: '80vh',
@@ -106,127 +159,129 @@ export function NotificationDetail({
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <Box
-          sx={{
+        <div
+          style={{
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'flex-start',
-            mb: 2,
+            marginBottom: 16,
           }}
         >
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-            <Box
-              sx={{
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            <div
+              style={{
                 width: 40,
                 height: 40,
                 borderRadius: '50%',
-                backgroundColor: '#f3f4f6',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
               }}
             >
-              {getNotificationIcon(notification)}
-            </Box>
-            <Box>
-              <Typography variant="h6">Thông báo</Typography>
-            </Box>
-          </Box>
-          <IconButton size="small" onClick={onClose} sx={{ mt: -1, mr: -1 }}>
+              {getNotificationIcon(notification, 'stroke-[#000]')}
+            </div>
+            <div>
+              <div
+                style={{
+                  color: 'rgba(0, 0, 0, 0.87)',
+                  fontSize: '1.25rem',
+                  fontWeight: 500,
+                }}
+              >
+                Thông báo
+              </div>
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={onClose}
+            style={{
+              marginTop: -4,
+              marginRight: -4,
+              border: 'none',
+              background: 'transparent',
+              cursor: 'pointer',
+              padding: 4,
+            }}
+          >
             <X size={20} />
-          </IconButton>
-        </Box>
+          </button>
+        </div>
 
         {/* Title */}
         {notification.title && (
-          <Typography
-            variant="h6"
-            sx={{
-              mb: 1.5,
+          <div
+            style={{
+              marginBottom: 12,
               fontWeight: 600,
-              color: 'text.primary',
+              color: 'rgba(0, 0, 0, 0.87)',
+              fontSize: '1.25rem',
             }}
           >
             {notification.title}
-          </Typography>
+          </div>
         )}
 
         {/* Message */}
-        <Typography
-          variant="body2"
-          sx={{
-            color: 'text.secondary',
+        <div
+          style={{
+            color: 'rgba(0, 0, 0, 0.87)',
             lineHeight: 1.6,
-            mb: 2,
+            marginBottom: 16,
             whiteSpace: 'pre-wrap',
             wordBreak: 'break-word',
           }}
         >
           {notification.message}
-        </Typography>
+        </div>
 
         {/* Timestamp */}
-        <Typography
-          variant="caption"
-          sx={{
-            color: 'text.disabled',
+        <div
+          style={{
+            color: 'rgba(0, 0, 0, 0.6)',
             display: 'block',
-            mb: 2,
+            marginBottom: 16,
+            fontSize: '0.75rem',
           }}
         >
           {formatDateTimeFromIso(notification.createdAt)}
-        </Typography>
+        </div>
 
         {/* Divider */}
-        <Box
-          sx={{
+        <div
+          style={{
             height: 1,
-            backgroundColor: 'divider',
-            my: 2,
+            backgroundColor: '#e0e0e0',
+            marginTop: 16,
+            marginBottom: 16,
           }}
         />
 
         {/* Actions */}
-        <Box
-          sx={{
+        <div
+          style={{
             display: 'flex',
-            gap: 1,
+            gap: 8,
           }}
         >
-          {!notification.isRead && (
-            <button
+          {!isReadLocal && (
+            <Button
+              className=" hover:text-black hover:bg-white! flex-1 p-[6px_14px] border border-gray-300 rounded-md transition-colors duration-200"
               onClick={handleMarkAsRead}
-              style={{
-                flex: 1,
-                padding: '8px 14px',
-                backgroundColor: '#3b82f6',
-                color: 'white',
-                border: 'none',
-                borderRadius: '6px',
-                cursor: 'pointer',
-                fontSize: '14px',
-                fontWeight: 500,
-                transition: 'background-color 0.2s',
-              }}
-              onMouseEnter={(e) =>
-                (e.currentTarget.style.backgroundColor = '#2563eb')
-              }
-              onMouseLeave={(e) =>
-                (e.currentTarget.style.backgroundColor = '#3b82f6')
-              }
+              disabled={markAsReadMutation.isPending}
             >
               Đánh dấu đã đọc
-            </button>
+            </Button>
           )}
-          <button
+          <Button
             onClick={onClose}
-            className="bg-white hover:text-white hover:bg-black! flex-1 p-[8px_14px] border border-gray-300 rounded-md transition-colors duration-200"
+            className="bg-white  text-black hover:text-white hover:bg-black! flex-1 p-[6px_14px] border border-gray-300 rounded-md transition-colors duration-200"
           >
             Đóng
-          </button>
-        </Box>
-      </Box>
-    </Box>
+          </Button>
+        </div>
+      </div>
+    </div>
   );
 }
 
@@ -240,12 +295,15 @@ export default function NotificationItem({
     mutationFn: () =>
       ApiNotification.deleteNotification(notification.notificationId),
     onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: [QUERY_KEY.NOTIFICATION.GET_NOTIFICATIONS],
-      });
-      queryClient.invalidateQueries({
-        queryKey: [QUERY_KEY.NOTIFICATION.GET_UNREAD_COUNT],
-      });
+      updateNotificationListCache(queryClient, (notifications) =>
+        notifications.filter(
+          (item) => item.notificationId !== notification.notificationId
+        )
+      );
+
+      if (!notification.isRead) {
+        updateUnreadCountCache(queryClient, (count) => count - 1);
+      }
     },
   });
 
@@ -260,66 +318,53 @@ export default function NotificationItem({
   };
 
   return (
-    <Box
+    <div
       onClick={handleItemClick}
-      sx={{
+      style={{
         display: 'flex',
         alignItems: 'flex-start',
-        gap: 1.5,
-        p: 2,
+        gap: 12,
+        padding: 16,
         cursor: 'pointer',
         backgroundColor: notification.isRead
           ? 'transparent'
           : 'rgba(59, 130, 246, 0.05)',
-        transition: 'background-color 0.2s ease',
-        '&:hover': {
-          backgroundColor: notification.isRead
-            ? 'rgba(0, 0, 0, 0.04)'
-            : 'rgba(59, 130, 246, 0.1)',
-        },
-        '&:hover .notification-unread-indicator': {
-          opacity: 0,
-        },
-        '&:hover .notification-delete-button': {
-          opacity: 1,
-        },
         position: 'relative',
       }}
+      className={`notification-item-root ${notification.isRead ? 'read' : 'unread'}`}
     >
       {/* Icon */}
-      <Box
-        sx={{
+      <div
+        style={{
           width: 40,
           height: 40,
           borderRadius: '50%',
-          backgroundColor: '#f3f4f6',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
           flexShrink: 0,
+          backgroundColor: '#efefef',
         }}
       >
-        {getNotificationIcon(notification)}
-      </Box>
+        {getNotificationIcon(notification, 'text-[#000]')}
+      </div>
       {/* Content */}
-      <Box sx={{ flex: 1, minWidth: 0 }}>
+      <div style={{ flex: 1, minWidth: 0 }}>
         {notification.title && (
-          <Typography
-            variant="body2"
-            fontWeight={notification.isRead ? 400 : 600}
-            sx={{
-              color: 'text.primary',
-              mb: 0.5,
+          <div
+            style={{
+              color: 'black',
+              marginBottom: 4,
               lineHeight: 1.4,
+              fontWeight: notification.isRead ? 400 : 600,
             }}
           >
             {notification.title}
-          </Typography>
+          </div>
         )}
-        <Typography
-          variant="body2"
-          sx={{
-            color: 'text.secondary',
+        <div
+          style={{
+            color: 'rgba(107, 114, 128, 1)',
             display: '-webkit-box',
             WebkitLineClamp: 2,
             WebkitBoxOrient: 'vertical',
@@ -328,49 +373,53 @@ export default function NotificationItem({
           }}
         >
           {notification.message}
-        </Typography>
-        <Typography
-          variant="caption"
-          sx={{
-            color: 'text.disabled',
+        </div>
+        <div
+          style={{
+            color: 'rgba(0, 0, 0, 0.38)',
             display: 'block',
-            mt: 0.5,
+            marginTop: 4,
+            fontSize: '0.75rem',
           }}
         >
           {formatRelativeTime(notification.createdAt)}
-        </Typography>
-      </Box>
+        </div>
+      </div>
       {/* Unread indicator */}
       {!notification.isRead && (
-        <Box
+        <div
           className="notification-unread-indicator"
-          sx={{
+          style={{
             width: 8,
             height: 8,
             borderRadius: '50%',
-            backgroundColor: 'primary.main',
+            backgroundColor: '#10b981',
             flexShrink: 0,
-            mt: 0.5,
+            marginTop: 4,
             opacity: 1,
             transition: 'opacity 0.2s',
           }}
         />
       )}
       {/* Delete button */}
-      <IconButton
+      <button
+        type="button"
         className="notification-delete-button"
-        size="small"
         onClick={handleDelete}
-        sx={{
+        style={{
           position: 'absolute',
           top: 8,
           right: 8,
           opacity: 0,
           transition: 'opacity 0.2s',
+          background: 'transparent',
+          border: 'none',
+          padding: 2,
+          cursor: 'pointer',
         }}
       >
         <X size={16} />
-      </IconButton>
-    </Box>
+      </button>
+    </div>
   );
 }

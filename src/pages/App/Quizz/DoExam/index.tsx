@@ -12,6 +12,8 @@ import {
   Circle,
   CircleDot,
   Clock3,
+  Flag,
+  Info,
   LoaderCircle,
   Send,
 } from 'lucide-react';
@@ -23,6 +25,15 @@ import { toast } from 'react-toastify';
 type PendingSaveEntry = {
   questionId: string;
   selectedOptions: string[];
+};
+
+type MarkedQuestionMap = Record<string, true>;
+
+type PersistedAttemptSnapshot = {
+  attemptId: string;
+  answers: IExamAnswersMap;
+  markedQuestionIds?: string[];
+  updatedAt: string;
 };
 
 type DoExamLocationState = {
@@ -58,6 +69,7 @@ const DoExamPage = () => {
 
   const [attempt, setAttempt] = useState<IStartExamResponse | null>(null);
   const [answers, setAnswers] = useState<IExamAnswersMap>({});
+  const [markedQuestions, setMarkedQuestions] = useState<MarkedQuestionMap>({});
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [timeLeftSeconds, setTimeLeftSeconds] = useState<number | null>(null);
   const [isLoadingExam, setIsLoadingExam] = useState(true);
@@ -80,24 +92,29 @@ const DoExamPage = () => {
       .length;
   }, [answers]);
 
-  const progressPercent = totalQuestions
-    ? Math.round((answeredCount / totalQuestions) * 100)
-    : 0;
+  const markedCount = useMemo(() => {
+    return Object.keys(markedQuestions).length;
+  }, [markedQuestions]);
 
   const examTitle =
     locationState?.examTitle ||
     (quizId ? `Đề thi #${quizId.slice(0, 8).toUpperCase()}` : 'Bài thi');
 
   const persistSnapshot = useCallback(
-    (attemptId: string, nextAnswers: IExamAnswersMap) => {
+    (
+      attemptId: string,
+      nextAnswers: IExamAnswersMap,
+      nextMarkedQuestions: MarkedQuestionMap
+    ) => {
       if (!quizId) {
         return;
       }
 
       const key = getPersistKey(quizId);
-      const snapshot = {
+      const snapshot: PersistedAttemptSnapshot = {
         attemptId,
         answers: nextAnswers,
+        markedQuestionIds: Object.keys(nextMarkedQuestions),
         updatedAt: new Date().toISOString(),
       };
 
@@ -184,14 +201,14 @@ const DoExamPage = () => {
       const startData = await ApiExam.startExam({ quizId });
 
       let mergedAnswers = startData.answers;
+      let mergedMarkedQuestions: MarkedQuestionMap = {};
       const rawPersisted = localStorage.getItem(getPersistKey(quizId));
 
       if (rawPersisted) {
         try {
-          const persisted = JSON.parse(rawPersisted) as {
-            attemptId?: string;
-            answers?: IExamAnswersMap;
-          };
+          const persisted = JSON.parse(
+            rawPersisted
+          ) as PersistedAttemptSnapshot;
 
           if (
             persisted.attemptId &&
@@ -202,6 +219,18 @@ const DoExamPage = () => {
               ...startData.answers,
               ...persisted.answers,
             };
+
+            const questionIdSet = new Set(
+              startData.questions.map((item) => item.id)
+            );
+            mergedMarkedQuestions = (
+              persisted.markedQuestionIds || []
+            ).reduce<MarkedQuestionMap>((acc, questionId) => {
+              if (questionIdSet.has(questionId)) {
+                acc[questionId] = true;
+              }
+              return acc;
+            }, {});
           }
         } catch {
           localStorage.removeItem(getPersistKey(quizId));
@@ -210,8 +239,13 @@ const DoExamPage = () => {
 
       setAttempt(startData);
       setAnswers(mergedAnswers);
+      setMarkedQuestions(mergedMarkedQuestions);
       setTimeLeftSeconds(startData.timeLeftSeconds);
-      persistSnapshot(startData.attemptId, mergedAnswers);
+      persistSnapshot(
+        startData.attemptId,
+        mergedAnswers,
+        mergedMarkedQuestions
+      );
     } catch {
       toast.error('Không thể bắt đầu bài thi. Vui lòng thử lại.');
       navigate('/app/quizz');
@@ -250,12 +284,34 @@ const DoExamPage = () => {
         [question.id]: nextSelected,
       };
 
-      persistSnapshot(attempt.attemptId, nextAnswers);
+      persistSnapshot(attempt.attemptId, nextAnswers, markedQuestions);
       scheduleSave(question.id, nextSelected);
 
       return nextAnswers;
     });
   };
+
+  const handleToggleMarkForReview = useCallback(
+    (questionId: string) => {
+      if (!attempt?.attemptId || submitResult || isSubmitting) {
+        return;
+      }
+
+      setMarkedQuestions((prev) => {
+        const nextMarkedQuestions = { ...prev };
+
+        if (nextMarkedQuestions[questionId]) {
+          delete nextMarkedQuestions[questionId];
+        } else {
+          nextMarkedQuestions[questionId] = true;
+        }
+
+        persistSnapshot(attempt.attemptId, answers, nextMarkedQuestions);
+        return nextMarkedQuestions;
+      });
+    },
+    [attempt?.attemptId, submitResult, isSubmitting, persistSnapshot, answers]
+  );
 
   const handleSubmit = useCallback(
     async (isAutoSubmit = false) => {
@@ -377,7 +433,7 @@ const DoExamPage = () => {
   }
 
   return (
-    <div className="mx-auto w-full max-w-7xl px-4 py-6 md:px-6">
+    <div className="mx-auto w-[90%] px-4 py-6 md:px-6">
       <header className="mb-5 rounded-2xl bg-white px-5 py-4 shadow-sm ring-1 ring-slate-200">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
@@ -391,34 +447,58 @@ const DoExamPage = () => {
             <h1 className="text-xl font-black text-slate-900 md:text-2xl">
               {examTitle}
             </h1>
-            <p className="mt-1 text-sm text-slate-500 font-bold">
-              {answeredCount}/{totalQuestions} câu đã trả lời • Tiến độ{' '}
-              {progressPercent}%
-            </p>
           </div>
 
-          <div className="flex items-center gap-2 rounded-xl bg-slate-900 px-4 py-2 text-white">
-            <AlarmClock size={18} />
-            <span className="text-lg font-bold tabular-nums">
-              {formatTime(timeLeftSeconds)}
-            </span>
-          </div>
-        </div>
+          <div className="flex gap-4">
+            <div className="flex items-center gap-2 rounded-md bg-gray-200 text-black px-4 py-2 border border-gray-500">
+              <AlarmClock size={18} />
+              <span className="text-lg font-bold tabular-nums">
+                {formatTime(timeLeftSeconds)}
+              </span>
+            </div>
 
-        <div className="mt-4 h-2 overflow-hidden rounded-full bg-slate-100">
-          <div
-            className="h-full rounded-full bg-linear-to-r from-blue-600 to-indigo-500 transition-all"
-            style={{ width: `${progressPercent}%` }}
-          />
+            <button
+              onClick={() => void handleSubmit(false)}
+              disabled={isSubmitting || submitResult !== null}
+              className="inline-flex cursor-pointer hover:bg-gray-900 items-center gap-2 rounded-xl bg-black text-white px-4 py-2.5 text-sm font-bold transition  disabled:cursor-not-allowed disabled:opacity-70"
+            >
+              {isSubmitting ? (
+                <LoaderCircle className="animate-spin" size={16} />
+              ) : (
+                <Send size={16} />
+              )}
+              Nộp bài
+            </button>
+          </div>
         </div>
       </header>
 
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-[1fr,320px]">
+      <div className="grid grid-cols-2 gap-4 lg:grid-cols-[1fr_400px]">
         <section className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
-          <p className="mb-3 inline-flex items-center gap-2 rounded-full bg-blue-100 px-3 py-1 text-xs font-semibold text-blue-700">
-            <Clock3 size={14} />
-            Câu {currentQuestionIndex + 1} / {totalQuestions}
-          </p>
+          <div className="flex justify-between">
+            <p className="mb-3 inline-flex items-center gap-2 rounded-full px-3 py-1 text-sm font-semibold text-background bg-foreground">
+              <Clock3 size={14} />
+              Câu {currentQuestionIndex + 1} / {totalQuestions}
+            </p>
+
+            <div className="mb-4">
+              <button
+                type="button"
+                onClick={() => handleToggleMarkForReview(currentQuestion.id)}
+                className={clsx(
+                  'inline-flex items-center gap-2 rounded-lg border px-3 py-1.5 text-sm font-semibold transition',
+                  markedQuestions[currentQuestion.id]
+                    ? 'border-amber-300 bg-amber-50 text-amber-700 hover:bg-amber-100'
+                    : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-50'
+                )}
+              >
+                <Flag size={15} />
+                {markedQuestions[currentQuestion.id]
+                  ? 'Bỏ đánh dấu xem sau'
+                  : 'Đánh dấu xem sau'}
+              </button>
+            </div>
+          </div>
 
           <h2 className="mb-2 text-lg font-extrabold text-slate-900 md:text-xl">
             {currentQuestion.questionTitle}
@@ -447,7 +527,7 @@ const DoExamPage = () => {
                   className={clsx(
                     'flex w-full items-start gap-3 rounded-xl border px-4 py-3 text-left transition',
                     selected
-                      ? 'border-blue-500 bg-blue-50 ring-2 ring-blue-100'
+                      ? 'border-black-500 bg-black-50 ring-2 ring-black-100'
                       : 'border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50'
                   )}
                 >
@@ -476,65 +556,58 @@ const DoExamPage = () => {
           </div>
 
           <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
-            <div className="flex items-center gap-2">
-              <button
-                onClick={() =>
-                  setCurrentQuestionIndex((prev) => Math.max(0, prev - 1))
-                }
-                disabled={currentQuestionIndex === 0}
-                className="rounded-lg border border-slate-200 px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50"
-              >
-                Câu trước
-              </button>
-              <button
-                onClick={() =>
-                  setCurrentQuestionIndex((prev) =>
-                    Math.min(totalQuestions - 1, prev + 1)
-                  )
-                }
-                disabled={currentQuestionIndex === totalQuestions - 1}
-                className="rounded-lg border border-slate-200 px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50"
-              >
-                Câu sau
-              </button>
-            </div>
-
             <button
-              onClick={() => void handleSubmit(false)}
-              disabled={isSubmitting || submitResult !== null}
-              className="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-70"
+              onClick={() =>
+                setCurrentQuestionIndex((prev) => Math.max(0, prev - 1))
+              }
+              disabled={currentQuestionIndex === 0}
+              className="rounded-lg border border-slate-200 px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50"
             >
-              {isSubmitting ? (
-                <LoaderCircle className="animate-spin" size={16} />
-              ) : (
-                <Send size={16} />
-              )}
-              Nộp bài
+              Câu trước
+            </button>
+            <button
+              onClick={() =>
+                setCurrentQuestionIndex((prev) =>
+                  Math.min(totalQuestions - 1, prev + 1)
+                )
+              }
+              disabled={currentQuestionIndex === totalQuestions - 1}
+              className="rounded-lg border border-slate-200 px-3 py-2 text-sm bg-black text-white font-semibold hover:bg-gray-800 transition disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              Câu sau
             </button>
           </div>
         </section>
 
         <aside className="rounded-2xl bg-white p-4 shadow-sm ring-1 ring-slate-200">
-          <h3 className="mb-3 text-base font-bold text-slate-900">
-            Điều hướng câu hỏi
-          </h3>
+          <div className="flex justify-between">
+            <h3 className="mb-3 text-base font-bold text-slate-900">
+              Tiến độ làm bài
+            </h3>
+            <p className="mt-1 rounded-[6px] text-sm text-foreground font-bold p-2 bg-[#ccc]">
+              {answeredCount}/{totalQuestions}
+            </p>
+          </div>
 
-          <div className="grid grid-cols-5 gap-2">
+          <div className="grid grid-cols-5 gap-2 mt-[14px] max-h-[600px] overflow-y-auto hidden-scrollbar">
             {questions.map((question, index) => {
               const isActive = index === currentQuestionIndex;
               const isAnswered = (answers[question.id] || []).length > 0;
+              const isMarked = Boolean(markedQuestions[question.id]);
 
               return (
                 <button
                   key={question.id}
                   onClick={() => setCurrentQuestionIndex(index)}
                   className={clsx(
-                    'rounded-lg border px-2 py-2 text-sm font-bold transition',
+                    'rounded-xl border px-2 py-2 text-sm font-bold transition',
                     isActive
-                      ? 'border-blue-500 bg-blue-600 text-white'
-                      : isAnswered
-                        ? 'border-emerald-200 bg-emerald-50 text-emerald-700'
-                        : 'border-slate-200 bg-white text-slate-600 hover:bg-slate-50'
+                      ? 'bg-black text-white'
+                      : isMarked
+                        ? 'border-amber-300 bg-amber-50 text-amber-700'
+                        : isAnswered
+                          ? 'border-emerald-200 bg-emerald-50 text-emerald-700'
+                          : 'border-slate-200 bg-white text-slate-600 hover:bg-slate-50'
                   )}
                 >
                   {index + 1}
@@ -544,16 +617,42 @@ const DoExamPage = () => {
           </div>
 
           <div className="mt-4 rounded-xl bg-slate-50 p-3 text-xs text-slate-600">
-            <p>
-              Đã trả lời:{' '}
-              <span className="font-bold text-slate-900">{answeredCount}</span>{' '}
-              / {totalQuestions}
+            <p className="mt-1">
+              Đánh dấu xem sau:{' '}
+              <span className="font-bold text-amber-700">{markedCount}</span>
             </p>
             <p className="mt-1">
               Cơ chế lưu tự động đang hoạt động mỗi khi bạn chọn đáp án.
             </p>
+
+            <div className="mt-3 space-y-1.5 border-t border-slate-200 pt-3 text-[11px] font-bold uppercase tracking-wide text-slate-500">
+              <div className="flex items-center gap-2">
+                <span className="h-3.5 w-3.5 rounded-[3px] bg-black" />
+                Đang xem
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="h-3.5 w-3.5 rounded-[3px] border border-emerald-300 bg-emerald-50" />
+                Đã hoàn thành
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="h-3.5 w-3.5 rounded-[3px] border border-slate-300 bg-white" />
+                Chưa làm
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="h-3.5 w-3.5 rounded-[3px] border border-amber-300 bg-amber-50" />
+                Đã đánh dấu
+              </div>
+            </div>
           </div>
         </aside>
+        <div className="rounded-2xl bg-white p-4 shadow-sm ring-1 ring-slate-200 flex gap-2 items-center">
+          <span className="material-symbols-outlined text-slate-400 text-lg">
+            <Info size={24} />
+          </span>
+          <p className="text-[11px] text-slate-500 text-center leading-tight">
+            Mọi hành vi gian lận sẽ bị hệ thống tự động ghi lại và báo cáo.
+          </p>
+        </div>
       </div>
 
       {submitResult && (

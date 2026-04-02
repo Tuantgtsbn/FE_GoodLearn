@@ -89,7 +89,10 @@ function Button({
       data-variant={variant}
       data-size={size}
       disabled={isDisabled}
-      className={cn(buttonVariants({ variant, size, className }), 'relative')}
+      className={cn(
+        buttonVariants({ variant, size, className }),
+        'relative box-content cursor-pointer'
+      )}
       {...props}
     >
       {renderContent()}
@@ -97,4 +100,4 @@ function Button({
   );
 }
 
-export { Button, buttonVariants };
+export { Button };

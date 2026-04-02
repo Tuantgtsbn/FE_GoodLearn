@@ -132,7 +132,7 @@ export default function ModalReviewApp({
       <div className="sticky top-0 bg-white p-5 border-b border-gray-100 flex justify-between items-center">
         <div>
           <h2 className="font-bold text-gray-900 text-2xl">Đánh giá website</h2>
-          <p className="text-xs text-gray-500 mt-1">
+          <p className="text-md text-gray-500 mt-1">
             Cảm nhận của cậu về trải nhiệm học tập cùng AI là gì?
           </p>
         </div>
@@ -160,7 +160,7 @@ export default function ModalReviewApp({
                   </span>
                 ))}
               </div>
-              <p className="text-xs text-gray-500 mt-1">
+              <p className="text-md text-gray-500 mt-1">
                 {stats?.totalReviews || 0} đánh giá
               </p>
             </div>
@@ -228,9 +228,9 @@ export default function ModalReviewApp({
                 disabled={isSubmitting}
               >
                 {star <= (hoveredRating || rating) ? (
-                  <span className="text-gray-400">★</span>
+                  <span className="text-orange-500 text-2xl">★</span>
                 ) : (
-                  <span className="text-gray-300">☆</span>
+                  <span className="text-gray-300 text-2xl">☆</span>
                 )}
               </button>
             ))}
