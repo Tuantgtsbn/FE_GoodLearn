@@ -100,6 +100,10 @@ const DoExamPage = () => {
     locationState?.examTitle ||
     (quizId ? `Đề thi #${quizId.slice(0, 8).toUpperCase()}` : 'Bài thi');
 
+  const progressPercent = totalQuestions
+    ? Math.round((answeredCount / totalQuestions) * 100)
+    : 0;
+
   const persistSnapshot = useCallback(
     (
       attemptId: string,
@@ -587,6 +591,13 @@ const DoExamPage = () => {
             <p className="mt-1 rounded-[6px] text-sm text-foreground font-bold p-2 bg-[#ccc]">
               {answeredCount}/{totalQuestions}
             </p>
+          </div>
+
+          <div className="mt-4 h-2 overflow-hidden rounded-full bg-slate-100">
+            <div
+              className="h-full rounded-full bg-linear-to-r bg-black transition-all"
+              style={{ width: `${progressPercent}%` }}
+            />
           </div>
 
           <div className="grid grid-cols-5 gap-2 mt-[14px] max-h-[600px] overflow-y-auto hidden-scrollbar">

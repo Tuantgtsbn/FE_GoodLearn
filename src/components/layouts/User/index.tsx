@@ -29,6 +29,7 @@ import UserAvatar from './components/UserAvatar';
 import { useDialog } from '@/context/DialogContext';
 import ModalConfirmLogout from '@/components/ModalConfirmLogout';
 import NotificationPopover from './components/Notification';
+import ICArticle from '@/components/Icon/ICArticle';
 
 interface IPatientLayoutProps {
   children: React.ReactNode;
@@ -44,11 +45,11 @@ const UserLayout = ({ children }: IPatientLayoutProps) => {
   const sideBarItems = [
     {
       label: 'Chatbot',
-      to: '/app',
+      to: '/app/chat',
       requireAuth: true,
       icon: <MessageSquareMore />,
       action: () => {
-        navigate('/app');
+        navigate('/app/chat');
         setDrawerOpen(false);
       },
     },
@@ -92,6 +93,15 @@ const UserLayout = ({ children }: IPatientLayoutProps) => {
           icon: <BookOpenText />,
           action: () => {
             navigate('/app/flashcards');
+            setDrawerOpen(false);
+          },
+        },
+        {
+          label: 'Bài viết',
+          to: '/app/article',
+          icon: <ICArticle />,
+          action: () => {
+            navigate('/app/article');
             setDrawerOpen(false);
           },
         },

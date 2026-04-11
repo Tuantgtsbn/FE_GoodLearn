@@ -13,7 +13,6 @@ import {
   Check,
   Trophy,
   Home,
-  AlertCircle,
 } from 'lucide-react';
 
 import clsx from 'clsx';
@@ -213,7 +212,7 @@ const DoFlashcardPlayer = () => {
   // Finish & Timer states
   const [isFinished, setIsFinished] = useState(false);
   const [sessionTimeStr, setSessionTimeStr] = useState('');
-  const startTimeRef = useRef<number>(Date.now());
+  const startTimeRef = useRef<number | null>(null);
   const [studyMode, setStudyMode] = useState<'ALL' | 'REVIEW'>('ALL');
 
   // Fetch set
@@ -224,7 +223,10 @@ const DoFlashcardPlayer = () => {
   });
 
   const setDetail = data;
-  const allCards = setDetail?.flashcards || [];
+  const allCards = useMemo(
+    () => setDetail?.flashcards || [],
+    [setDetail?.flashcards]
+  );
 
   // Filter cards based on mode
   const cards = useMemo(() => {
@@ -240,42 +242,6 @@ const DoFlashcardPlayer = () => {
   const totalCards = cards.length;
   const currentCard = cards[currentIndex];
 
-  // Reset metrics when starting
-  useEffect(() => {
-    if (!isFinished) {
-      startTimeRef.current = Date.now();
-    }
-  }, [isFinished, studyMode]);
-
-  // Listen to keyboard shortcuts
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      // Ignore if typing in input
-      if (
-        document.activeElement?.tagName === 'INPUT' ||
-        document.activeElement?.tagName === 'TEXTAREA'
-      )
-        return;
-
-      if (e.code === 'Space') {
-        e.preventDefault();
-        setIsFlipped((p) => !p);
-      } else if (e.code === 'ArrowRight' && !isFlipped && !isFinished) {
-        handleNext();
-      } else if (e.code === 'ArrowLeft' && !isFlipped && !isFinished) {
-        handlePrev();
-      } else if (isFlipped && !isFinished) {
-        if (e.code === 'Digit1') {
-          handleNotUnderstood();
-        } else if (e.code === 'Digit2') {
-          handleUnderstood();
-        }
-      }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [currentIndex, isFlipped, cards]);
-
   const handleNext = () => {
     if (currentIndex < totalCards - 1) {
       setIsFlipped(false);
@@ -287,7 +253,7 @@ const DoFlashcardPlayer = () => {
   };
 
   const finishSession = () => {
-    const elapsedMs = Date.now() - startTimeRef.current;
+    const elapsedMs = Date.now() - (startTimeRef?.current || 0);
     const elapsedSecs = Math.floor(elapsedMs / 1000);
     const mins = Math.floor(elapsedSecs / 60);
     const secs = elapsedSecs % 60;
@@ -326,6 +292,51 @@ const DoFlashcardPlayer = () => {
     }
     handleNext();
   };
+
+  // Reset metrics when starting
+  useEffect(() => {
+    if (!isFinished) {
+      startTimeRef.current = Date.now();
+    }
+  }, [isFinished, studyMode]);
+
+  // Listen to keyboard shortcuts
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Ignore if typing in input
+      if (
+        document.activeElement?.tagName === 'INPUT' ||
+        document.activeElement?.tagName === 'TEXTAREA'
+      )
+        return;
+
+      if (e.code === 'Space') {
+        e.preventDefault();
+        setIsFlipped((p) => !p);
+      } else if (e.code === 'ArrowRight' && !isFlipped && !isFinished) {
+        handleNext();
+      } else if (e.code === 'ArrowLeft' && !isFlipped && !isFinished) {
+        handlePrev();
+      } else if (isFlipped && !isFinished) {
+        if (e.code === 'Digit1') {
+          handleNotUnderstood();
+        } else if (e.code === 'Digit2') {
+          handleUnderstood();
+        }
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [
+    currentIndex,
+    isFlipped,
+    cards,
+    handleNext,
+    handlePrev,
+    handleNotUnderstood,
+    handleUnderstood,
+    isFinished,
+  ]);
 
   if (isPending) {
     return (

@@ -29,8 +29,8 @@ function ProtectedRoute({
     switch (userRole) {
       case ERole.USER:
         return <Navigate to="/" replace />;
-      case ERole.ADMIN:
-        return <Navigate to="/admin" replace />;
+      // case ERole.ADMIN:
+      //   return <Navigate to="/admin" replace />;
       default:
         return <Navigate to="/" replace />;
     }
@@ -40,8 +40,8 @@ function ProtectedRoute({
     switch (userRole) {
       case ERole.USER:
         return <Navigate to="/" replace />;
-      case ERole.ADMIN:
-        return <Navigate to="/admin" replace />;
+      // case ERole.ADMIN:
+      //   return <Navigate to="/admin" replace />;
       default:
         return <Navigate to="/auth/login" replace />;
     }

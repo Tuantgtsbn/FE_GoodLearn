@@ -15,7 +15,6 @@ import Login from '@/pages/Auth/Login';
 import LoginGoogleCallback from '@/pages/Auth/Login/GoogleCallback';
 import ProtectedRoute from './ProtectedRoute';
 import { ERole } from '@/types';
-import UserMainPage from '@/pages/App';
 import QuizzListPage from '@/pages/App/Quizz';
 import DoExamPage from '@/pages/App/Quizz/DoExam';
 import LeaderboardPage from '@/pages/App/Quizz/Leaderboard';
@@ -24,6 +23,10 @@ import UserLayout from '@/components/layouts/User';
 import Voicecall from '@/pages/App/VoiceCall';
 import FlashcardListPage from '@/pages/App/Flashcard';
 import DoFlashcardPlayer from '@/pages/App/Flashcard/DoFlashcard';
+import ChatPage from '@/pages/App/Chat';
+import PaymentManagement from '@/pages/App/PaymentManagement';
+import ArticlePage from '@/pages/App/Article';
+import ArticleDetailPage from '@/pages/App/Article/ArticleDetail';
 
 export const routes = [
   {
@@ -122,7 +125,7 @@ export const routes = [
         children: [
           {
             index: true,
-            element: <UserMainPage />,
+            element: <Navigate to="/app/chat" replace />,
           },
           {
             path: 'quizz',
@@ -164,6 +167,34 @@ export const routes = [
             element: <DoFlashcardPlayer />,
             handle: {
               title: 'GoodLearn | Học Flashcard',
+            },
+          },
+          {
+            path: 'chat',
+            element: <ChatPage />,
+            handle: {
+              title: 'GoodLearn | Chat AI',
+            },
+          },
+          {
+            path: 'payments',
+            element: <PaymentManagement />,
+            handle: {
+              title: 'GoodLearn | Quản lý thanh toán',
+            },
+          },
+          {
+            path: 'article',
+            element: <ArticlePage />,
+            handle: {
+              title: 'GoodLearn | Báo học trò',
+            },
+          },
+          {
+            path: 'article/:slug',
+            element: <ArticleDetailPage />,
+            handle: {
+              title: 'GoodLearn | Báo học trò',
             },
           },
         ],

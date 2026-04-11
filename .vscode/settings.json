@@ -4,5 +4,6 @@
   "[typescript]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
-  "typescript.preferences.quotePreference": "single"
+  "typescript.preferences.quotePreference": "single",
+  "typescript.tsserver.maxTsServerMemory": 4096
 }

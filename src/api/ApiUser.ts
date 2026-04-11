@@ -1,4 +1,4 @@
-import type { IUser } from '@/types';
+import type { IUser, IUserQuota } from '@/types';
 import { fetcher } from './Fetcher';
 
 const path = {
@@ -18,6 +18,20 @@ const updateProfile = (data: Partial<IUser> & { avatar?: File }) => {
   );
 };
 
+type GetUserQuotaResponse = {
+  userId: string;
+  email: string;
+  quota: IUserQuota;
+};
+
+const getUserQuota = () => {
+  return fetcher<GetUserQuotaResponse>({
+    url: `${path.updateProfile}/quota`,
+    method: 'GET',
+  });
+};
+
 export default {
   updateProfile,
+  getUserQuota,
 };

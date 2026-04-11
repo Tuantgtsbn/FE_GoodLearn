@@ -542,6 +542,7 @@ export interface IFile {
   updatedAt: Date;
   deletedByUserId?: string | null;
   deleteReason?: string | null;
+  fullUrl?: string;
 
   owner?: IUser | null;
   deletedByUser?: IUser | null;
@@ -598,4 +599,170 @@ export interface IReviewApp {
   updatedAt: Date;
 
   user?: IUser | null;
+}
+
+// ==================== ARTICLE TYPES ====================
+
+export enum EArticleStatus {
+  DRAFT = 'draft',
+  PENDING_REVIEW = 'pending_review',
+  PUBLISHED = 'published',
+  REJECTED = 'rejected',
+  REEDITED = 'reedited',
+}
+
+export enum EMediaType {
+  IMAGE = 'IMAGE',
+  VIDEO = 'VIDEO',
+  FILE = 'FILE',
+}
+
+export interface ITag {
+  id: string;
+  name: string;
+  slug: string;
+  createdAt: Date;
+  updatedAt: Date;
+
+  _count?: {
+    articleTags: number;
+  };
+}
+
+export interface ICategory {
+  id: string;
+  name: string;
+  slug: string;
+  description: string | null;
+  parentId: string | null;
+  parent?: ICategory | null;
+  children?: ICategory[] | null;
+  createdAt: Date;
+  updatedAt: Date;
+
+  _count?: {
+    articles: number;
+  };
+}
+
+export interface IArticleFile {
+  id: string;
+  articleId: string;
+  fileId: string;
+  usageType: 'thumbnail' | 'content';
+  mediaType: EMediaType;
+  createdAt: Date;
+
+  file?: IFile | null;
+}
+
+export interface IArticleTag {
+  id: string;
+  articleId: string;
+  tagId: string;
+  tag: ITag;
+}
+
+export interface IArticleAuthor {
+  id: string;
+  fullName: string | null;
+  avatarUrl: string | null;
+  email: string;
+  avatarFullUrl: string;
+}
+
+export interface IArticleCategory {
+  id: string;
+  name: string;
+  slug: string;
+}
+
+interface TocItem {
+  id: string;
+  label: string;
+  level: number;
+}
+
+export interface IArticle {
+  id: string;
+  title: string;
+  content: string;
+  summary: string | null;
+  slug: string;
+  viewCount: number;
+  status: EArticleStatus;
+  featured: boolean;
+  extras: Record<string, any> | null;
+  toc: TocItem[];
+  authorId: string;
+  categoryId: string;
+  assigneeId: string | null;
+  reasonReject: string | null;
+  publishedAt: Date | null;
+  createdAt: Date;
+  updatedAt: Date;
+
+  author?: IArticleAuthor | null;
+  category?: IArticleCategory | null;
+  articleTags?: IArticleTag[] | null;
+  articleFiles?: IArticleFile[] | null;
+}
+
+export interface ICategoryWithArticles {
+  id: string;
+  name: string;
+  slug: string;
+  description: string | null;
+  _count: {
+    articles: number;
+  };
+
+  latestArticle?: IArticle | null;
+  mostViewedArticle?: IArticle | null;
+}
+
+export interface ICreateArticleRequest {
+  title: string;
+  content: string;
+  summary?: string;
+  slug?: string;
+  categoryId: string;
+  tagIds?: string[];
+  status?: EArticleStatus;
+  featured?: boolean;
+  extras?: Record<string, any>;
+  toc?: Record<string, any>;
+}
+
+export interface IUpdateArticleRequest {
+  title?: string;
+  content?: string;
+  summary?: string;
+  slug?: string;
+  categoryId?: string;
+  tagIds?: string[];
+  status?: EArticleStatus;
+  featured?: boolean;
+  extras?: Record<string, any>;
+  toc?: Record<string, any>;
+}
+
+export interface ICreateCategoryRequest {
+  name: string;
+  description?: string;
+  parentId?: string | null;
+}
+
+export interface IUpdateCategoryRequest {
+  name?: string;
+  description?: string;
+  parentId?: string | null;
+}
+
+export interface ICreateTagRequest {
+  name: string;
+}
+
+export interface IUpdateTagRequest {
+  name?: string;
 }

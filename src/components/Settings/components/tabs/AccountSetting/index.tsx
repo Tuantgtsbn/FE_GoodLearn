@@ -348,7 +348,9 @@ export default function AccountSetting() {
               render={({ field }) => (
                 <DatePickerComponent
                   value={field.value || null}
-                  onChange={(date) => field.onChange(date?.toISOString())}
+                  onChange={(date) =>
+                    field.onChange(date ? date.toDate().toISOString() : null)
+                  }
                   config={{
                     maxDate: new Date().toISOString(),
                   }}

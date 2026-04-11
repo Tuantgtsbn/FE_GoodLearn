@@ -102,9 +102,9 @@ export default function LoginGoogleCallback() {
             case ERole.USER:
               navigate('/', { replace: true });
               break;
-            case ERole.ADMIN:
-              navigate('/admin', { replace: true });
-              break;
+            // case ERole.ADMIN:
+            //   navigate('/admin', { replace: true });
+            //   break;
             default:
               navigate('/', { replace: true });
           }

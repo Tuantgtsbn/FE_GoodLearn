@@ -1,5 +1,8 @@
+import ApiUser from '@/api/ApiUser';
+import QUERY_KEY from '@/api/QueryKey';
 import ModalConfirmLogout from '@/components/ModalConfirmLogout';
 import ModalReviewApp from '@/components/ModalReviewApp';
+import ModalUserQuota from '@/components/ModalUserQuota';
 import UserSetting from '@/components/Settings';
 import Avatar from '@/components/ui/Avatar';
 import {
@@ -9,8 +12,12 @@ import {
 } from '@/components/ui/popover';
 import { useDialog } from '@/context/DialogContext';
 import type { IRootState } from '@/redux/store';
+import { CircularProgress } from '@mui/material';
+import { useQuery } from '@tanstack/react-query';
 import {
   CirclePoundSterling,
+  Coins,
+  CreditCard,
   LogOut,
   Package,
   Settings,
@@ -26,6 +33,12 @@ export default function UserAvatar() {
   const navigate = useNavigate();
   const { createDialog } = useDialog();
 
+  const { data: userQuota, isLoading } = useQuery({
+    queryKey: [QUERY_KEY.USER.GET_USER_QUOTA],
+    queryFn: ApiUser.getUserQuota,
+    staleTime: 1000 * 60 * 5,
+  });
+
   const handleClickMenu = (action: () => void) => {
     action();
     setOpen(false);
@@ -33,6 +46,10 @@ export default function UserAvatar() {
 
   const handleClickBuyPackage = () => {
     navigate('/price');
+  };
+
+  const handleClickQuota = () => {
+    createDialog(ModalUserQuota, {}, 'exclusive');
   };
 
   const handleClickSetting = () => {
@@ -47,10 +64,14 @@ export default function UserAvatar() {
     createDialog(ModalConfirmLogout as React.FC, {}, 'exclusive');
   };
 
+  const handleClickPaymentManagement = () => {
+    navigate('/app/payments');
+  };
+
   return (
     <div className="flex items-center gap-3 px-4 py-2 cursor-pointer">
       <div>
-        <p className="text-[14px] font-bold text-background leading-none">
+        <p className="text-[14px] font-bold text-foreground leading-none">
           {user?.username}
         </p>
         <p className="text-[12px] text-zinc-400 mt-1">{user?.email}</p>
@@ -73,8 +94,34 @@ export default function UserAvatar() {
               <div className="mt-1 flex items-center gap-1">
                 <CirclePoundSterling size={16} className="text-yellow-500" />
                 <p className="text-sm font-medium text-foreground/90">
-                  1,250 Credits
+                  {isLoading ? (
+                    <CircularProgress size={16} />
+                  ) : (
+                    `${userQuota?.quota?.remainingCredits || 0} Credits`
+                  )}
                 </p>
+              </div>
+            </div>
+            <div
+              onClick={() => handleClickMenu(handleClickQuota)}
+              className="group cursor-pointer flex items-center justify-between px-[25px] py-4 hover:bg-[#efebeb] dark:hover:bg-gray-700 transition-all duration-200"
+            >
+              <div className="flex items-center gap-4">
+                <Coins />
+                <span className="text-base font-bold uppercase tracking-wide">
+                  Chi tiết hạn mức
+                </span>
+              </div>
+            </div>
+            <div
+              onClick={() => handleClickMenu(handleClickPaymentManagement)}
+              className="group cursor-pointer flex items-center justify-between px-[25px] py-4 hover:bg-[#efebeb] dark:hover:bg-gray-700 transition-all duration-200"
+            >
+              <div className="flex items-center gap-4">
+                <CreditCard />
+                <span className="text-base font-bold uppercase tracking-wide">
+                  Quản lý thanh toán
+                </span>
               </div>
             </div>
             <div

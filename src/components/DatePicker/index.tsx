@@ -43,6 +43,11 @@ export function CommonDestopDatePicker({
                 error: false,
               },
             }}
+            sx={{
+              '& .MuiPickersInputBase-root': {
+                color: '#000000',
+              },
+            }}
             className={className}
             minDate={config?.minDate ? dayjs(config.minDate) : undefined}
             maxDate={config?.maxDate ? dayjs(config.maxDate) : undefined}
@@ -63,6 +68,11 @@ export function CommonDestopDatePicker({
           slotProps={{
             textField: {
               error: false,
+            },
+          }}
+          sx={{
+            '& .MuiPickersInputBase-root': {
+              color: '#000000',
             },
           }}
           className={className}
@@ -100,6 +110,11 @@ export function CommonMobileDatePicker({
                 error: false,
               },
             }}
+            sx={{
+              '& .MuiPickersInputBase-root': {
+                color: '#000000',
+              },
+            }}
             minDate={config?.minDate ? dayjs(config.minDate) : undefined}
             maxDate={config?.maxDate ? dayjs(config.maxDate) : undefined}
             className={className}
@@ -120,6 +135,11 @@ export function CommonMobileDatePicker({
           slotProps={{
             textField: {
               error: false,
+            },
+          }}
+          sx={{
+            '& .MuiPickersInputBase-root': {
+              color: '#000000',
             },
           }}
           minDate={config?.minDate ? dayjs(config.minDate) : undefined}

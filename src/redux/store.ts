@@ -1,5 +1,6 @@
 import AuthReducer from './slices/AuthSlice';
 import SettingReducer from './slices/SettingSlice';
+import ChatReducer from './slices/ChatSlice';
 import { configureStore } from '@reduxjs/toolkit';
 import { combineReducers } from 'redux';
 import {
@@ -31,6 +32,7 @@ const appReducers = combineReducers({
     },
     SettingReducer
   ),
+  chat: ChatReducer,
 });
 
 const rootReducers = (state: any, action: any) => {
