@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState, useRef } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import {
@@ -19,7 +19,7 @@ import clsx from 'clsx';
 import ApiFlashcard from '@/api/ApiFlashcard';
 import QUERY_KEY from '@/api/QueryKey';
 import type { IFlashcardItem } from '@/types/flashcard';
-import flashcardProgress from '@/utils/flashcardProgress';
+import { useFlashcardSession } from './useFlashcardSession';
 
 // ─── Flashcard Component ───────────────────────────────────────────────────
 
@@ -157,7 +157,7 @@ const FlashcardCard: React.FC<FlashcardCardProps> = ({
 
   return (
     <div
-      className="perspective-1000 relative mx-auto h-[60vh] min-h-[460px] w-full max-w-4xl"
+      className="perspective-1000 relative mx-auto h-[60vh] w-full max-w-4xl"
       onClick={onFlip}
     >
       <div
@@ -206,15 +206,6 @@ const DoFlashcardPlayer = () => {
   const { setId } = useParams();
   const navigate = useNavigate();
 
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [isFlipped, setIsFlipped] = useState(false);
-
-  // Finish & Timer states
-  const [isFinished, setIsFinished] = useState(false);
-  const [sessionTimeStr, setSessionTimeStr] = useState('');
-  const startTimeRef = useRef<number | null>(null);
-  const [studyMode, setStudyMode] = useState<'ALL' | 'REVIEW'>('ALL');
-
   // Fetch set
   const { data, isPending } = useQuery({
     queryKey: [QUERY_KEY.FLASHCARD.GET_SET, setId],
@@ -223,82 +214,35 @@ const DoFlashcardPlayer = () => {
   });
 
   const setDetail = data;
-  const allCards = useMemo(
-    () => setDetail?.flashcards || [],
-    [setDetail?.flashcards]
-  );
+  const allCards = setDetail?.flashcards || [];
 
-  // Filter cards based on mode
-  const cards = useMemo(() => {
-    if (studyMode === 'ALL') return allCards;
-    const notUnderstoodIds = flashcardProgress.getNotUnderstoodCards(
-      setId || ''
-    );
-    return allCards.filter((c) => notUnderstoodIds.includes(c.id));
-  }, [allCards, studyMode, setId]);
+  const {
+    state: { currentIndex, isFlipped, isFinished, sessionTimeStr, studyMode },
+    cards,
+    currentCard,
+    totalCards,
+    progressPercent,
+    notUnderstoodCount,
+    understoodCount,
+    handleNext,
+    handlePrev,
+    handleFlip,
+    handleReviewNotUnderstood,
+    handleNotUnderstood,
+    handleUnderstood,
+    resetProgressAndSession,
+    switchToAllMode,
+  } = useFlashcardSession({
+    setId,
+    allCards,
+  });
 
   const subjectName = setDetail?.subject?.subjectName || 'FLASHCARD';
 
-  const totalCards = cards.length;
-  const currentCard = cards[currentIndex];
-
-  const handleNext = () => {
-    if (currentIndex < totalCards - 1) {
-      setIsFlipped(false);
-      setTimeout(() => setCurrentIndex((p) => p + 1), 150); // slight delay to unflipping before transition
-    } else {
-      // Reach end
-      finishSession();
-    }
-  };
-
-  const finishSession = () => {
-    const elapsedMs = Date.now() - (startTimeRef?.current || 0);
-    const elapsedSecs = Math.floor(elapsedMs / 1000);
-    const mins = Math.floor(elapsedSecs / 60);
-    const secs = elapsedSecs % 60;
-
-    if (mins > 0) {
-      setSessionTimeStr(`${mins} phút ${secs} giây`);
-    } else {
-      setSessionTimeStr(`${secs} giây`);
-    }
-
-    setIsFlipped(false);
-    setIsFinished(true);
-  };
-
-  const handlePrev = () => {
-    if (currentIndex > 0) {
-      setIsFlipped(false);
-      setTimeout(() => setCurrentIndex((p) => p - 1), 150);
-    }
-  };
-
-  const handleFlip = () => {
-    setIsFlipped((p) => !p);
-  };
-
-  const handleNotUnderstood = () => {
-    if (currentCard && setId) {
-      flashcardProgress.markCardAsNotUnderstood(setId, currentCard.id);
-    }
-    handleNext();
-  };
-
-  const handleUnderstood = () => {
-    if (currentCard && setId) {
-      flashcardProgress.markCardAsUnderstood(setId, currentCard.id);
-    }
-    handleNext();
-  };
-
-  // Reset metrics when starting
-  useEffect(() => {
-    if (!isFinished) {
-      startTimeRef.current = Date.now();
-    }
-  }, [isFinished, studyMode]);
+  const handleExitToLibrary = useCallback(() => {
+    resetProgressAndSession();
+    navigate('/app/flashcards');
+  }, [navigate, resetProgressAndSession]);
 
   // Listen to keyboard shortcuts
   useEffect(() => {
@@ -312,7 +256,7 @@ const DoFlashcardPlayer = () => {
 
       if (e.code === 'Space') {
         e.preventDefault();
-        setIsFlipped((p) => !p);
+        handleFlip();
       } else if (e.code === 'ArrowRight' && !isFlipped && !isFinished) {
         handleNext();
       } else if (e.code === 'ArrowLeft' && !isFlipped && !isFinished) {
@@ -328,9 +272,8 @@ const DoFlashcardPlayer = () => {
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [
-    currentIndex,
+    handleFlip,
     isFlipped,
-    cards,
     handleNext,
     handlePrev,
     handleNotUnderstood,
@@ -348,7 +291,7 @@ const DoFlashcardPlayer = () => {
     );
   }
 
-  if (!setDetail || cards.length === 0) {
+  if (!setDetail) {
     return (
       <div className="flex h-screen flex-col items-center justify-center bg-slate-50">
         <h1 className="text-2xl font-bold text-slate-800">
@@ -359,8 +302,11 @@ const DoFlashcardPlayer = () => {
         </p>
         <button
           onClick={() => {
-            if (studyMode === 'REVIEW') setStudyMode('ALL');
-            else navigate('/app/flashcards');
+            if (studyMode === 'REVIEW') {
+              switchToAllMode();
+            } else {
+              handleExitToLibrary();
+            }
           }}
           className="mt-6 rounded-xl bg-black px-6 py-3 font-bold text-white transition hover:bg-slate-800"
         >
@@ -369,15 +315,6 @@ const DoFlashcardPlayer = () => {
       </div>
     );
   }
-
-  const progressPercent = ((currentIndex + 1) / totalCards) * 100;
-
-  // Get live stats for summary
-  const notUnderstoodIds = flashcardProgress.getNotUnderstoodCards(setId || '');
-  const notUnderstoodCount = allCards.filter((c) =>
-    notUnderstoodIds.includes(c.id)
-  ).length;
-  const understoodCount = allCards.length - notUnderstoodCount;
 
   // Render Summary Screen
   if (isFinished) {
@@ -435,24 +372,25 @@ const DoFlashcardPlayer = () => {
 
           <div className="flex w-full flex-col gap-3">
             {notUnderstoodCount > 0 ? (
-              <button
-                onClick={() => {
-                  setStudyMode('REVIEW');
-                  setCurrentIndex(0);
-                  setIsFinished(false);
-                }}
-                className="flex w-full items-center justify-center gap-2 rounded-xl bg-black py-4 font-bold text-white transition hover:bg-slate-800 hover:shadow-lg"
-              >
-                <RotateCcw size={18} />
-                Ôn lại {notUnderstoodCount} câu chưa hiểu
-              </button>
+              <>
+                <button
+                  onClick={handleReviewNotUnderstood}
+                  className="flex w-full items-center justify-center gap-2 rounded-xl bg-black py-4 font-bold text-white transition hover:bg-slate-800 hover:shadow-lg"
+                >
+                  <RotateCcw size={18} />
+                  Ôn lại {notUnderstoodCount} câu chưa hiểu
+                </button>
+                <button
+                  onClick={resetProgressAndSession}
+                  className="flex w-full items-center justify-center gap-2 rounded-xl border-2 border-slate-200 bg-white py-4 font-bold text-slate-700 transition hover:bg-slate-50"
+                >
+                  <RotateCcw size={18} />
+                  Học lại từ đầu
+                </button>
+              </>
             ) : (
               <button
-                onClick={() => {
-                  setStudyMode('ALL');
-                  setCurrentIndex(0);
-                  setIsFinished(false);
-                }}
+                onClick={resetProgressAndSession}
                 className="flex w-full items-center justify-center gap-2 rounded-xl bg-black py-4 font-bold text-white transition hover:bg-slate-800 hover:shadow-lg"
               >
                 <RotateCcw size={18} />
@@ -461,13 +399,49 @@ const DoFlashcardPlayer = () => {
             )}
 
             <button
-              onClick={() => navigate('/app/flashcards')}
+              onClick={handleExitToLibrary}
               className="flex w-full items-center justify-center gap-2 rounded-xl border-2 border-slate-200 bg-white py-4 font-bold text-slate-700 transition hover:bg-slate-50"
             >
               <Home size={18} />
               Về màn hình chính
             </button>
           </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (cards.length === 0) {
+    return (
+      <div className="flex h-screen flex-col items-center justify-center bg-slate-50">
+        <h1 className="text-2xl font-bold text-slate-800">
+          Không tìm thấy thẻ
+        </h1>
+        <p className="mt-2 text-slate-500">
+          Bộ thẻ chưa có nội dung hoặc tất cả đều đã được hiểu.
+        </p>
+        <button
+          onClick={() => {
+            if (studyMode === 'REVIEW') {
+              switchToAllMode();
+            } else {
+              handleExitToLibrary();
+            }
+          }}
+          className="mt-6 rounded-xl bg-black px-6 py-3 font-bold text-white transition hover:bg-slate-800"
+        >
+          {studyMode === 'REVIEW' ? 'Quay lại học tất cả' : 'Quay lại thư viện'}
+        </button>
+      </div>
+    );
+  }
+
+  // Safety guard: If no current card but session is not finished, show loading
+  if (!currentCard) {
+    return (
+      <div className="flex h-screen items-center justify-center bg-slate-50">
+        <div className="animate-pulse text-lg font-bold text-slate-400">
+          Loading flashcards...
         </div>
       </div>
     );
@@ -487,7 +461,7 @@ const DoFlashcardPlayer = () => {
             </h1>
           </div>
           <button
-            onClick={() => navigate('/app/flashcards')}
+            onClick={handleExitToLibrary}
             className="flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 text-slate-600 transition hover:bg-slate-200"
           >
             <X size={20} strokeWidth={2.5} />

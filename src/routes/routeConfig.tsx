@@ -27,6 +27,9 @@ import ChatPage from '@/pages/App/Chat';
 import PaymentManagement from '@/pages/App/PaymentManagement';
 import ArticlePage from '@/pages/App/Article';
 import ArticleDetailPage from '@/pages/App/Article/ArticleDetail';
+import SongPage from '@/pages/App/Song';
+import KaraokeSingPage from '@/pages/App/Song/KaraokeSing';
+import SongLeaderboardPage from '@/pages/App/Song/Leaderboard';
 
 export const routes = [
   {
@@ -170,6 +173,13 @@ export const routes = [
             },
           },
           {
+            path: 'flashcard/:setId',
+            element: <DoFlashcardPlayer />,
+            handle: {
+              title: 'GoodLearn | Học Flashcard',
+            },
+          },
+          {
             path: 'chat',
             element: <ChatPage />,
             handle: {
@@ -195,6 +205,27 @@ export const routes = [
             element: <ArticleDetailPage />,
             handle: {
               title: 'GoodLearn | Báo học trò',
+            },
+          },
+          {
+            path: 'songs',
+            element: <SongPage />,
+            handle: {
+              title: 'GoodLearn | Karaoke Student',
+            },
+          },
+          {
+            path: 'songs/:songId/sing',
+            element: <KaraokeSingPage />,
+            handle: {
+              title: 'GoodLearn | Đang hát',
+            },
+          },
+          {
+            path: 'songs/:songId/leaderboard',
+            element: <SongLeaderboardPage />,
+            handle: {
+              title: 'GoodLearn | Bảng xếp hạng',
             },
           },
         ],

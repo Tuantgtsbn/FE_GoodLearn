@@ -18,6 +18,7 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
 type LeaderboardLocationState = {
   examTitle?: string;
+  from?: 'quizz_list' | 'do_exam';
 };
 
 const formatExamDate = (isoDate: string) => {
@@ -122,10 +123,16 @@ const LeaderboardPage = () => {
           </p>
           <div className="mt-5 flex justify-center gap-2">
             <button
-              onClick={() => navigate('/app/quizz')}
+              onClick={() => {
+                if (locationState?.from === 'do_exam') {
+                  navigate(-1);
+                } else {
+                  navigate('/app/quizz');
+                }
+              }}
               className="rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50"
             >
-              Về danh sách đề
+              Quay lại
             </button>
             <button
               onClick={() => void refetch()}
@@ -144,10 +151,11 @@ const LeaderboardPage = () => {
       <header className="mb-5 rounded-3xl bg-linear-to-r from-cyan-600 via-blue-600 to-indigo-700 px-5 py-5 text-white shadow-xl md:px-6">
         <button
           onClick={() => {
-            if (state.from === 'quizz_list') {
+            if (locationState?.from === 'quizz_list') {
               navigate('/app/quizz');
             } else {
-              navigate(`/app/quizz/${quizId}/do`, { state: { examTitle } });
+              // Go back to the do-exam page with its state intact
+              navigate(-1);
             }
           }}
           className="mb-3 inline-flex items-center gap-1.5 text-sm font-semibold text-white/90 hover:text-white"

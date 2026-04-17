@@ -152,3 +152,32 @@ export interface IExamLeaderboardResponse {
   leaderboard: IExamLeaderboardEntry[];
   myRank: IExamLeaderboardEntry | null;
 }
+
+export interface IExamQuestionResult {
+  questionId: string;
+  questionTitle: string;
+  questionText: string;
+  questionType: string;
+  questionImageUrl: string | null;
+  questionOrder: number;
+  points: number;
+  correctAnswer: string[];
+  selectedOptions: string[];
+  isCorrect: boolean;
+  explanation: string | null;
+  answerOptions: IExamAnswerOption[];
+}
+
+export interface IGetExamAttemptResultResponse {
+  attemptId: string;
+  quizId: string;
+  quizTitle: string;
+  score: number;
+  maxScore: number;
+  isPassed: boolean | null;
+  passingScorePercentage: number | null;
+  startedAt: string;
+  completedAt: string | null;
+  timeSpentSeconds: number | null;
+  questions: IExamQuestionResult[];
+}

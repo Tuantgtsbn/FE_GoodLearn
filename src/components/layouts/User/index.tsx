@@ -7,6 +7,7 @@ import {
   TvMinimalPlay,
   Mic,
   FileQuestionMark,
+  Music2,
 } from 'lucide-react';
 import {
   ListItem,
@@ -105,6 +106,15 @@ const UserLayout = ({ children }: IPatientLayoutProps) => {
             setDrawerOpen(false);
           },
         },
+        {
+          label: 'Karaoke',
+          to: '/app/songs',
+          icon: <Music2 />,
+          action: () => {
+            navigate('/app/songs');
+            setDrawerOpen(false);
+          },
+        },
       ],
     },
   ];
@@ -114,10 +124,13 @@ const UserLayout = ({ children }: IPatientLayoutProps) => {
     createDialog(ModalConfirmLogout as React.FC, {}, 'exclusive');
   };
 
+  // Ẩn nav khi đang hát karaoke (full-screen immersive)
+  const isKaraokeSinging = pathName.includes('/sing');
+
   return (
     <>
       <div className="relative min-h-screen flex flex-col">
-        {isMobile && (
+        {isMobile && !isKaraokeSinging && (
           <>
             <Box
               display="flex"
@@ -177,7 +190,7 @@ const UserLayout = ({ children }: IPatientLayoutProps) => {
           </>
         )}
 
-        {!isMobile && (
+        {!isMobile && !isKaraokeSinging && (
           <SideBar
             items={sideBarItems}
             orientation="horizontal"
@@ -201,13 +214,15 @@ const UserLayout = ({ children }: IPatientLayoutProps) => {
 
         <main
           className={clsx('flex-1 flex flex-col', {
-            'pb-8': !pathName.includes('chat'),
+            'pb-8': !pathName.includes('chat') && !pathName.includes('songs'),
           })}
         >
           {children}
         </main>
 
-        {!pathName.includes('chat') && <Footer />}
+        {!pathName.includes('chat') && !pathName.includes('songs') && (
+          <Footer />
+        )}
       </div>
     </>
   );

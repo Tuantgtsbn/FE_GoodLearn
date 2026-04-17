@@ -766,3 +766,41 @@ export interface ICreateTagRequest {
 export interface IUpdateTagRequest {
   name?: string;
 }
+
+export interface ISongFile {
+  thumbnail?: string;
+  lrc?: string;
+  audio_original?: string;
+  audio_karaoke?: string;
+}
+export interface ISong {
+  id: string;
+  title: string;
+  artists: string[];
+  genre: string | null;
+  durationSeconds: number | null;
+  hasReferenceAudio: boolean;
+  createdAt: string;
+  songFiles?: ISongFile | null;
+}
+
+type ESongScoreStatus = 'PROCESSING' | 'COMPLETED' | 'FAILED';
+
+export interface ISongScore {
+  id: string;
+  songId: string;
+  userId: string;
+  status: ESongScoreStatus;
+  totalScore: number | null;
+  grade: string | null;
+  pitchScore: number | null;
+  rhythmScore: number | null;
+  stabilityScore: number | null;
+  dynamicsScore: number | null;
+  processingTimeMs: number | null;
+  rawResultJson: string | null;
+  createdAt: string;
+
+  user?: IUser | null;
+  song?: ISong | null;
+}

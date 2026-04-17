@@ -12,15 +12,33 @@ import {
   Circle,
   CircleDot,
   Clock3,
+  Eye,
   Flag,
   Info,
   LoaderCircle,
   Send,
+  TriangleAlert,
+  X,
 } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import clsx from 'clsx';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import {
+  useLocation,
+  useNavigate,
+  useParams,
+  useBlocker,
+} from 'react-router-dom';
 import { toast } from 'react-toastify';
+import AnswerReviewModal from './AnswerReviewModal';
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 
 type PendingSaveEntry = {
   questionId: string;
@@ -28,13 +46,6 @@ type PendingSaveEntry = {
 };
 
 type MarkedQuestionMap = Record<string, true>;
-
-type PersistedAttemptSnapshot = {
-  attemptId: string;
-  answers: IExamAnswersMap;
-  markedQuestionIds?: string[];
-  updatedAt: string;
-};
 
 type DoExamLocationState = {
   examTitle?: string;
@@ -46,8 +57,6 @@ const isMultipleChoice = (questionType: string) => {
   return questionType.toLowerCase().includes('multiple');
 };
 
-const STORAGE_KEY_PREFIX = 'goodlearn:exam:attempt:';
-
 const formatTime = (seconds: number | null) => {
   if (seconds === null || Number.isNaN(seconds)) {
     return '--:--';
@@ -58,8 +67,6 @@ const formatTime = (seconds: number | null) => {
   const secs = safeSeconds % 60;
   return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
 };
-
-const getPersistKey = (quizId: string) => `${STORAGE_KEY_PREFIX}${quizId}`;
 
 const DoExamPage = () => {
   const navigate = useNavigate();
@@ -77,10 +84,45 @@ const DoExamPage = () => {
   const [submitResult, setSubmitResult] = useState<ISubmitExamResponse | null>(
     null
   );
+  const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
+  const [showLeaveDialog, setShowLeaveDialog] = useState(false);
+  const [pendingNavigation, setPendingNavigation] = useState<string | null>(
+    null
+  );
 
   const saveTimersRef = useRef<Record<string, number>>({});
   const pendingSavesRef = useRef<Record<string, PendingSaveEntry>>({});
   const isSubmitTriggeredRef = useRef(false);
+
+  // Block navigation when exam is in progress (browser back/forward buttons)
+  const blocker = useBlocker(
+    useCallback(
+      ({ nextLocation }) => {
+        // Only block when exam is actively in progress (not submitted, not completed)
+        const isActiveExam = Boolean(attempt?.attemptId) && !submitResult;
+        const shouldBlock = isActiveExam && !isSubmitTriggeredRef.current;
+
+        console.log('=== useBlocker Check ===', {
+          attemptId: attempt?.attemptId,
+          isActiveExam,
+          submitResult: submitResult ? 'EXISTS' : 'NULL',
+          isSubmitTriggered: isSubmitTriggeredRef.current,
+          shouldBlock,
+          from: window.location.pathname,
+          to: nextLocation.pathname,
+        });
+
+        if (shouldBlock) {
+          // Store where user wants to go
+          setPendingNavigation(nextLocation.pathname);
+          setShowLeaveDialog(true);
+        }
+
+        return shouldBlock;
+      },
+      [attempt?.attemptId, submitResult]
+    )
+  );
 
   const questions = attempt?.questions || [];
   const totalQuestions = questions.length;
@@ -103,37 +145,6 @@ const DoExamPage = () => {
   const progressPercent = totalQuestions
     ? Math.round((answeredCount / totalQuestions) * 100)
     : 0;
-
-  const persistSnapshot = useCallback(
-    (
-      attemptId: string,
-      nextAnswers: IExamAnswersMap,
-      nextMarkedQuestions: MarkedQuestionMap
-    ) => {
-      if (!quizId) {
-        return;
-      }
-
-      const key = getPersistKey(quizId);
-      const snapshot: PersistedAttemptSnapshot = {
-        attemptId,
-        answers: nextAnswers,
-        markedQuestionIds: Object.keys(nextMarkedQuestions),
-        updatedAt: new Date().toISOString(),
-      };
-
-      localStorage.setItem(key, JSON.stringify(snapshot));
-    },
-    [quizId]
-  );
-
-  const clearSnapshot = useCallback(() => {
-    if (!quizId) {
-      return;
-    }
-
-    localStorage.removeItem(getPersistKey(quizId));
-  }, [quizId]);
 
   const saveAnswerNow = useCallback(
     async (questionId: string, selectedOptions: string[]) => {
@@ -192,6 +203,70 @@ const DoExamPage = () => {
     );
   }, [saveAnswerNow]);
 
+  const handleCancelExam = useCallback(async () => {
+    console.log('handleCancelExam called');
+
+    if (!attempt?.attemptId) {
+      console.log('No attemptId, navigating to quiz list');
+      setShowLeaveDialog(false);
+      navigate('/app/quizz');
+      return;
+    }
+
+    try {
+      console.log('Submitting exam before leave');
+      // Submit the exam with current answers before leaving
+      await flushPendingSaves();
+      const result = await ApiExam.submitExam({
+        attemptId: attempt.attemptId,
+      });
+
+      console.log('Submit result:', result);
+
+      // Update state to stop timer
+      setSubmitResult(result);
+      isSubmitTriggeredRef.current = true;
+
+      toast.success('Đã nộp bài và thoát khỏi bài thi.');
+
+      // Close dialog first
+      setShowLeaveDialog(false);
+
+      // If there's a blocker (from browser back button), proceed with the navigation
+      if (blocker?.state === 'blocked') {
+        console.log('Proceeding with blocked navigation');
+        blocker.proceed();
+      } else {
+        // Otherwise navigate after a short delay to ensure state updates
+        setTimeout(() => {
+          if (pendingNavigation) {
+            console.log('Navigating to pending:', pendingNavigation);
+            navigate(pendingNavigation);
+          } else {
+            console.log('Navigating to quiz list');
+            navigate('/app/quizz');
+          }
+        }, 100);
+      }
+    } catch (error) {
+      console.error('Failed to submit exam:', error);
+      toast.error('Không thể nộp bài. Vui lòng thử lại.');
+      // Don't navigate on error - let user stay and try again
+    }
+  }, [
+    attempt?.attemptId,
+    flushPendingSaves,
+    pendingNavigation,
+    navigate,
+    blocker,
+  ]);
+
+  const handleAttemptLeave = useCallback(() => {
+    console.log('handleAttemptLeave called, showing dialog');
+    // Show the confirmation dialog
+    setShowLeaveDialog(true);
+  }, []);
+
   const startExam = useCallback(async () => {
     if (!quizId) {
       toast.error('Không tìm thấy mã đề thi');
@@ -204,59 +279,24 @@ const DoExamPage = () => {
     try {
       const startData = await ApiExam.startExam({ quizId });
 
-      let mergedAnswers = startData.answers;
-      let mergedMarkedQuestions: MarkedQuestionMap = {};
-      const rawPersisted = localStorage.getItem(getPersistKey(quizId));
-
-      if (rawPersisted) {
-        try {
-          const persisted = JSON.parse(
-            rawPersisted
-          ) as PersistedAttemptSnapshot;
-
-          if (
-            persisted.attemptId &&
-            persisted.attemptId === startData.attemptId &&
-            persisted.answers
-          ) {
-            mergedAnswers = {
-              ...startData.answers,
-              ...persisted.answers,
-            };
-
-            const questionIdSet = new Set(
-              startData.questions.map((item) => item.id)
-            );
-            mergedMarkedQuestions = (
-              persisted.markedQuestionIds || []
-            ).reduce<MarkedQuestionMap>((acc, questionId) => {
-              if (questionIdSet.has(questionId)) {
-                acc[questionId] = true;
-              }
-              return acc;
-            }, {});
-          }
-        } catch {
-          localStorage.removeItem(getPersistKey(quizId));
-        }
+      // Check if we're resuming an incomplete attempt from a previous session
+      if (startData.resumed) {
+        toast.warning(
+          'Bạn có bài thi chưa hoàn thành từ trước. Thời gian vẫn tiếp tục đếm.'
+        );
       }
 
       setAttempt(startData);
-      setAnswers(mergedAnswers);
-      setMarkedQuestions(mergedMarkedQuestions);
+      setAnswers(startData.answers);
+      setMarkedQuestions({});
       setTimeLeftSeconds(startData.timeLeftSeconds);
-      persistSnapshot(
-        startData.attemptId,
-        mergedAnswers,
-        mergedMarkedQuestions
-      );
     } catch {
       toast.error('Không thể bắt đầu bài thi. Vui lòng thử lại.');
       navigate('/app/quizz');
     } finally {
       setIsLoadingExam(false);
     }
-  }, [quizId, navigate, persistSnapshot]);
+  }, [quizId, navigate]);
 
   const handleSelectOption = (
     question: IExamQuestion,
@@ -288,7 +328,6 @@ const DoExamPage = () => {
         [question.id]: nextSelected,
       };
 
-      persistSnapshot(attempt.attemptId, nextAnswers, markedQuestions);
       scheduleSave(question.id, nextSelected);
 
       return nextAnswers;
@@ -310,11 +349,10 @@ const DoExamPage = () => {
           nextMarkedQuestions[questionId] = true;
         }
 
-        persistSnapshot(attempt.attemptId, answers, nextMarkedQuestions);
         return nextMarkedQuestions;
       });
     },
-    [attempt?.attemptId, submitResult, isSubmitting, persistSnapshot, answers]
+    [attempt?.attemptId, submitResult, isSubmitting]
   );
 
   const handleSubmit = useCallback(
@@ -332,7 +370,7 @@ const DoExamPage = () => {
           attemptId: attempt.attemptId,
         });
         setSubmitResult(result);
-        clearSnapshot();
+
         if (isAutoSubmit) {
           toast.info('Đã hết thời gian. Hệ thống đã tự động nộp bài.');
         } else {
@@ -345,12 +383,22 @@ const DoExamPage = () => {
         setIsSubmitting(false);
       }
     },
-    [attempt?.attemptId, isSubmitting, flushPendingSaves, clearSnapshot]
+    [attempt?.attemptId, isSubmitting, flushPendingSaves]
   );
 
   useEffect(() => {
     void startExam();
   }, [startExam]);
+
+  // Reset state when quizId changes (prevents state bleeding between navigations)
+  useEffect(() => {
+    console.log('quizId changed, resetting state');
+    setShowLeaveDialog(false);
+    setPendingNavigation(null);
+    setSubmitResult(null);
+    setCurrentQuestionIndex(0);
+    isSubmitTriggeredRef.current = false;
+  }, [quizId]);
 
   useEffect(() => {
     if (submitResult || timeLeftSeconds === null || isSubmitting) {
@@ -385,7 +433,9 @@ const DoExamPage = () => {
 
     const handleBeforeUnload = (event: BeforeUnloadEvent) => {
       event.preventDefault();
-      event.returnValue = '';
+      event.returnValue =
+        'Bạn đang làm bài thi. Nếu rời đi, hệ thống sẽ tự động nộp bài với các câu trả lời hiện tại.';
+      return event.returnValue;
     };
 
     window.addEventListener('beforeunload', handleBeforeUnload);
@@ -395,13 +445,30 @@ const DoExamPage = () => {
     };
   }, [attempt?.attemptId, submitResult]);
 
+  // Auto-submit exam when component unmounts (tab close, navigation)
   useEffect(() => {
     return () => {
+      // Clean up save timers
       Object.values(saveTimersRef.current).forEach((timerId) => {
         window.clearTimeout(timerId);
       });
+
+      // If exam is in progress and not yet submitted, auto-submit
+      if (
+        attempt?.attemptId &&
+        !submitResult &&
+        !isSubmitTriggeredRef.current
+      ) {
+        isSubmitTriggeredRef.current = true;
+        // Fire and forget - browser may not complete this on unmount
+        ApiExam.submitExam({
+          attemptId: attempt.attemptId,
+        }).catch(() => {
+          // Silently fail - backend will auto-submit on timer expiry anyway
+        });
+      }
     };
-  }, []);
+  }, [attempt?.attemptId, submitResult]);
 
   if (isLoadingExam) {
     return (
@@ -426,7 +493,7 @@ const DoExamPage = () => {
             đề.
           </p>
           <button
-            onClick={() => navigate('/app/quizz')}
+            onClick={handleAttemptLeave}
             className="mt-5 rounded-xl bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700"
           >
             Quay lại danh sách
@@ -442,7 +509,7 @@ const DoExamPage = () => {
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
             <button
-              onClick={() => navigate('/app/quizz')}
+              onClick={handleAttemptLeave}
               className="mb-2 inline-flex items-center gap-1.5 text-sm font-semibold text-slate-500 hover:text-slate-800"
             >
               <ArrowLeft size={16} />
@@ -713,7 +780,7 @@ const DoExamPage = () => {
             <button
               onClick={() =>
                 navigate(`/app/quizz/${quizId}/leaderboard`, {
-                  state: { examTitle },
+                  state: { examTitle, from: 'do_exam' },
                 })
               }
               className="rounded-xl bg-blue-600 px-4 py-2 text-sm font-bold text-white hover:bg-blue-700"
@@ -730,9 +797,91 @@ const DoExamPage = () => {
             >
               Làm lại đề này
             </button>
+            <button
+              onClick={() => setIsReviewModalOpen(true)}
+              className="inline-flex items-center gap-2 rounded-xl bg-emerald-600 px-4 py-2 text-sm font-bold text-white transition hover:bg-emerald-700"
+            >
+              <Eye size={16} />
+              Xem đáp án
+            </button>
           </div>
         </section>
       )}
+
+      <AnswerReviewModal
+        isOpen={isReviewModalOpen}
+        onClose={() => setIsReviewModalOpen(false)}
+        attemptId={attempt?.attemptId ?? ''}
+      />
+
+      <Dialog
+        open={showLeaveDialog}
+        onOpenChange={(open) => {
+          console.log('Dialog open state changed:', open);
+          setShowLeaveDialog(open);
+        }}
+      >
+        <DialogContent showCloseButton={false} className="sm:max-w-[425px]">
+          <DialogClose className="absolute right-4 top-4 rounded-sm opacity-70 hover:opacity-100">
+            <X className="h-4 w-4" />
+          </DialogClose>
+          <DialogHeader>
+            <div className="mb-2 flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-amber-100">
+                <TriangleAlert className="text-amber-600" size={20} />
+              </div>
+              <DialogTitle className="text-xl">
+                Cảnh báo thoát bài thi
+              </DialogTitle>
+            </div>
+            <DialogDescription className="text-base leading-relaxed">
+              Nếu bạn rời khỏi bài thi bây giờ, hệ thống sẽ{' '}
+              <span className="font-bold text-red-600">tự động nộp bài</span>{' '}
+              với các câu trả lời hiện tại. Bạn sẽ không thể tiếp tục làm bài.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="rounded-xl bg-slate-50 p-4 text-sm text-slate-700">
+            <p className="font-semibold">Tiến độ hiện tại của bạn:</p>
+            <p className="mt-2">
+              ✓ Đã trả lời:{' '}
+              <span className="font-bold text-emerald-600">
+                {answeredCount}/{totalQuestions}
+              </span>
+            </p>
+            <p className="mt-1">
+              ⚑ Đánh dấu xem sau:{' '}
+              <span className="font-bold text-amber-600">{markedCount}</span>
+            </p>
+            {timeLeftSeconds && (
+              <p className="mt-1">
+                ⏱ Thời gian còn lại:{' '}
+                <span className="font-bold text-blue-600">
+                  {formatTime(timeLeftSeconds)}
+                </span>
+              </p>
+            )}
+          </div>
+
+          <DialogFooter className="gap-2 sm:gap-0">
+            <button
+              onClick={() => {
+                console.log('User chose to continue exam');
+                setShowLeaveDialog(false);
+              }}
+              className="rounded-xl border border-slate-300 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
+            >
+              Tiếp tục làm bài
+            </button>
+            <button
+              onClick={handleCancelExam}
+              className="rounded-xl bg-red-600 px-5 py-2.5 text-sm font-bold text-white transition hover:bg-red-700"
+            >
+              Thoát và nộp bài
+            </button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

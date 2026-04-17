@@ -5,6 +5,7 @@ import type {
   IExamListApiQuery,
   IExamListItem,
   IGetExamAttemptDetailResponse,
+  IGetExamAttemptResultResponse,
   ISaveExamAnswerPayload,
   ISaveExamAnswerResponse,
   IStartExamPayload,
@@ -19,6 +20,7 @@ const path = {
   answer: '/exams/answer',
   submit: '/exams/submit',
   attemptDetail: (attemptId: string) => `/exams/attempt/${attemptId}`,
+  attemptResult: (attemptId: string) => `/exams/attempt/${attemptId}/result`,
   leaderboard: (quizId: string) => `/exams/${quizId}/leaderboard`,
 };
 
@@ -104,6 +106,19 @@ const getExamLeaderboard = (quizId: string) => {
   );
 };
 
+const getAttemptResult = (attemptId: string) => {
+  return fetcher<IGetExamAttemptResultResponse>(
+    {
+      url: path.attemptResult(attemptId),
+      method: 'GET',
+    },
+    {
+      withToken: true,
+      displayError: false,
+    }
+  );
+};
+
 export default {
   getExamList,
   startExam,
@@ -111,4 +126,5 @@ export default {
   submitExam,
   getExamAttemptDetail,
   getExamLeaderboard,
+  getAttemptResult,
 };
