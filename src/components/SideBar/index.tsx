@@ -72,17 +72,20 @@ const MenuItemWithChildren: React.FC<{
             py: 0.75,
             transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
             width: '100%',
-            color: isSelected ? 'black' : 'text.secondary',
-            backgroundColor: isSelected ? 'rgba(0, 0, 0, 0.06)' : 'transparent',
+            color: isSelected ? 'text.primary' : 'text.secondary',
+            backgroundColor: isSelected ? 'primary.lighter' : 'transparent',
             '&:hover': {
               backgroundColor: isSelected
-                ? 'rgba(0, 0, 0, 0.06)'
-                : 'rgba(0, 0, 0, 0.04)',
+                ? 'primary.lighter'
+                : (theme) =>
+                    theme.palette.mode === 'dark'
+                      ? 'rgba(255, 255, 255, 0.04)'
+                      : 'rgba(0, 0, 0, 0.04)',
               transform: 'translateY(-1px)',
             },
             '&.Mui-selected': {
-              backgroundColor: 'rgba(0, 0, 0, 0.06)',
-              color: 'black',
+              backgroundColor: 'primary.lighter',
+              color: 'text.primary',
               fontWeight: 700,
             },
           }}
@@ -180,20 +183,23 @@ const MenuItemWithChildren: React.FC<{
           sx={{
             borderRadius: '10px',
             transition: 'all 0.2s ease-in-out',
-            color: isSelected ? 'black' : 'text.secondary',
+            color: isSelected ? 'text.primary' : 'text.secondary',
             py: 1,
             '&:hover': {
               backgroundColor: isSelected
-                ? 'rgba(0, 0, 0, 0.06)'
-                : 'rgba(0, 0, 0, 0.04)',
+                ? 'primary.lighter'
+                : (theme) =>
+                    theme.palette.mode === 'dark'
+                      ? 'rgba(255, 255, 255, 0.04)'
+                      : 'rgba(0, 0, 0, 0.04)',
               '& .MuiListItemIcon-root': {
                 transform: 'scale(1.1)',
               },
             },
             '&.Mui-selected': {
-              backgroundColor: 'rgba(0, 0, 0, 0.06)',
+              backgroundColor: 'primary.lighter',
               '&:hover': {
-                backgroundColor: 'rgba(0, 0, 0, 0.06)',
+                backgroundColor: 'primary.lighter',
               },
               '&::before': {
                 content: '""',
@@ -201,7 +207,7 @@ const MenuItemWithChildren: React.FC<{
                 left: 0,
                 width: '4px',
                 height: '60%',
-                backgroundColor: 'black',
+                backgroundColor: 'text.primary',
                 borderRadius: '0 4px 4px 0',
               },
             },
@@ -288,22 +294,25 @@ const MenuItem: React.FC<{
           whiteSpace: 'nowrap',
           transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
           width: orientation === 'horizontal' ? 'auto' : '100%',
-          color: isSelected ? 'black' : 'text.secondary',
+          color: isSelected ? 'text.primary' : 'text.secondary',
           '&:hover': {
             backgroundColor: isSelected
-              ? 'rgba(0, 0, 0, 0.06)'
-              : 'rgba(0,0,0,0.04)',
+              ? 'primary.lighter'
+              : (theme) =>
+                  theme.palette.mode === 'dark'
+                    ? 'rgba(255, 255, 255, 0.04)'
+                    : 'rgba(0, 0, 0, 0.04)',
             transform:
               orientation === 'horizontal' ? 'translateY(-1px)' : 'none',
             '& .MuiListItemIcon-root': {
-              color: 'black',
+              color: 'text.primary',
             },
           },
           '&.Mui-selected': {
-            backgroundColor: 'rgba(0, 0, 0, 0.06)',
-            color: 'black',
+            backgroundColor: 'primary.lighter',
+            color: 'text.primary',
             '&:hover': {
-              backgroundColor: 'rgba(0, 0, 0, 0.06)',
+              backgroundColor: 'primary.lighter',
             },
             '&::before':
               orientation === 'vertical'
@@ -313,7 +322,7 @@ const MenuItem: React.FC<{
                     left: 4,
                     width: '4px',
                     height: '50%',
-                    backgroundColor: 'black',
+                    backgroundColor: 'text.primary',
                     borderRadius: '4px',
                   }
                 : undefined,

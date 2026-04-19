@@ -20,7 +20,7 @@ import DoExamPage from '@/pages/App/Quizz/DoExam';
 import LeaderboardPage from '@/pages/App/Quizz/Leaderboard';
 import { DialogProvider } from '@/context/DialogContext';
 import UserLayout from '@/components/layouts/User';
-import Voicecall from '@/pages/App/VoiceCall';
+// import Voicecall from '@/pages/App/VoiceCall';
 import FlashcardListPage from '@/pages/App/Flashcard';
 import DoFlashcardPlayer from '@/pages/App/Flashcard/DoFlashcard';
 import ChatPage from '@/pages/App/Chat';
@@ -30,6 +30,7 @@ import ArticleDetailPage from '@/pages/App/Article/ArticleDetail';
 import SongPage from '@/pages/App/Song';
 import KaraokeSingPage from '@/pages/App/Song/KaraokeSing';
 import SongLeaderboardPage from '@/pages/App/Song/Leaderboard';
+import LibraryPage from '@/pages/App/Library';
 
 export const routes = [
   {
@@ -152,17 +153,17 @@ export const routes = [
             },
           },
           {
-            path: 'voice',
-            element: <Voicecall />,
-            handle: {
-              title: 'GoodLearn | Trò chuyện trực tiếp',
-            },
-          },
-          {
             path: 'flashcards',
             element: <FlashcardListPage />,
             handle: {
               title: 'GoodLearn | Thư viện Flashcard',
+            },
+          },
+          {
+            path: 'library',
+            element: <LibraryPage />,
+            handle: {
+              title: 'GoodLearn | Thư viện',
             },
           },
           {
@@ -180,7 +181,7 @@ export const routes = [
             },
           },
           {
-            path: 'chat',
+            path: 'chat/:conversationId?',
             element: <ChatPage />,
             handle: {
               title: 'GoodLearn | Chat AI',

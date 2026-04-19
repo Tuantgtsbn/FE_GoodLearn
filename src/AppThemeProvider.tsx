@@ -22,12 +22,12 @@ const buildTheme = (mode: 'light' | 'dark') =>
       text:
         mode === 'dark'
           ? {
-              primary: '#000',
-              secondary: '#fff',
+              primary: '#fff',
+              secondary: '#bdbdbd',
             }
           : {
-              primary: '#fff',
-              secondary: '#000',
+              primary: '#000',
+              secondary: '#666666',
             },
       background:
         mode === 'dark'

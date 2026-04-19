@@ -42,6 +42,7 @@ export interface IFlashcardListApiQuery {
   subjectId?: string;
   gradeLevel?: number;
   isPublic?: boolean;
+  scope?: 'mine' | 'public';
 }
 
 export type FlashcardType =

@@ -1,12 +1,12 @@
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import type { IRootState } from '@/redux/store';
 import {
-  setActiveConversation,
+  selectConversation,
   createNewConversation,
-  deleteConversation,
   toggleSidebar,
 } from '@/redux/slices/ChatSlice';
-import { Plus, MessageSquare, Trash2, Settings } from 'lucide-react';
+import { Plus, MessageSquare, Settings } from 'lucide-react';
 import Avatar from '@/components/ui/Avatar';
 import clsx from 'clsx';
 
@@ -16,13 +16,17 @@ interface ChatSidebarProps {
 
 export default function ChatSidebar({ isOpen }: ChatSidebarProps) {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { conversations, activeConversationId } = useSelector(
     (state: IRootState) => state.chat
   );
   const user = useSelector((state: IRootState) => state.auth.user);
 
   const handleSelectConversation = (id: string) => {
-    dispatch(setActiveConversation(id));
+    dispatch(
+      selectConversation(id) as unknown as Parameters<typeof dispatch>[0]
+    );
+    navigate(`/app/chat/${id}`);
     // Close sidebar on mobile
     if (window.innerWidth < 768) {
       dispatch(toggleSidebar());
@@ -31,14 +35,10 @@ export default function ChatSidebar({ isOpen }: ChatSidebarProps) {
 
   const handleNewChat = () => {
     dispatch(createNewConversation());
+    navigate('/app/chat');
     if (window.innerWidth < 768) {
       dispatch(toggleSidebar());
     }
-  };
-
-  const handleDelete = (e: React.MouseEvent, id: string) => {
-    e.stopPropagation();
-    dispatch(deleteConversation(id));
   };
 
   // Group conversations by time
@@ -94,15 +94,6 @@ export default function ChatSidebar({ isOpen }: ChatSidebarProps) {
                     className="chat-sidebar__item-icon"
                   />
                   <span className="chat-sidebar__item-title">{conv.title}</span>
-                  <div className="chat-sidebar__item-actions">
-                    <button
-                      className="chat-sidebar__item-action-btn chat-sidebar__item-action-btn--delete"
-                      onClick={(e) => handleDelete(e, conv.id)}
-                      title="Xóa cuộc trò chuyện"
-                    >
-                      <Trash2 size={14} />
-                    </button>
-                  </div>
                 </div>
               ))}
             </>
@@ -125,15 +116,6 @@ export default function ChatSidebar({ isOpen }: ChatSidebarProps) {
                     className="chat-sidebar__item-icon"
                   />
                   <span className="chat-sidebar__item-title">{conv.title}</span>
-                  <div className="chat-sidebar__item-actions">
-                    <button
-                      className="chat-sidebar__item-action-btn chat-sidebar__item-action-btn--delete"
-                      onClick={(e) => handleDelete(e, conv.id)}
-                      title="Xóa cuộc trò chuyện"
-                    >
-                      <Trash2 size={14} />
-                    </button>
-                  </div>
                 </div>
               ))}
             </>

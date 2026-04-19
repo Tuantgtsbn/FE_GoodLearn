@@ -18,19 +18,90 @@ import remarkGfm from 'remark-gfm';
 import rehypeHighlight from 'rehype-highlight';
 import clsx from 'clsx';
 import Avatar from '@/components/ui/Avatar';
-import { useState, useCallback } from 'react';
+import { useState, useCallback, memo } from 'react';
+import ChatFlashcardNestedCard from './ChatFlashcardNestedCard';
+import VideoMessage from './VideoMessage';
 
 interface MessageBubbleProps {
   message: ChatMessageWithReaction;
 }
 
-export default function MessageBubble({ message }: MessageBubbleProps) {
+const MARKDOWN_REMARK_PLUGINS = [remarkGfm];
+const MARKDOWN_REHYPE_PLUGINS = [rehypeHighlight];
+
+function MessageBubble({ message }: MessageBubbleProps) {
   const dispatch = useDispatch<IAppDispatch>();
   const user = useSelector((state: IRootState) => state.auth.user);
   const [copied, setCopied] = useState(false);
 
   const isUser = message.role === 'user';
   const isAssistant = message.role === 'assistant';
+  const generationJob = message.generationJob;
+  const metadata = message.metadata;
+  const metadataTool =
+    typeof metadata?.tool === 'string' ? metadata.tool : undefined;
+
+  const isFlashcardFlow =
+    metadataTool === 'create_flashcard' ||
+    message.toolName === 'create_flashcard';
+
+  const isVideoFlow =
+    metadataTool === 'create_video' || message.toolName === 'create_video';
+
+  const flashcardSetId =
+    generationJob?.status === 'COMPLETED' &&
+    generationJob?.resultType === 'flashcard_set' &&
+    generationJob?.resultId
+      ? generationJob.resultId
+      : null;
+
+  const shouldRenderFlashcardNested =
+    isFlashcardFlow && Boolean(flashcardSetId);
+
+  const videoId =
+    generationJob?.status === 'COMPLETED' &&
+    generationJob?.resultType === 'video' &&
+    generationJob?.resultId
+      ? generationJob.resultId
+      : null;
+
+  const shouldRenderVideoMessage =
+    isVideoFlow &&
+    Boolean(videoId || message.generationJobId || message.attachmentUrl);
+
+  const flashcardTopic =
+    typeof metadata?.args?.topic === 'string' ? metadata.args.topic : undefined;
+  const flashcardTitle = flashcardTopic
+    ? `Flashcard: ${flashcardTopic}`
+    : 'Bo flashcard da tao xong';
+  const flashcardCardCount =
+    typeof metadata?.args?.num_cards === 'number'
+      ? metadata.args.num_cards
+      : undefined;
+
+  const videoTitle =
+    typeof metadata?.args?.topic === 'string'
+      ? `Video: ${metadata.args.topic}`
+      : 'Video da tao xong';
+
+  const videoDescription =
+    typeof metadata?.args?.style === 'string'
+      ? `Style: ${metadata.args.style}`
+      : null;
+
+  const videoUrl =
+    typeof message.attachmentUrl === 'string' &&
+    message.attachmentUrl.length > 0
+      ? message.attachmentUrl
+      : typeof metadata?.videoUrl === 'string'
+        ? metadata.videoUrl
+        : typeof metadata?.resultUrl === 'string'
+          ? metadata.resultUrl
+          : null;
+
+  const hideToolRawContent =
+    message.role === 'tool' &&
+    (shouldRenderFlashcardNested || shouldRenderVideoMessage);
 
   const handleCopy = useCallback(() => {
     navigator.clipboard.writeText(message.content);
@@ -78,12 +149,46 @@ export default function MessageBubble({ message }: MessageBubbleProps) {
             message.content
           ) : (
             <>
-              <ReactMarkdown
-                remarkPlugins={[remarkGfm]}
-                rehypePlugins={[rehypeHighlight]}
-              >
-                {message.content}
-              </ReactMarkdown>
+              {!hideToolRawContent &&
+                (message.isStreaming ? (
+                  <div style={{ whiteSpace: 'pre-wrap' }}>
+                    {message.content}
+                  </div>
+                ) : (
+                  <ReactMarkdown
+                    remarkPlugins={MARKDOWN_REMARK_PLUGINS}
+                    rehypePlugins={MARKDOWN_REHYPE_PLUGINS}
+                  >
+                    {message.content}
+                  </ReactMarkdown>
+                ))}
+
+              {shouldRenderFlashcardNested && flashcardSetId && (
+                <ChatFlashcardNestedCard
+                  setId={flashcardSetId}
+                  title={flashcardTitle}
+                  description={
+                    typeof metadata?.args?.difficulty === 'string'
+                      ? `Do kho: ${metadata.args.difficulty}`
+                      : null
+                  }
+                  cardCount={flashcardCardCount}
+                />
+              )}
+
+              {shouldRenderVideoMessage && (
+                <VideoMessage
+                  videoId={
+                    videoId || message.generationJobId || message.messageId
+                  }
+                  title={videoTitle}
+                  description={videoDescription}
+                  progress={generationJob?.progress}
+                  status={generationJob?.status}
+                  videoUrl={videoUrl}
+                />
+              )}
+
               {message.isStreaming && (
                 <span className="chat-message__streaming-cursor" />
               )}
@@ -142,3 +247,5 @@ export default function MessageBubble({ message }: MessageBubbleProps) {
     </div>
   );
 }
+
+export default memo(MessageBubble);

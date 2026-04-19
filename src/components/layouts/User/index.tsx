@@ -5,7 +5,6 @@ import {
   Menu,
   MessageSquareMore,
   TvMinimalPlay,
-  Mic,
   FileQuestionMark,
   Music2,
 } from 'lucide-react';
@@ -55,32 +54,31 @@ const UserLayout = ({ children }: IPatientLayoutProps) => {
       },
     },
     {
-      label: 'Tạo video & flash card',
-      to: '/app/make-content',
-      requireAuth: true,
-      icon: <TvMinimalPlay />,
-      action: () => {
-        navigate('/app/make-content');
-        setDrawerOpen(false);
-      },
-    },
-    {
-      label: 'Voice',
-      to: '/app/voice',
-      requireAuth: true,
-      icon: <Mic />,
-      action: () => {
-        navigate('/app/voice');
-        setDrawerOpen(false);
-      },
-    },
-    {
       label: 'Thi trắc nghiệm',
       to: '/app/quizz',
       icon: <FileQuestionMark />,
       requireAuth: true,
       action: () => {
         navigate('/app/quizz');
+        setDrawerOpen(false);
+      },
+    },
+    {
+      label: 'Thư viện',
+      to: '/app/library',
+      requireAuth: true,
+      icon: <TvMinimalPlay />,
+      action: () => {
+        navigate('/app/library');
+        setDrawerOpen(false);
+      },
+    },
+    {
+      label: 'Bài viết',
+      to: '/app/article',
+      icon: <ICArticle />,
+      action: () => {
+        navigate('/app/article');
         setDrawerOpen(false);
       },
     },
@@ -94,15 +92,6 @@ const UserLayout = ({ children }: IPatientLayoutProps) => {
           icon: <BookOpenText />,
           action: () => {
             navigate('/app/flashcards');
-            setDrawerOpen(false);
-          },
-        },
-        {
-          label: 'Bài viết',
-          to: '/app/article',
-          icon: <ICArticle />,
-          action: () => {
-            navigate('/app/article');
             setDrawerOpen(false);
           },
         },
