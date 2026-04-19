@@ -8,7 +8,15 @@ import type {
 const path = {
   list: '/videos',
   detail: (id: string) => `/videos/${id}`,
+  share: (id: string) => `/videos/${id}/share`,
+  unshare: (id: string) => `/videos/${id}/unshare`,
 };
+
+export interface IVideoVisibilityUpdateResponse {
+  id: string;
+  isPublic: boolean;
+  updatedAt: string;
+}
 
 const getVideoList = (params: IVideoListApiQuery) => {
   return fetcherWithMetadata<IVideoListItem[]>(
@@ -37,7 +45,35 @@ const getVideoDetail = (id: string) => {
   );
 };
 
+const shareVideo = (id: string) => {
+  return fetcher<IVideoVisibilityUpdateResponse>(
+    {
+      url: path.share(id),
+      method: 'PATCH',
+    },
+    {
+      withToken: true,
+      displayError: false,
+    }
+  );
+};
+
+const unshareVideo = (id: string) => {
+  return fetcher<IVideoVisibilityUpdateResponse>(
+    {
+      url: path.unshare(id),
+      method: 'PATCH',
+    },
+    {
+      withToken: true,
+      displayError: false,
+    }
+  );
+};
+
 export default {
   getVideoList,
   getVideoDetail,
+  shareVideo,
+  unshareVideo,
 };

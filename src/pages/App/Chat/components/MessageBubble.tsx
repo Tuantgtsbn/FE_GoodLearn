@@ -129,6 +129,7 @@ function MessageBubble({ message }: MessageBubbleProps) {
       className={clsx('chat-message', {
         'chat-message--user': isUser,
         'chat-message--assistant': isAssistant,
+        'chat-message--streaming': isAssistant && Boolean(message.isStreaming),
       })}
     >
       {/* Avatar */}

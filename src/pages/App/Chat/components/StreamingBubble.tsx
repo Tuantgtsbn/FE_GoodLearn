@@ -14,6 +14,7 @@ export default function StreamingBubble({ message }: StreamingBubbleProps) {
       className={clsx('chat-message', {
         'chat-message--user': isUser,
         'chat-message--assistant': !isUser,
+        'chat-message--streaming': !isUser,
       })}
     >
       {!isUser && (
@@ -28,7 +29,7 @@ export default function StreamingBubble({ message }: StreamingBubbleProps) {
         })}
       >
         <div className="chat-message__content">
-          <div style={{ whiteSpace: 'pre-wrap' }}>{message.content}</div>
+          <div className="chat-message__streaming-text">{message.content}</div>
           <span className="chat-message__streaming-cursor" />
         </div>
       </div>

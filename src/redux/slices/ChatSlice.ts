@@ -1,10 +1,11 @@
 import ApiChat, {
   type IChatConversationListItem,
   type IChatMessageItem,
+  type IChatStreamToolResultEvent,
 } from '@/api/ApiChat';
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 import type { IChatConversation, IChatMessage } from '@/types';
-import type { ChatSseEvent } from '../../../../Backend/src/types/chat-sse-events';
+import type { ChatSseEvent } from '@/types/chat-sse-events';
 
 export type ReactionType = 'LIKE' | 'DISLIKE' | null;
 
@@ -378,6 +379,48 @@ const chatSlice = createSlice({
       }
     },
 
+    bindStreamingMessageToolResult: (
+      state,
+      action: PayloadAction<{
+        messageId: string;
+        payload: IChatStreamToolResultEvent;
+      }>
+    ) => {
+      const targetMessage = state.messages.find(
+        (message) => message.messageId === action.payload.messageId
+      );
+
+      if (!targetMessage) {
+        return;
+      }
+
+      const toolPayload = action.payload.payload;
+      targetMessage.conversationId = toolPayload.conversationId;
+      targetMessage.toolName = toolPayload.tool;
+      targetMessage.toolCallId = toolPayload.toolCallId;
+      targetMessage.generationJobId = toolPayload.jobId;
+
+      if (!targetMessage.metadata) {
+        targetMessage.metadata = {};
+      }
+
+      targetMessage.metadata.tool = toolPayload.tool;
+      targetMessage.metadata.toolCallId = toolPayload.toolCallId;
+      targetMessage.metadata.args = toolPayload.args;
+
+      if (!targetMessage.generationJob) {
+        targetMessage.generationJob = {
+          id: toolPayload.jobId,
+          type: toolPayload.tool === 'create_video' ? 'VIDEO' : 'FLASHCARD',
+          status: 'PENDING',
+          progress: 0,
+          resultType: null,
+          resultId: null,
+          errorMessage: null,
+        };
+      }
+    },
+
     setMessageReactionLocal: (
       state,
       action: PayloadAction<{ messageId: string; reaction: ReactionType }>
@@ -428,6 +471,7 @@ export const {
   addUserMessage,
   addAssistantMessage,
   updateStreamingMessage,
+  bindStreamingMessageToolResult,
   setMessageReactionLocal,
   removeMessagesFrom,
   setIsStreaming,
@@ -621,6 +665,14 @@ export const sendMessage =
           },
           onDone: (payload) => {
             doneConversationId = payload.conversationId;
+          },
+          onToolResult: (payload) => {
+            dispatch(
+              bindStreamingMessageToolResult({
+                messageId: localAssistantId,
+                payload,
+              })
+            );
           },
           onError: (event) => {
             console.warn('[sendMessage] Stream error:', event.message);

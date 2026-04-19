@@ -15,15 +15,28 @@ import {
 import { Skeleton } from '@/components/ui/skeleton';
 import type { IRootState } from '@/redux/store';
 import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import clsx from 'clsx';
-import { useEffect, useMemo, useState, type ComponentType } from 'react';
+import {
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type ComponentType,
+} from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover';
 import {
   ArrowRight,
   BookOpenText,
   Clapperboard,
   Clock3,
+  Ellipsis,
   Eye,
   Globe,
   Heart,
@@ -266,6 +279,59 @@ const LoadingCard = () => (
   </article>
 );
 
+const VideoFrameThumbnail = ({
+  src,
+  title,
+}: {
+  src: string;
+  title: string;
+}) => {
+  const [isReady, setIsReady] = useState(false);
+  const [hasError, setHasError] = useState(false);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+
+  return (
+    <div className="relative aspect-16/10 w-full overflow-hidden bg-slate-900">
+      {!hasError && (
+        <video
+          ref={videoRef}
+          src={src}
+          muted
+          playsInline
+          preload="metadata"
+          className={clsx(
+            'h-full w-full object-cover transition duration-500 group-hover:scale-105',
+            isReady ? 'opacity-100' : 'opacity-0'
+          )}
+          onLoadedMetadata={(event) => {
+            const video = event.currentTarget;
+            try {
+              // Seek về gần 0s để browser render được frame đầu.
+              video.currentTime = 0.01;
+              video.pause();
+            } catch {
+              setHasError(true);
+            }
+          }}
+          onSeeked={() => {
+            setIsReady(true);
+          }}
+          onError={() => {
+            setHasError(true);
+          }}
+          aria-label={title}
+        />
+      )}
+
+      {(!isReady || hasError) && (
+        <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-slate-700 to-slate-900 text-white">
+          <Play size={24} />
+        </div>
+      )}
+    </div>
+  );
+};
+
 const EmptyState = ({
   title,
   description,
@@ -298,6 +364,7 @@ const EmptyState = ({
 
 const Library = () => {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const currentUserId = useSelector((state: IRootState) => state.auth.user?.id);
 
   const [contentType, setContentType] =
@@ -308,6 +375,9 @@ const Library = () => {
   const [sortBy, setSortBy] = useState<LibrarySortBy>('createdAt');
   const [gradeLevel, setGradeLevel] = useState('');
   const [page, setPage] = useState(1);
+  const [activeActionItemId, setActiveActionItemId] = useState<string | null>(
+    null
+  );
 
   useEffect(() => {
     const timer = window.setTimeout(() => {
@@ -356,6 +426,51 @@ const Library = () => {
     queryFn: () => ApiVideo.getVideoList(videoQueryParams),
     enabled: contentType === 'video',
     placeholderData: (previousData) => previousData,
+  });
+
+  const toggleVisibilityMutation = useMutation({
+    mutationFn: async (payload: {
+      itemId: string;
+      itemType: LibraryContentType;
+      isPublic: boolean;
+    }) => {
+      const { itemId, itemType, isPublic } = payload;
+
+      if (itemType === 'flashcard') {
+        if (isPublic) {
+          return ApiFlashcard.shareFlashcardSet(itemId);
+        }
+
+        return ApiFlashcard.unshareFlashcardSet(itemId);
+      }
+
+      if (isPublic) {
+        return ApiVideo.shareVideo(itemId);
+      }
+
+      return ApiVideo.unshareVideo(itemId);
+    },
+    onMutate: ({ itemId }) => {
+      setActiveActionItemId(itemId);
+    },
+    onSettled: async (_, __, variables) => {
+      setActiveActionItemId(null);
+
+      await Promise.all([
+        queryClient.invalidateQueries({
+          queryKey: [QUERY_KEY.FLASHCARD.LIST_SETS],
+        }),
+        queryClient.invalidateQueries({
+          queryKey: [QUERY_KEY.VIDEO.LIST_VIDEOS],
+        }),
+      ]);
+
+      if (variables.itemType === 'flashcard') {
+        await flashcardQuery.refetch();
+      } else {
+        await videoQuery.refetch();
+      }
+    },
   });
 
   const currentQuery =
@@ -413,6 +528,14 @@ const Library = () => {
   const activeScopeLabel = SCOPE_OPTIONS.find(
     (option) => option.value === scope
   )?.label;
+
+  const handleToggleVisibility = async (item: LibraryItem) => {
+    await toggleVisibilityMutation.mutateAsync({
+      itemId: item.id,
+      itemType: item.type,
+      isPublic: !item.isPublic,
+    });
+  };
 
   return (
     <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 px-4 py-6 sm:px-6 lg:px-8">
@@ -704,6 +827,9 @@ const Library = () => {
               const isOwner = item.owner?.id === currentUserId;
               const canOpenVideo =
                 item.type === 'video' ? Boolean(item.mediaUrl) : true;
+              const isActionPending =
+                toggleVisibilityMutation.isPending &&
+                activeActionItemId === item.id;
 
               return (
                 <article
@@ -736,13 +862,39 @@ const Library = () => {
                   )}
                 >
                   <div className="relative overflow-hidden">
-                    {item.type === 'video' && item.thumbnailUrl ? (
-                      <img
-                        src={item.thumbnailUrl}
-                        alt={item.title}
-                        className="aspect-16/10 w-full object-cover transition duration-500 group-hover:scale-105"
-                      />
+                    {item.type === 'video' ? (
+                      item.thumbnailUrl ? (
+                        <img
+                          src={item.thumbnailUrl}
+                          alt={item.title}
+                          className="aspect-16/10 w-full object-cover transition duration-500 group-hover:scale-105"
+                        />
+                      ) : item.mediaUrl ? (
+                        <VideoFrameThumbnail
+                          src={item.mediaUrl}
+                          title={item.title}
+                        />
+                      ) : (
+                        <div
+                          className="aspect-16/10 w-full"
+                          style={{
+                            background: `linear-gradient(135deg, ${item.accent}, ${item.accent}cc)`,
+                          }}
+                        >
+                          <div className="flex h-full items-center justify-center text-white">
+                            <div className="flex flex-col items-center gap-3">
+                              <div className="flex size-16 items-center justify-center rounded-full bg-white/15 backdrop-blur">
+                                <Clock3 size={26} />
+                              </div>
+                              <p className="text-sm font-semibold text-white/90">
+                                {item.primaryMetricLabel}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      )
                     ) : (
+                      // giữ nguyên block fallback flashcard
                       <div
                         className="aspect-16/10 w-full"
                         style={{
@@ -750,29 +902,14 @@ const Library = () => {
                         }}
                       >
                         <div className="flex h-full items-center justify-center text-white">
-                          {item.type === 'video' ? (
-                            <div className="flex flex-col items-center gap-3">
-                              <div className="flex size-16 items-center justify-center rounded-full bg-white/15 backdrop-blur">
-                                {canOpenVideo ? (
-                                  <Play size={26} />
-                                ) : (
-                                  <Clock3 size={26} />
-                                )}
-                              </div>
-                              <p className="text-sm font-semibold text-white/90">
-                                {item.primaryMetricLabel}
-                              </p>
+                          <div className="flex flex-col items-center gap-3 text-center">
+                            <div className="flex size-16 items-center justify-center rounded-2xl bg-white/15 backdrop-blur">
+                              <BookOpenText size={26} />
                             </div>
-                          ) : (
-                            <div className="flex flex-col items-center gap-3 text-center">
-                              <div className="flex size-16 items-center justify-center rounded-2xl bg-white/15 backdrop-blur">
-                                <BookOpenText size={26} />
-                              </div>
-                              <p className="text-sm font-semibold text-white/90">
-                                {item.primaryMetricLabel}
-                              </p>
-                            </div>
-                          )}
+                            <p className="text-sm font-semibold text-white/90">
+                              {item.primaryMetricLabel}
+                            </p>
+                          </div>
                         </div>
                       </div>
                     )}
@@ -799,6 +936,47 @@ const Library = () => {
                     <div className="absolute right-4 top-4 rounded-full bg-black/40 px-3 py-1 text-xs font-semibold text-white backdrop-blur">
                       {getStatusLabel(item.generationStatus)}
                     </div>
+
+                    {isOwner && (
+                      <div className="absolute right-4 top-14">
+                        <Popover>
+                          <PopoverTrigger asChild>
+                            <Button
+                              type="button"
+                              size="icon"
+                              variant="secondary"
+                              className="size-8 rounded-full border border-white/25 bg-black/40 text-white hover:bg-black/55"
+                              onClick={(event) => event.stopPropagation()}
+                            >
+                              <Ellipsis size={16} />
+                            </Button>
+                          </PopoverTrigger>
+                          <PopoverContent
+                            align="end"
+                            className="w-44 p-2"
+                            onClick={(event) => event.stopPropagation()}
+                          >
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              className="w-full justify-start box-border!"
+                              onClick={(event) => {
+                                event.stopPropagation();
+                                void handleToggleVisibility(item);
+                              }}
+                              disabled={isActionPending}
+                            >
+                              <Globe data-icon="inline-start" />
+                              {isActionPending
+                                ? 'Đang cập nhật...'
+                                : item.isPublic
+                                  ? 'Ngừng chia sẻ'
+                                  : 'Chia sẻ'}
+                            </Button>
+                          </PopoverContent>
+                        </Popover>
+                      </div>
+                    )}
 
                     {item.gradeLevel && (
                       <div className="absolute bottom-4 left-4 rounded-full bg-white/90 px-3 py-1 text-xs font-semibold text-slate-900 backdrop-blur">

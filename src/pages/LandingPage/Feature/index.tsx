@@ -194,18 +194,18 @@ function FeatureLandingPage() {
         >
           <div className="md:w-1/2 order-2 md:order-1">
             <div className="inline-block bg-brandPink neo-brutal-card px-4 py-1 font-black mb-4 -rotate-1">
-              LUYỆN NÓI 🗣️
+              LUYỆN hát 🗣️
             </div>
             <h2 className="text-4xl md:text-5xl font-black mb-6">
-              Tám chuyện tiếng Anh không sợ quê
+              Giọng hát hay hơn mỗi ngày
             </h2>
             <p className="text-lg font-bold text-gray-700 mb-8 leading-relaxed">
-              Sợ nói sai bị cười? Thử ngay chế độ Voice AI để luyện giao tiếp
-              1:1. Bạn chắc chắn sẽ tự tin bắn tiếng Anh như gió sau 2 tuần
-              luyện tập!
+              Sợ bị hát không hay? Thử ngay chế đội karaoke với AI để luyện
+              giọng. AI sẽ chấm điểm giọng hát của bạn. Vui vẻ thôi. Vừa học vừa
+              vui nào!
             </p>
             <button className="neo-brutal-btn bg-brandPink">
-              Gọi Voice AI Ngay
+              Gọi Karaoke Ngay
             </button>
           </div>
           <div className="md:w-1/2 order-1 md:order-2">

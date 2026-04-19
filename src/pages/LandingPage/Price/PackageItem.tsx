@@ -29,7 +29,7 @@ function PackageItem({ pkg, index, isBuying, onBuy }: PackageItemProps) {
   const { createDialog } = useDialog();
   const cardStyle = CARD_STYLES[index % CARD_STYLES.length];
   const icon = ICONS[index % ICONS.length];
-  const finalPrice = pkg.price - pkg?.discountPrice || 0;
+  const finalPrice = pkg.price - (pkg?.discountPrice || 0);
   const hasPaidPlan = finalPrice > 0;
 
   const handleClickBuyPackage = async (packageId: string) => {
@@ -74,7 +74,8 @@ function PackageItem({ pkg, index, isBuying, onBuy }: PackageItemProps) {
       {hasPaidPlan ? (
         <button
           type="button"
-          disabled={isBuying}
+          // disabled={isBuying}
+          disabled={true}
           onClick={() => handleClickBuyPackage(pkg.packageId)}
           className="w-full py-4 bg-black text-white neo-border rounded-xl font-black text-lg shadow-brutal-sm hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all disabled:opacity-60 disabled:cursor-not-allowed"
         >

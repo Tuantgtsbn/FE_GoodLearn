@@ -140,21 +140,21 @@ function HomeLandingPage() {
               hiệu quả và kiểm tra kiến thức ngay lập tức.
             </p>
           </div>
-          <div className="brutal-card bg-brandCyan border-2 border-black p-8 rounded-2xl shadow-brutal">
-            <div className="text-4xl mb-4">🗣️</div>
-            <h3 className="text-2xl font-heading mb-2">Voice Speak</h3>
-            <p className="font-semibold opacity-80">
-              Trò chuyện trực tiếp với AI bằng giọng nói, tạo cảm giác như đang
-              học cùng một gia sư thực thụ, giúp bạn hiểu bài nhanh hơn và nhớ
-              lâu hơn.
-            </p>
-          </div>
           <div className="brutal-card bg-white border-2 border-black p-8 rounded-2xl shadow-brutal">
             <div className="text-4xl mb-4">📹</div>
             <h3 className="text-2xl font-heading mb-2">Flashcards, Video</h3>
             <p className="font-semibold opacity-80">
               Ghi nhớ kiến thức qua các thẻ Flashcard và video ngắn sinh động,
               dễ hiểu, dễ thuộc.
+            </p>
+          </div>
+          <div className="brutal-card bg-brandCyan border-2 border-black p-8 rounded-2xl shadow-brutal">
+            <div className="text-4xl mb-4">🎤</div>
+            <h3 className="text-2xl font-heading mb-2">Giải trí</h3>
+            <p className="font-semibold opacity-80">
+              Website cung cấp nhiều gameshow, trò chơi vui nhộn giúp các em có
+              thể thư giãn giải trí sau những giờ học căng thẳng, vừa học vừa
+              chơi cực kỳ hiệu quả.
             </p>
           </div>
         </div>
