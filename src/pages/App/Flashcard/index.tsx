@@ -314,7 +314,7 @@ const FlashcardListPage = () => {
           </div>
           <div className="flex flex-wrap gap-3">
             <button
-              onClick={() => navigate('/app/flashcards/create')}
+              onClick={() => navigate('/app/chat')}
               className="inline-flex items-center gap-2 rounded-2xl bg-white px-5 py-2.5 text-sm font-bold text-black transition hover:-translate-y-0.5 hover:shadow-lg"
             >
               <Sparkles size={15} />
@@ -481,7 +481,7 @@ const FlashcardListPage = () => {
       ) : (
         <section className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
           {/* Quick create card — luôn ở đầu */}
-          <QuickCreateCard onClick={() => navigate('/app/flashcards/create')} />
+          <QuickCreateCard onClick={() => navigate('/app/chat')} />
 
           {sets.map((set, i) => (
             <FlashcardCard

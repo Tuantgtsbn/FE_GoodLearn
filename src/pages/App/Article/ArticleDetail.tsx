@@ -213,7 +213,7 @@ const ArticleDetailPage = () => {
 
           {/* Content */}
           <div
-            className="prose prose-lg max-w-none overflow-hidden prose-headings:font-bold prose-headings:text-black prose-a:text-blue-600 prose-img:rounded-xl prose-img:max-w-full"
+            className=" max-w-none overflow-hidden prose-headings:font-bold prose-headings:text-black prose-a:text-blue-600 prose-img:rounded-xl prose-img:max-w-full"
             dangerouslySetInnerHTML={{ __html: article.content }}
           />
         </article>
