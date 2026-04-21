@@ -806,6 +806,26 @@
     font-weight: 600;
     white-space: nowrap;
   }
+
+  &__progress-wrap {
+    height: 4px;
+    border-radius: 2px;
+    background: #e5e7eb;
+    overflow: hidden;
+    margin: 4px 0 2px;
+  }
+
+  &__progress-bar {
+    height: 100%;
+    border-radius: 2px;
+    background: linear-gradient(90deg, #6366f1 0%, #818cf8 100%);
+    transition: width 0.4s ease;
+    will-change: width;
+  }
+
+  &__spinner {
+    animation: spin 1s linear infinite;
+  }
 }
 
 .chat-video-message {
@@ -907,6 +927,15 @@
   }
   50% {
     opacity: 1;
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
   }
 }
 

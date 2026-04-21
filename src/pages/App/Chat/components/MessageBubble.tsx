@@ -55,8 +55,9 @@ function MessageBubble({ message }: MessageBubbleProps) {
       ? generationJob.resultId
       : null;
 
+  // Hiển thị flashcard card ngay từ lúc job được nhận (có generationJobId hoặc isFlashcardFlow)
   const shouldRenderFlashcardNested =
-    isFlashcardFlow && Boolean(flashcardSetId);
+    isFlashcardFlow && Boolean(message.generationJobId || flashcardSetId);
 
   const videoId =
     generationJob?.status === 'COMPLETED' &&
@@ -102,6 +103,12 @@ function MessageBubble({ message }: MessageBubbleProps) {
   const hideToolRawContent =
     message.role === 'tool' &&
     (shouldRenderFlashcardNested || shouldRenderVideoMessage);
+
+  // Ẩn text nội dung assistant khi đang trong flashcard flow (chỉ hiện card)
+  const hideAssistantTextForFlashcard =
+    isFlashcardFlow &&
+    shouldRenderFlashcardNested &&
+    message.role === 'assistant';
 
   const handleCopy = useCallback(() => {
     navigator.clipboard.writeText(message.content);
@@ -151,6 +158,7 @@ function MessageBubble({ message }: MessageBubbleProps) {
           ) : (
             <>
               {!hideToolRawContent &&
+                !hideAssistantTextForFlashcard &&
                 (message.isStreaming ? (
                   <div style={{ whiteSpace: 'pre-wrap' }}>
                     {message.content}
@@ -164,7 +172,7 @@ function MessageBubble({ message }: MessageBubbleProps) {
                   </ReactMarkdown>
                 ))}
 
-              {shouldRenderFlashcardNested && flashcardSetId && (
+              {shouldRenderFlashcardNested && (
                 <ChatFlashcardNestedCard
                   setId={flashcardSetId}
                   title={flashcardTitle}
@@ -174,6 +182,8 @@ function MessageBubble({ message }: MessageBubbleProps) {
                       : null
                   }
                   cardCount={flashcardCardCount}
+                  progress={generationJob?.progress}
+                  status={generationJob?.status}
                 />
               )}
 

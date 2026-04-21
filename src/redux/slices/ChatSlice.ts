@@ -702,14 +702,30 @@ export const sendMessage =
         })
       );
 
-      await dispatch(loadConversations() as unknown as never);
+      // Chạy song song: loadConversations + loadMessages (nếu có doneConversationId ngay)
+      // để giảm tổng thời gian wait.
+      const earlyConversationId = doneConversationId;
 
-      const finalConversationId =
-        doneConversationId || getState().chat.conversations[0]?.id || null;
+      if (earlyConversationId) {
+        // Load messages và conversations song song
+        await Promise.all([
+          dispatch(loadConversations() as unknown as never),
+          dispatch(loadMessages(earlyConversationId) as unknown as never),
+        ]);
+        // QUAN TRỌNG: changeActiveConversationId phải được dispatch SAU KHI
+        // loadMessages hoàn thành. SSE effect phụ thuộc vào activeConversationId
+        // thay đổi để subscribe channel mới và nhận snapshot. Nếu dispatch trước,
+        // snapshot event đến khi messages array còn trống → bị bỏ qua.
+        dispatch(changeActiveConversationId(earlyConversationId));
+      } else {
+        await dispatch(loadConversations() as unknown as never);
+        const finalConversationId =
+          getState().chat.conversations[0]?.id || null;
 
-      if (finalConversationId) {
-        dispatch(changeActiveConversationId(finalConversationId));
-        await dispatch(loadMessages(finalConversationId) as unknown as never);
+        if (finalConversationId) {
+          await dispatch(loadMessages(finalConversationId) as unknown as never);
+          dispatch(changeActiveConversationId(finalConversationId));
+        }
       }
     } catch (error) {
       console.error('[sendMessage] Streaming error:', error);

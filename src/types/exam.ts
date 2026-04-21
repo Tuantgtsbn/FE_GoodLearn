@@ -181,3 +181,35 @@ export interface IGetExamAttemptResultResponse {
   timeSpentSeconds: number | null;
   questions: IExamQuestionResult[];
 }
+
+export interface IExamHistoryItem {
+  attemptId: string;
+  quizId: string;
+  quiz: {
+    id: string;
+    title: string;
+    description: string | null;
+    gradeLevel: number | null;
+    timeLimit: number | null;
+    passingScorePercentage: number | null;
+  };
+  score: number;
+  maxScore: number;
+  isPassed: boolean | null;
+  startedAt: string;
+  completedAt: string | null;
+  timeSpentSeconds: number | null;
+  answerCount: number;
+  status: 'COMPLETED' | 'IN_PROGRESS';
+  createdAt: string;
+}
+
+export interface IExamHistoryApiQuery {
+  page?: number;
+  limit?: number;
+  sortBy?: 'createdAt' | 'startedAt' | 'completedAt' | 'score';
+  sortOrder?: 'asc' | 'desc';
+  quizId?: string;
+  isPassed?: boolean;
+  isCompleted?: boolean;
+}

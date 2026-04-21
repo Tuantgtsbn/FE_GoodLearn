@@ -13,7 +13,7 @@ export type ReviewAppDataDto = z.infer<typeof ReviewAppDto>;
 export const ReviewAppStatsDto = z.object({
   totalReviews: z.number(),
   averageRating: z.number(),
-  ratingDistribution: z.record(z.number()).optional(),
+  ratingDistribution: z.record(z.string(), z.number()).optional(),
 });
 
 export type ReviewAppStatsDataDto = z.infer<typeof ReviewAppStatsDto>;

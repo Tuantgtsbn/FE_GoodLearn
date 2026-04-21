@@ -2,7 +2,7 @@ import ApiExam from '@/api/ApiExam';
 import QUERY_KEY from '@/api/QueryKey';
 import type { IExamQuestionResult } from '@/types/exam';
 import { X, CheckCircle2, XCircle, Circle, Info, Loader2 } from 'lucide-react';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import clsx from 'clsx';
 
@@ -29,6 +29,18 @@ const AnswerReviewModal = ({
 
   const questions = data?.questions ?? [];
   const currentQuestion = questions[currentIndex] ?? null;
+
+  useEffect(() => {
+    if (isOpen) {
+      setCurrentIndex(0);
+    }
+  }, [attemptId, isOpen]);
+
+  useEffect(() => {
+    if (questions.length > 0 && currentIndex >= questions.length) {
+      setCurrentIndex(0);
+    }
+  }, [currentIndex, questions.length]);
 
   const isQuestionCorrect = useMemo(() => {
     return currentQuestion?.isCorrect ?? false;
@@ -82,7 +94,30 @@ const AnswerReviewModal = ({
     );
   }
 
-  if (!currentQuestion) return null;
+  if (!currentQuestion) {
+    return (
+      <div
+        className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+        onClick={onClose}
+      >
+        <div
+          className="flex h-56 w-full max-w-md flex-col items-center justify-center rounded-2xl bg-white px-6 text-center shadow-2xl"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <Info size={28} className="mb-3 text-slate-500" />
+          <p className="text-sm font-semibold text-slate-700">
+            Không có dữ liệu đáp án chi tiết cho lượt làm bài này.
+          </p>
+          <button
+            onClick={onClose}
+            className="mt-5 rounded-lg bg-black px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-800"
+          >
+            Đóng
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div

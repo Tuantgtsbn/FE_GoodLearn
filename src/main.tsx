@@ -9,9 +9,6 @@ import store, { persistor } from './redux/store.ts';
 import { queryClient } from './config/queryClient.ts';
 import App from './App.tsx';
 import ErrorBoundary from './components/ui/ErrorBoudary.tsx';
-import '@fontsource/google-sans'; // Defaults to weight 400
-import '@fontsource/google-sans/400.css'; // Specify weight
-import '@fontsource/google-sans/400-italic.css'; // Specify weight and style
 import AppThemeProvider from './AppThemeProvider';
 
 createRoot(document.getElementById('root')!).render(

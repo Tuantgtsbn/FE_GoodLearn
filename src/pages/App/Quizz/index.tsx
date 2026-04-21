@@ -254,6 +254,10 @@ const QuizzListPage = () => {
     goToDoExam(selectedExam);
   };
 
+  const goToHistory = () => {
+    navigate('/app/quizz/history');
+  };
+
   return (
     <div className="mx-auto w-full max-w-300 px-4 py-8 md:px-6 lg:px-8">
       <section className="mb-6 rounded-3xl bg-black px-6 py-7 text-white shadow-xl md:px-8 md:py-9">
@@ -280,7 +284,10 @@ const QuizzListPage = () => {
             >
               Làm đề ngẫu nhiên
             </button>
-            <button className="rounded-2xl border border-white/60 bg-white/10 px-5 py-2.5 text-sm font-semibold text-white backdrop-blur transition hover:bg-white/20">
+            <button
+              onClick={goToHistory}
+              className="rounded-2xl border border-white/60 bg-white/10 px-5 py-2.5 text-sm font-semibold text-white backdrop-blur transition hover:bg-white/20"
+            >
               Lịch sử làm bài
             </button>
           </div>

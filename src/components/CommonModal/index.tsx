@@ -1,6 +1,7 @@
-import { Box, Modal, SxProps, Theme } from '@mui/material';
+import { Box, Modal } from '@mui/material';
+import type { SxProps, Theme } from '@mui/material';
 import { X } from 'lucide-react';
-import { JSX } from 'react';
+import type { ReactNode } from 'react';
 
 const style: SxProps<Theme> = {
   position: 'absolute',
@@ -20,7 +21,7 @@ const style: SxProps<Theme> = {
 interface IModalProps {
   open?: boolean;
   onClose?: () => void;
-  children?: JSX.Element;
+  children?: ReactNode;
   title?: string;
   isLoading?: boolean;
   onOk?: () => void;

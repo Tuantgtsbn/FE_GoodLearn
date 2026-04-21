@@ -18,6 +18,7 @@ import { ERole } from '@/types';
 import QuizzListPage from '@/pages/App/Quizz';
 import DoExamPage from '@/pages/App/Quizz/DoExam';
 import LeaderboardPage from '@/pages/App/Quizz/Leaderboard';
+import ExamHistoryPage from '@/pages/App/Quizz/History';
 import { DialogProvider } from '@/context/DialogContext';
 import UserLayout from '@/components/layouts/User';
 // import Voicecall from '@/pages/App/VoiceCall';
@@ -150,6 +151,13 @@ export const routes = [
             element: <LeaderboardPage />,
             handle: {
               title: 'Bảng xếp hạng bài thi',
+            },
+          },
+          {
+            path: 'quizz/history',
+            element: <ExamHistoryPage />,
+            handle: {
+              title: 'Lịch sử kết quả thi',
             },
           },
           {

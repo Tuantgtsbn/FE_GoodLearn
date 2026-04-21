@@ -2,6 +2,8 @@ import { fetcherWithMetadata } from './Fetcher';
 import { fetcher } from './Fetcher';
 import type {
   IExamLeaderboardResponse,
+  IExamHistoryApiQuery,
+  IExamHistoryItem,
   IExamListApiQuery,
   IExamListItem,
   IGetExamAttemptDetailResponse,
@@ -19,6 +21,7 @@ const path = {
   start: '/exams/start',
   answer: '/exams/answer',
   submit: '/exams/submit',
+  history: '/exams/history',
   attemptDetail: (attemptId: string) => `/exams/attempt/${attemptId}`,
   attemptResult: (attemptId: string) => `/exams/attempt/${attemptId}/result`,
   leaderboard: (quizId: string) => `/exams/${quizId}/leaderboard`,
@@ -119,8 +122,23 @@ const getAttemptResult = (attemptId: string) => {
   );
 };
 
+const getMyExamHistory = (params: IExamHistoryApiQuery) => {
+  return fetcherWithMetadata<IExamHistoryItem[]>(
+    {
+      url: path.history,
+      method: 'GET',
+      params,
+    },
+    {
+      withToken: true,
+      displayError: false,
+    }
+  );
+};
+
 export default {
   getExamList,
+  getMyExamHistory,
   startExam,
   saveExamAnswer,
   submitExam,
