@@ -24,6 +24,7 @@ export default defineConfig([
       '@typescript-eslint/no-unused-vars': 'error',
       'no-console': 'off',
       'react-hooks/set-state-in-effect': 'off',
+      'react-refresh/only-export-components': 'warn',
     },
   },
 ]);

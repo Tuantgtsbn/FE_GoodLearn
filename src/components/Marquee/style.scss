@@ -1,0 +1,39 @@
+.marquee-container {
+  width: 100%;
+  overflow: hidden;
+  display: flex;
+  white-space: nowrap;
+  /* Sử dụng biến CSS, nếu không có sẽ lấy giá trị mặc định */
+  padding: var(--padding, 10px 0);
+
+  .marquee-content {
+    display: flex;
+    flex-shrink: 0;
+    min-width: 100%;
+    align-items: center;
+    justify-content: space-around;
+    /* Tốc độ được điều chỉnh qua biến --speed */
+    animation: scroll-left var(--speed, 20s) linear infinite;
+  }
+
+  /* Logic tạm dừng khi di chuột */
+  &.pause-on-hover:hover .marquee-content {
+    animation-play-state: paused;
+  }
+
+  .marquee-item {
+    padding: 0 20px;
+    font-weight: bold;
+    color: var(--text-color, #fff);
+    font-size: var(--font-size, 1rem);
+  }
+
+  @keyframes scroll-left {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-100%);
+    }
+  }
+}

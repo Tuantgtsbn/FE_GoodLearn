@@ -7,6 +7,7 @@ import {
   TvMinimalPlay,
   FileQuestionMark,
   Music2,
+  Info,
 } from 'lucide-react';
 import {
   ListItem,
@@ -79,6 +80,15 @@ const UserLayout = ({ children }: IPatientLayoutProps) => {
       icon: <ICArticle />,
       action: () => {
         navigate('/app/article');
+        setDrawerOpen(false);
+      },
+    },
+    {
+      label: 'Hướng dẫn sử dụng',
+      to: '/app/usage',
+      icon: <Info />,
+      action: () => {
+        navigate('/app/usage');
         setDrawerOpen(false);
       },
     },

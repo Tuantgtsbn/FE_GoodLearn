@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import type { IRootState } from '@/redux/store';
 import { toast } from 'react-toastify';
+import Marquee from '@/components/Marquee';
 
 function HomeLandingPage() {
   const navigate = useNavigate();
@@ -19,6 +20,21 @@ function HomeLandingPage() {
       navigate(`/auth/register?email=${encodeURIComponent(inputEmail)}`);
     }
   };
+
+  const dataMarquee: React.ReactNode[] = [
+    <>
+      <span className="text-brandYellow">★</span> 10,000+ Câu hỏi được giải
+    </>,
+    <>
+      <span className="text-brandCyan">★</span> 50,000+ Học sinh tin dùng
+    </>,
+    <>
+      <span className="text-brandPink">★</span> Top 1 Web Giáo Dục AI
+    </>,
+    <>
+      <span className="text-brandPurple">★</span> 98% Phụ huynh hài lòng
+    </>,
+  ];
 
   return (
     <div className="font-body text-slate-900 overflow-x-hidden mx_LandingPageHome">
@@ -91,28 +107,7 @@ function HomeLandingPage() {
         className="bg-black py-8 overflow-hidden border-y-4 border-black"
         data-purpose="social-proof"
       >
-        <div className="flex whitespace-nowrap gap-12 animate-marquee items-center text-white font-heading text-xl md:text-3xl uppercase tracking-widest">
-          <span className="flex items-center gap-4">
-            <span className="text-brandYellow">★</span> 10,000+ Câu hỏi được
-            giải
-          </span>
-          <span className="flex items-center gap-4">
-            <span className="text-brandCyan">★</span> 50,000+ Học sinh tin dùng
-          </span>
-          <span className="flex items-center gap-4">
-            <span className="text-brandPink">★</span> Top 1 Web Giáo Dục AI
-          </span>
-          <span className="flex items-center gap-4">
-            <span className="text-brandPurple">★</span> 98% Phụ huynh hài lòng
-          </span>
-          <span className="flex items-center gap-4">
-            <span className="text-brandYellow">★</span> 10,000+ Câu hỏi được
-            giải
-          </span>
-          <span className="flex items-center gap-4">
-            <span className="text-brandCyan">★</span> 50,000+ Học sinh tin dùng
-          </span>
-        </div>
+        <Marquee speed="40s" items={[...dataMarquee, ...dataMarquee]} />
       </section>
       <section className="max-w-7xl mx-auto px-4 py-20" data-purpose="features">
         <div className="text-center mb-16">

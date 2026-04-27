@@ -12,9 +12,9 @@ import ErrorBoundary from './components/ui/ErrorBoudary.tsx';
 import AppThemeProvider from './AppThemeProvider';
 
 createRoot(document.getElementById('root')!).render(
-  <Provider store={store}>
-    <AppThemeProvider>
-      <ErrorBoundary>
+  <ErrorBoundary>
+    <Provider store={store}>
+      <AppThemeProvider>
         <QueryClientProvider client={queryClient}>
           <PersistGate loading={<LoadingScreen />} persistor={persistor}>
             <Suspense fallback={<LoadingScreen />}>
@@ -31,7 +31,7 @@ createRoot(document.getElementById('root')!).render(
           newestOnTop
           pauseOnHover
         />
-      </ErrorBoundary>
-    </AppThemeProvider>
-  </Provider>
+      </AppThemeProvider>
+    </Provider>
+  </ErrorBoundary>
 );

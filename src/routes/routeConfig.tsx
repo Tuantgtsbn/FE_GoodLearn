@@ -32,6 +32,7 @@ import SongPage from '@/pages/App/Song';
 import KaraokeSingPage from '@/pages/App/Song/KaraokeSing';
 import SongLeaderboardPage from '@/pages/App/Song/Leaderboard';
 import LibraryPage from '@/pages/App/Library';
+import UsageApp from '@/components/UsageApp';
 
 export const routes = [
   {
@@ -86,6 +87,13 @@ export const routes = [
             element: <ContactPage />,
             handle: {
               title: 'GoodLearn - Liên hệ',
+            },
+          },
+          {
+            path: 'usage',
+            element: <UsageApp />,
+            handle: {
+              title: 'GoodLearn - Hướng dẫn sử dụng',
             },
           },
         ],
@@ -235,6 +243,13 @@ export const routes = [
             element: <SongLeaderboardPage />,
             handle: {
               title: 'GoodLearn | Bảng xếp hạng',
+            },
+          },
+          {
+            path: 'usage',
+            element: <UsageApp />,
+            handle: {
+              title: 'GoodLearn - Hướng dẫn sử dụng',
             },
           },
         ],
