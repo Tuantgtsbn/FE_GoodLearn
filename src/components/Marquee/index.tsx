@@ -1,3 +1,4 @@
+import type { CSSProperties } from 'react';
 import './style.scss';
 
 const Marquee = ({
@@ -9,12 +10,12 @@ const Marquee = ({
   pauseOnHover = true,
 }) => {
   // Tạo style object để truyền các biến CSS
-  const marqueeStyle = {
+  const marqueeStyle: CSSProperties = {
     '--speed': speed,
     '--bg-color': bgColor,
     '--text-color': textColor,
     '--font-size': fontSize,
-  };
+  } as CSSProperties;
 
   return (
     <div

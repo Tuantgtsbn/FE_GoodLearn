@@ -8,6 +8,7 @@ import {
   applyConversationJobEvent,
   createNewConversation,
   initializeChat,
+  loadMessages,
   selectConversation,
 } from '@/redux/slices/ChatSlice';
 import ApiChat from '@/api/ApiChat';
@@ -20,6 +21,10 @@ export default function ChatPage() {
   );
   const activeConversationId = useSelector(
     (state: IRootState) => state.chat.activeConversationId
+  );
+  const messages = useSelector((state: IRootState) => state.chat.messages);
+  const loadingMessages = useSelector(
+    (state: IRootState) => state.chat.loadingMessages
   );
   const { conversationId } = useParams<{ conversationId?: string }>();
 
@@ -53,6 +58,18 @@ export default function ChatPage() {
       signal: abortController.signal,
       onEvent: (event) => {
         dispatch(applyConversationJobEvent(event));
+        const isTerminalToolEvent =
+          event.eventType === 'tool.job.completed' ||
+          event.eventType === 'tool.job.failed' ||
+          event.eventType === 'tool.job.canceled';
+
+        if (isTerminalToolEvent) {
+          dispatch(
+            loadMessages(activeConversationId) as unknown as Parameters<
+              typeof dispatch
+            >[0]
+          );
+        }
       },
       onReconnectAttempt: (attempt, delayMs, reason) => {
         console.warn(
@@ -62,6 +79,11 @@ export default function ChatPage() {
       onReconnectSuccess: (recoveredAfterAttempts) => {
         console.info(
           `[conversation-events] reconnected after ${recoveredAfterAttempts} attempt(s)`
+        );
+        dispatch(
+          loadMessages(activeConversationId) as unknown as Parameters<
+            typeof dispatch
+          >[0]
         );
       },
       onError: (error) => {
@@ -79,6 +101,42 @@ export default function ChatPage() {
       abortController.abort();
     };
   }, [activeConversationId, dispatch]);
+
+  useEffect(() => {
+    if (
+      !activeConversationId ||
+      activeConversationId.startsWith('local-conv-')
+    ) {
+      return;
+    }
+
+    const hasPendingJob = messages.some((message) => {
+      const status = message.generationJob?.status;
+      return Boolean(
+        status && !['COMPLETED', 'FAILED', 'CANCELED'].includes(status)
+      );
+    });
+
+    if (!hasPendingJob) {
+      return;
+    }
+
+    const intervalId = window.setInterval(() => {
+      if (loadingMessages) {
+        return;
+      }
+
+      dispatch(
+        loadMessages(activeConversationId) as unknown as Parameters<
+          typeof dispatch
+        >[0]
+      );
+    }, 15000);
+
+    return () => {
+      window.clearInterval(intervalId);
+    };
+  }, [activeConversationId, messages, loadingMessages, dispatch]);
 
   return (
     <div className="chat-layout">

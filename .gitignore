@@ -33,3 +33,5 @@ dist-ssr
 .agents/
 .github/prompts/
 .github/skills/
+
+.env.production

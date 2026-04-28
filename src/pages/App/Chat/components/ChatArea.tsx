@@ -1,10 +1,6 @@
 import { useSelector, useDispatch } from 'react-redux';
 import type { IRootState, IAppDispatch } from '@/redux/store';
-import {
-  toggleSidebar,
-  sendMessage,
-  initializeChat,
-} from '@/redux/slices/ChatSlice';
+import { toggleSidebar, sendMessage } from '@/redux/slices/ChatSlice';
 import { PanelLeftClose, PanelLeft, Settings2, Share2 } from 'lucide-react';
 import WelcomeScreen from './WelcomeScreen';
 import MessageBubble from './MessageBubble';
@@ -61,10 +57,6 @@ export default function ChatArea() {
       behavior: isStreaming ? 'auto' : 'smooth',
     });
   }, [visibleMessages, isStreaming]);
-
-  useEffect(() => {
-    dispatch(initializeChat() as unknown as Parameters<typeof dispatch>[0]);
-  }, [dispatch]);
 
   const handleSend = (content: string) => {
     dispatch(sendMessage(content) as unknown as Parameters<typeof dispatch>[0]);

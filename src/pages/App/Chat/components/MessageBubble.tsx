@@ -160,8 +160,13 @@ function MessageBubble({ message }: MessageBubbleProps) {
               {!hideToolRawContent &&
                 !hideAssistantTextForFlashcard &&
                 (message.isStreaming ? (
-                  <div style={{ whiteSpace: 'pre-wrap' }}>
-                    {message.content}
+                  <div className="chat-message__streaming-markdown">
+                    <ReactMarkdown
+                      remarkPlugins={MARKDOWN_REMARK_PLUGINS}
+                      rehypePlugins={MARKDOWN_REHYPE_PLUGINS}
+                    >
+                      {message.content}
+                    </ReactMarkdown>
                   </div>
                 ) : (
                   <ReactMarkdown

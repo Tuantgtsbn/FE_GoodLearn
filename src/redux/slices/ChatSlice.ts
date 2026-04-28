@@ -171,8 +171,6 @@ const chatSlice = createSlice({
         return;
       }
 
-      state.jobEventSequenceById[event.generationJobId] = event.sequence;
-
       const targetMessages = state.messages.filter((message) => {
         if (message.generationJobId === event.generationJobId) {
           return true;
@@ -196,6 +194,7 @@ const chatSlice = createSlice({
       if (targetMessages.length === 0) {
         return;
       }
+      state.jobEventSequenceById[event.generationJobId] = event.sequence;
 
       for (const message of targetMessages) {
         if (!message.generationJob) {
@@ -608,47 +607,89 @@ export const sendMessage =
     );
 
     let streamedContent = '';
-    let pendingTokenChunk = '';
-    let flushTimer: ReturnType<typeof setTimeout> | null = null;
     let doneConversationId: string | null = null;
 
-    const flushBufferedTokens = () => {
-      if (!pendingTokenChunk) {
+    // ─── Typewriter Queue ─────────────────────────────────────────
+    // Tokens arrive via SSE callbacks (microtask chain) much faster than
+    // the browser can render frames. The old rAF-based flush approach was
+    // starved because reader.read() microtasks ran non-stop, never yielding
+    // to the macrotask queue where rAF lives.
+    //
+    // Solution: push all incoming tokens into a character queue. A self-
+    // sustaining rAF render loop pops a fixed number of characters per
+    // frame and dispatches Redux updates, producing smooth ChatGPT-like
+    // progressive rendering regardless of network timing.
+    // ───────────────────────────────────────────────────────────────
+    const tokenQueue: string[] = [];
+    let renderLoopRunning = false;
+    let streamDone = false;
+
+    // Characters to render per animation frame (~60fps → ~20 chars/16ms).
+    // Increase for faster rendering, decrease for more dramatic typewriter.
+    const CHARS_PER_FRAME = 20;
+
+    const startRenderLoop = () => {
+      if (renderLoopRunning) {
         return;
       }
+      renderLoopRunning = true;
 
-      streamedContent += pendingTokenChunk;
-      pendingTokenChunk = '';
+      const tick = () => {
+        // Pop up to CHARS_PER_FRAME characters from the queue
+        let charsThisFrame = 0;
+        let chunk = '';
 
-      dispatch(
-        updateStreamingMessage({
-          messageId: localAssistantId,
-          content: streamedContent,
-        })
-      );
+        while (tokenQueue.length > 0 && charsThisFrame < CHARS_PER_FRAME) {
+          const next = tokenQueue[0]!;
+          const remaining = CHARS_PER_FRAME - charsThisFrame;
+
+          if (next.length <= remaining) {
+            chunk += tokenQueue.shift()!;
+            charsThisFrame += next.length;
+          } else {
+            // Partial consume: take `remaining` chars, leave the rest
+            chunk += next.slice(0, remaining);
+            tokenQueue[0] = next.slice(remaining);
+            charsThisFrame = CHARS_PER_FRAME;
+          }
+        }
+
+        if (chunk) {
+          streamedContent += chunk;
+          dispatch(
+            updateStreamingMessage({
+              messageId: localAssistantId,
+              content: streamedContent,
+            })
+          );
+        }
+
+        // Continue looping if there are more tokens or stream hasn't ended
+        if (tokenQueue.length > 0) {
+          requestAnimationFrame(tick);
+        } else if (streamDone) {
+          // Queue drained and stream is done — mark streaming as complete
+          renderLoopRunning = false;
+          dispatch(
+            updateStreamingMessage({
+              messageId: localAssistantId,
+              content:
+                streamedContent ||
+                'Da gui yeu cau. Dang dong bo ket qua tu server...',
+              done: true,
+            })
+          );
+        } else {
+          // Queue empty but stream still active — pause and restart when
+          // new tokens arrive via onToken callback.
+          renderLoopRunning = false;
+        }
+      };
+
+      requestAnimationFrame(tick);
     };
 
-    const scheduleFlush = () => {
-      if (flushTimer) {
-        return;
-      }
-
-      flushTimer = setTimeout(() => {
-        flushTimer = null;
-        flushBufferedTokens();
-      }, 40);
-    };
-
-    const stopFlushTimer = () => {
-      if (!flushTimer) {
-        return;
-      }
-
-      clearTimeout(flushTimer);
-      flushTimer = null;
-    };
-
-    // Tạo AbortController để có thể cancel stream nếu cần
+    // ─── Abort & Cleanup ──────────────────────────────────────────
     const streamAbortController = new AbortController();
 
     try {
@@ -660,8 +701,8 @@ export const sendMessage =
         {
           signal: streamAbortController.signal,
           onToken: (token) => {
-            pendingTokenChunk += token;
-            scheduleFlush();
+            tokenQueue.push(token);
+            startRenderLoop();
           },
           onDone: (payload) => {
             doneConversationId = payload.conversationId;
@@ -676,8 +717,10 @@ export const sendMessage =
           },
           onError: (event) => {
             console.warn('[sendMessage] Stream error:', event.message);
-            stopFlushTimer();
-            flushBufferedTokens();
+            // On error, drain queue immediately and show error
+            streamedContent += tokenQueue.join('');
+            tokenQueue.length = 0;
+            renderLoopRunning = false;
             dispatch(
               updateStreamingMessage({
                 messageId: localAssistantId,
@@ -689,18 +732,40 @@ export const sendMessage =
         }
       );
 
-      stopFlushTimer();
-      flushBufferedTokens();
+      // Stream reading is done. Signal the render loop to finish draining.
+      streamDone = true;
 
-      dispatch(
-        updateStreamingMessage({
-          messageId: localAssistantId,
-          content:
-            streamedContent ||
-            'Da gui yeu cau. Dang dong bo ket qua tu server...',
-          done: true,
-        })
-      );
+      // If render loop is not running (queue was empty when stream ended),
+      // flush any remaining tokens synchronously.
+      if (!renderLoopRunning) {
+        if (tokenQueue.length > 0) {
+          streamedContent += tokenQueue.join('');
+          tokenQueue.length = 0;
+        }
+        dispatch(
+          updateStreamingMessage({
+            messageId: localAssistantId,
+            content:
+              streamedContent ||
+              'Da gui yeu cau. Dang dong bo ket qua tu server...',
+            done: true,
+          })
+        );
+      } else {
+        // Render loop is still running — wait for it to drain the queue
+        // before loading messages. This prevents the "flash" where streaming
+        // content is replaced by server-loaded content mid-animation.
+        await new Promise<void>((resolve) => {
+          const waitForDrain = () => {
+            if (!renderLoopRunning) {
+              resolve();
+            } else {
+              requestAnimationFrame(waitForDrain);
+            }
+          };
+          requestAnimationFrame(waitForDrain);
+        });
+      }
 
       // Chạy song song: loadConversations + loadMessages (nếu có doneConversationId ngay)
       // để giảm tổng thời gian wait.
@@ -729,6 +794,12 @@ export const sendMessage =
       }
     } catch (error) {
       console.error('[sendMessage] Streaming error:', error);
+
+      // Drain any remaining tokens in the queue
+      streamedContent += tokenQueue.join('');
+      tokenQueue.length = 0;
+      renderLoopRunning = false;
+
       const errorMessage =
         error instanceof Error
           ? error.message
@@ -742,8 +813,6 @@ export const sendMessage =
         })
       );
       dispatch(setIsStreaming(false));
-    } finally {
-      stopFlushTimer();
     }
   };
 
