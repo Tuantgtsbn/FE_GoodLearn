@@ -95,7 +95,7 @@ function PriceLandingPage() {
           </p>
         </div>
       </header>
-      <section className="max-w-7xl mx-auto px-4 py-16">
+      <section className="max-w-7xl mx-auto px-4 pb-16">
         {isPending ? (
           <div className="neo-border rounded-2xl bg-white p-8 text-center font-black text-xl shadow-brutal-sm">
             Đang tải danh sách gói...
@@ -114,7 +114,7 @@ function PriceLandingPage() {
           </div>
         )}
       </section>
-      <section className="max-w-4xl mx-auto px-4 py-20">
+      <section className="max-w-4xl mx-auto px-4 py-16">
         <h2 className="text-4xl font-black mb-12 text-center underline decoration-neo-purple decoration-8 underline-offset-13">
           Câu hỏi thường gặp
         </h2>

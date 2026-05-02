@@ -31,17 +31,17 @@ function FeatureLandingPage() {
 
   return (
     <div className="bg-graph-paper text-black font-sans selection:bg-brandYellow .mx_LandingPageFeature">
-      <section className="relative overflow-hidden py-20 px-4">
+      <section className="relative overflow-hidden pt-20 pb-10 md:py-20 px-4">
         <div className="doodle-icon top-10 left-10 text-5xl opacity-80 animate-bounce">
           🚀
         </div>
-        <div className="doodle-icon bottom-10 right-20 text-4xl opacity-80 rotate-12">
+        <div className="doodle-icon hidden md:block bottom-10 right-20 text-4xl opacity-80 rotate-12">
           ⭐
         </div>
-        <div className="doodle-icon top-1/2 right-10 text-4xl opacity-80 -rotate-12">
+        <div className="doodle-icon hidden md:block top-1/2 right-10 text-4xl opacity-80 -rotate-12">
           ✏️
         </div>
-        <div className="doodle-icon bottom-20 left-20 text-4xl opacity-80">
+        <div className="doodle-icon hidden md:block bottom-20 left-20 text-4xl opacity-80">
           💡
         </div>
         <div
@@ -78,7 +78,7 @@ function FeatureLandingPage() {
           </div>
         </div>
       </section>
-      <main className="max-w-6xl mx-auto px-4 py-16 space-y-32">
+      <main className="max-w-6xl mx-auto px-4 md:py-16 space-y-16 md:space-y-32 ">
         <section
           className="flex flex-col md:flex-row items-center gap-12"
           data-purpose="feature-block"
@@ -101,7 +101,7 @@ function FeatureLandingPage() {
               Thử AI ngay
             </button>
           </div>
-          <div className="md:w-1/2 order-1 md:order-2">
+          <div className="w-full md:w-1/2 order-1 md:order-2">
             <div className="bg-brandPurple neo-brutal-card p-6 aspect-square flex items-center justify-center relative overflow-hidden group">
               <div className="bg-white border-2 border-black rounded-xl p-4 w-full h-full shadow-brutal-sm flex flex-col gap-4">
                 <div className="bg-gray-100 border-2 border-black rounded-lg p-3 text-sm font-bold">
@@ -142,7 +142,7 @@ function FeatureLandingPage() {
           data-purpose="feature-block"
           id="feature-2"
         >
-          <div className="md:w-1/2">
+          <div className="w-full md:w-1/2">
             <div className="bg-brandCyan neo-brutal-card p-12 aspect-square flex items-center justify-center relative">
               <div className="relative w-48 h-64">
                 <div className="absolute inset-0 bg-white border-4 border-black rounded-2xl rotate-6 shadow-brutal-sm flex items-center justify-center p-4">
@@ -208,7 +208,7 @@ function FeatureLandingPage() {
               Gọi Karaoke Ngay
             </button>
           </div>
-          <div className="md:w-1/2 order-1 md:order-2">
+          <div className="w-full md:w-1/2 order-1 md:order-2">
             <div className="bg-brandPink neo-brutal-card p-12 aspect-square flex flex-col items-center justify-center gap-6 relative">
               <div className="w-32 h-32 bg-white rounded-full border-4 border-black flex items-center justify-center text-6xl shadow-brutal-sm">
                 🎤

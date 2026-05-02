@@ -433,8 +433,8 @@ export interface IChatConversation {
   title: string | null;
   subject: string | null;
   gradeLevel: number | null;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
 
   messages?: IChatMessage[] | null;
   user?: IUser | null;
@@ -450,7 +450,7 @@ export interface IChatMessage {
   hasAttachment: boolean;
   attachmentType: string | null;
   attachmentUrl: string | null;
-  createdAt: Date;
+  createdAt: string;
 }
 
 export interface INotification {

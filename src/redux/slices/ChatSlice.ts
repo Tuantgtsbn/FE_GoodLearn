@@ -75,8 +75,8 @@ const mapConversation = (
     title: item.title,
     subject: item.subject,
     gradeLevel: item.gradeLevel,
-    createdAt: new Date(item.createdAt),
-    updatedAt: new Date(item.updatedAt),
+    createdAt: item.createdAt,
+    updatedAt: item.updatedAt,
   };
 };
 
@@ -91,7 +91,7 @@ const mapMessage = (item: IChatMessageItem): ChatMessageWithReaction => {
     hasAttachment: item.hasAttachment ?? Boolean(item.attachmentUrl),
     attachmentType: item.attachmentType ?? null,
     attachmentUrl: item.attachmentUrl ?? null,
-    createdAt: new Date(item.createdAt),
+    createdAt: item.createdAt,
     reaction: toReaction(item.like),
     toolName: item.toolName ?? null,
     toolCallId: item.toolCallId ?? null,
@@ -110,7 +110,7 @@ const initialState: ChatState = {
   activeConversationId: null,
   messages: [],
   jobEventSequenceById: {},
-  isSidebarOpen: true,
+  isSidebarOpen: window.innerWidth >= 768, // Desktop by default, mobile hidden
   isStreaming: false,
   inputValue: '',
   loadingConversations: false,
@@ -328,7 +328,7 @@ const chatSlice = createSlice({
         attachmentType: null,
         attachmentUrl: null,
         attachmentFileId: null,
-        createdAt: new Date(),
+        createdAt: new Date().toISOString(),
       };
 
       state.messages.push(userMsg);
@@ -351,7 +351,7 @@ const chatSlice = createSlice({
         attachmentUrl: null,
         attachmentFileId: null,
         isStreaming: true,
-        createdAt: new Date(),
+        createdAt: new Date().toISOString(),
       };
       state.messages.push(assistantMsg);
     },
@@ -579,7 +579,7 @@ export const sendMessage =
     if (!localConversationId) {
       localConversationId = `local-conv-${generateId()}`;
 
-      const now = new Date();
+      const now = new Date().toISOString();
       const localConversation: IChatConversation = {
         id: localConversationId,
         userId: '',

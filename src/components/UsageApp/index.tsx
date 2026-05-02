@@ -88,6 +88,7 @@ function UsageApp() {
           <a
             className="relative group block cursor-pointer"
             onClick={() => handleSetTab(tab.tab)}
+            key={tab.label}
           >
             <div className="absolute inset-0 bg-zinc-900 rounded-full translate-x-1 translate-y-1 transition-transform group-hover:translate-x-1.5 group-hover:translate-y-1.5"></div>
             <div

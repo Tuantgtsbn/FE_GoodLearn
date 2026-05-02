@@ -154,24 +154,6 @@ const ArticlePage = () => {
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
       {/* ─── Header ──────────────────────────────────────────────────── */}
       <section className="mb-8">
-        <div className="mb-2 flex items-center gap-2">
-          <svg
-            className="h-6 w-6 text-black"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"
-            />
-          </svg>
-          <span className="text-sm font-semibold uppercase tracking-wider text-gray-500">
-            Goodlearn Blog
-          </span>
-        </div>
         <h1 className="text-3xl font-black tracking-tight text-black sm:text-4xl">
           TIN TỨC & BÀI HỌC
         </h1>

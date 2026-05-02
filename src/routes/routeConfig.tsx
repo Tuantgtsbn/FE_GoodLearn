@@ -31,6 +31,7 @@ import ArticleDetailPage from '@/pages/App/Article/ArticleDetail';
 import SongPage from '@/pages/App/Song';
 import KaraokeSingPage from '@/pages/App/Song/KaraokeSing';
 import SongLeaderboardPage from '@/pages/App/Song/Leaderboard';
+import SongHistoryPage from '@/pages/App/Song/History';
 import LibraryPage from '@/pages/App/Library';
 import UsageApp from '@/components/UsageApp';
 
@@ -228,7 +229,7 @@ export const routes = [
             path: 'songs',
             element: <SongPage />,
             handle: {
-              title: 'GoodLearn | Karaoke Student',
+              title: 'GoodLearn | Karaoke AI',
             },
           },
           {
@@ -243,6 +244,13 @@ export const routes = [
             element: <SongLeaderboardPage />,
             handle: {
               title: 'GoodLearn | Bảng xếp hạng',
+            },
+          },
+          {
+            path: 'songs/history',
+            element: <SongHistoryPage />,
+            handle: {
+              title: 'GoodLearn | Lịch sử hát karaoke',
             },
           },
           {

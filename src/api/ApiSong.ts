@@ -17,12 +17,21 @@ export interface IListSongScoreQuery {
   sortOrder?: 'asc' | 'desc';
 }
 
+export interface IUserSongHistoryQuery {
+  page?: string | number;
+  limit?: string | number;
+  sortBy?: 'createdAt' | 'totalScore';
+  sortOrder?: 'asc' | 'desc';
+  status?: 'PROCESSING' | 'COMPLETED' | 'FAILED';
+}
+
 const path = {
   list: '/songs',
   detail: (id: string) => `/songs/${id}`,
   scores: (id: string) => `/songs/${id}/scores`,
   scoreVoice: (id: string) => `/songs/${id}/score`,
   scoreStatus: (scoreId: string) => `/songs/scores/${scoreId}/status`,
+  history: '/songs/user/history',
 };
 
 /**
@@ -90,6 +99,27 @@ type SongScoresDataResponse = {
   };
 };
 
+export type SongHistoryItem = {
+  id: string;
+  songId: string;
+  status: 'PROCESSING' | 'COMPLETED' | 'FAILED';
+  totalScore: number | null;
+  grade: string | null;
+  pitchScore: number | null;
+  rhythmScore: number | null;
+  stabilityScore: number | null;
+  dynamicsScore: number | null;
+  processingTimeMs: number | null;
+  createdAt: string;
+  song: {
+    id: string;
+    title: string;
+    artists: string[];
+    genre: string | null;
+    durationSeconds: number | null;
+  };
+};
+
 const getSongScores = (id: string, params: IListSongScoreQuery) => {
   return fetcherWithMetadata<SongScoresDataResponse[]>(
     {
@@ -138,6 +168,23 @@ const getScoreStatus = (scoreId: string) => {
   );
 };
 
+/**
+ * Lấy lịch sử hát karaoke của user hiện tại
+ */
+const getUserSongHistory = (params: IUserSongHistoryQuery) => {
+  return fetcherWithMetadata<SongHistoryItem[]>(
+    {
+      url: path.history,
+      method: 'GET',
+      params,
+    },
+    {
+      withToken: true,
+      displayError: false,
+    }
+  );
+};
+
 export default {
   getSongList,
   getSongDetail,
@@ -145,4 +192,5 @@ export default {
   getSongScores,
   scoreVoice,
   getScoreStatus,
+  getUserSongHistory,
 };

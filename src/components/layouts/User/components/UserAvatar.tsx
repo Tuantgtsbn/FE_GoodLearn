@@ -70,7 +70,7 @@ export default function UserAvatar() {
 
   return (
     <div className="flex items-center gap-3 px-4 py-2 cursor-pointer">
-      <div>
+      <div className="hidden md:block">
         <p className="text-[14px] font-bold text-foreground leading-none">
           {user?.username}
         </p>

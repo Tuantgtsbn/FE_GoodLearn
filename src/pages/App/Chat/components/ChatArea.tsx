@@ -1,7 +1,7 @@
 import { useSelector, useDispatch } from 'react-redux';
 import type { IRootState, IAppDispatch } from '@/redux/store';
 import { toggleSidebar, sendMessage } from '@/redux/slices/ChatSlice';
-import { PanelLeftClose, PanelLeft, Settings2, Share2 } from 'lucide-react';
+import { PanelLeftClose, PanelLeft } from 'lucide-react';
 import WelcomeScreen from './WelcomeScreen';
 import MessageBubble from './MessageBubble';
 import StreamingBubble from './StreamingBubble';
@@ -94,14 +94,14 @@ export default function ChatArea() {
           )}
         </div>
 
-        <div className="chat-area__actions">
+        {/* <div className="chat-area__actions">
           <button className="chat-area__action-btn" title="Chia sẻ">
             <Share2 size={16} />
           </button>
           <button className="chat-area__action-btn" title="Cài đặt">
             <Settings2 size={16} />
           </button>
-        </div>
+        </div> */}
       </div>
 
       {/* Content */}

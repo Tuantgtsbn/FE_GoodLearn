@@ -1,5 +1,13 @@
 import ApiExam from '@/api/ApiExam';
 import QUERY_KEY from '@/api/QueryKey';
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import AnswerReviewModal from '@/pages/App/Quizz/DoExam/AnswerReviewModal';
 import type { IExamHistoryApiQuery, IExamHistoryItem } from '@/types/exam';
 import { useQuery } from '@tanstack/react-query';
@@ -150,18 +158,24 @@ const ExamHistoryPage = () => {
           />
         </label>
 
-        <select
+        <Select
           value={attemptFilter}
-          onChange={(event) => {
-            setAttemptFilter(event.target.value as 'all' | 'passed' | 'failed');
+          onValueChange={(value) => {
+            setAttemptFilter(value as 'all' | 'passed' | 'failed');
             setPage(1);
           }}
-          className="rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm font-medium text-slate-700 outline-none focus:border-blue-500"
         >
-          <option value="all">Tất cả kết quả</option>
-          <option value="passed">Chỉ bài đạt</option>
-          <option value="failed">Chỉ bài chưa đạt</option>
-        </select>
+          <SelectTrigger className="w-full bg-white border-slate-300">
+            <SelectValue placeholder="Tất cả" />
+          </SelectTrigger>
+          <SelectContent position="popper">
+            <SelectGroup>
+              <SelectItem value="all">Tất cả</SelectItem>
+              <SelectItem value="passed">Chỉ bài đạt</SelectItem>
+              <SelectItem value="failed">Chỉ bài chưa đạt</SelectItem>
+            </SelectGroup>
+          </SelectContent>
+        </Select>
 
         <button
           onClick={clearFilters}

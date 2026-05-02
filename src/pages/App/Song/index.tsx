@@ -305,9 +305,12 @@ const SongPage = () => {
                   <Mic size={16} />
                   HÁT NGAY
                 </button>
-                <button className="flex items-center gap-2 rounded-full border border-zinc-700 bg-white/5 px-6 py-3.5 text-sm font-semibold text-white backdrop-blur transition hover:border-zinc-500 hover:bg-white/10">
+                <button
+                  onClick={() => navigate('/app/songs/history')}
+                  className="flex items-center gap-2 rounded-full border border-zinc-700 bg-white/5 px-6 py-3.5 text-sm font-semibold text-white backdrop-blur transition hover:border-zinc-500 hover:bg-white/10"
+                >
                   <PlayCircle size={16} />
-                  Xem demo
+                  Lịch sử hát
                 </button>
               </div>
 

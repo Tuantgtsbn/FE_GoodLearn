@@ -21,8 +21,6 @@
   &--closed {
     width: 0;
     min-width: 0;
-    padding: 0;
-    border: none;
   }
 
   &__header {
@@ -1097,10 +1095,11 @@
   .chat-sidebar {
     position: fixed;
     left: 0;
-    top: 64px;
+    top: 0;
     bottom: 0;
     z-index: 50;
     box-shadow: 4px 0 24px rgba(0, 0, 0, 0.3);
+    padding-top: 20px;
 
     &--closed {
       transform: translateX(-100%);

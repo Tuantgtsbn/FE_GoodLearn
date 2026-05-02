@@ -11,7 +11,6 @@ import {
   ChevronUp,
   Clock3,
   Filter,
-  Flame,
   Search,
   Sparkles,
   Target,
@@ -34,7 +33,6 @@ const ITEMS_PER_PAGE = 9;
 
 type DifficultyFilter = 'ALL' | 'EASY' | 'MEDIUM' | 'HARD';
 type DurationFilter = 'ALL' | 'SHORT' | 'MEDIUM' | 'LONG';
-type AccessFilter = 'ALL' | 'FREE' | 'PRO';
 
 const formatMinutes = (seconds: number | null) => {
   if (!seconds || seconds <= 0) {
@@ -85,16 +83,6 @@ const getDurationLabel = (bucket: DurationFilter) => {
   return 'Tất cả';
 };
 
-const getAccessType = (exam: IExamListItem): AccessFilter => {
-  return exam.pointsToComplete > 0 ? 'PRO' : 'FREE';
-};
-
-const getAccessLabel = (access: AccessFilter) => {
-  if (access === 'FREE') return 'Miễn phí';
-  if (access === 'PRO') return 'Pro';
-  return 'Tất cả';
-};
-
 const DifficultyBadge = ({ difficulty }: { difficulty: DifficultyFilter }) => {
   const colorClass =
     difficulty === 'EASY'
@@ -127,7 +115,6 @@ const QuizzListPage = () => {
   const [difficultyFilter, setDifficultyFilter] =
     useState<DifficultyFilter>('ALL');
   const [durationFilter, setDurationFilter] = useState<DurationFilter>('ALL');
-  const [accessFilter, setAccessFilter] = useState<AccessFilter>('ALL');
 
   const [page, setPage] = useState(1);
 
@@ -180,18 +167,13 @@ const QuizzListPage = () => {
       const matchesDuration =
         durationFilter === 'ALL' ||
         getDurationBucket(exam.timeLimit) === durationFilter;
-      const matchesAccess =
-        accessFilter === 'ALL' || getAccessType(exam) === accessFilter;
 
-      return matchesDifficulty && matchesDuration && matchesAccess;
+      return matchesDifficulty && matchesDuration;
     });
-  }, [accessFilter, difficultyFilter, durationFilter, exams]);
+  }, [difficultyFilter, durationFilter, exams]);
 
   const stats = useMemo(() => {
     const total = metadata?.totalItems || filteredExams.length;
-    const freeCount = filteredExams.filter(
-      (exam) => getAccessType(exam) === 'FREE'
-    ).length;
     const attemptedCount = filteredExams.filter(
       (exam) => exam.attemptCount > 0
     ).length;
@@ -202,7 +184,6 @@ const QuizzListPage = () => {
 
     return {
       total,
-      freeCount,
       attemptedCount,
       avgScore,
     };
@@ -218,7 +199,6 @@ const QuizzListPage = () => {
     setIsFeatured('all');
     setDifficultyFilter('ALL');
     setDurationFilter('ALL');
-    setAccessFilter('ALL');
     setPage(1);
   };
 
@@ -432,24 +412,6 @@ const QuizzListPage = () => {
               </button>
             )
           )}
-
-          {(['ALL', 'FREE', 'PRO'] as AccessFilter[]).map((option) => (
-            <button
-              key={option}
-              onClick={() => {
-                setAccessFilter(option);
-                setPage(1);
-              }}
-              className={clsx(
-                'rounded-full px-3 py-1.5 text-xs font-semibold transition',
-                accessFilter === option
-                  ? 'bg-slate-900 text-white'
-                  : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
-              )}
-            >
-              {getAccessLabel(option)}
-            </button>
-          ))}
         </div>
         <div className="w-full flex justify-center mt-[30px]">
           <button onClick={() => setIsOpenFilter((prev) => !prev)} className="">
@@ -458,21 +420,13 @@ const QuizzListPage = () => {
         </div>
       </section>
 
-      <section className="mb-6 grid grid-cols-2 gap-3 md:grid-cols-4">
+      <section className="mb-6 grid grid-cols-2 gap-3 md:grid-cols-3">
         <div className="rounded-2xl bg-white p-4 shadow-sm ring-1 ring-slate-200 border border-l-4 border-l-blue-500">
           <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
             Tổng đề
           </p>
           <p className="mt-2 text-2xl font-extrabold text-slate-900">
             {stats.total}
-          </p>
-        </div>
-        <div className="rounded-2xl bg-white p-4 shadow-sm ring-1 ring-slate-200 border border-l-4 border-l-green-500">
-          <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-            Đề miễn phí
-          </p>
-          <p className="mt-2 text-2xl font-extrabold text-emerald-600">
-            {stats.freeCount}
           </p>
         </div>
         <div className="rounded-2xl bg-white p-4 shadow-sm ring-1 ring-slate-200 border border-l-4 border-l-red-500">
@@ -529,7 +483,6 @@ const QuizzListPage = () => {
         <section className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
           {filteredExams.map((exam) => {
             const difficulty = getDifficulty(exam);
-            const accessType = getAccessType(exam);
             const completionProgress =
               exam.attemptCount > 0
                 ? Math.min(100, Math.round(exam.averageScore))
@@ -545,12 +498,6 @@ const QuizzListPage = () => {
                     {exam.subject?.subjectName || 'Đa môn'}
                   </span>
                   <DifficultyBadge difficulty={difficulty} />
-                  {accessType === 'PRO' && (
-                    <span className="inline-flex items-center gap-1 rounded-full bg-purple-100 px-2.5 py-1 text-xs font-semibold text-purple-700">
-                      <Flame size={12} />
-                      Pro
-                    </span>
-                  )}
                 </div>
 
                 <h3 className="line-clamp-2 min-h-13 text-lg font-extrabold text-slate-900">

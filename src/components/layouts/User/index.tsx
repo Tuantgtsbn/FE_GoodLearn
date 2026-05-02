@@ -147,8 +147,10 @@ const UserLayout = ({ children }: IPatientLayoutProps) => {
                 className="flex gap-2 items-center cursor-pointer"
                 onClick={() => navigate('/')}
               >
-                <ICLogo />
                 <p className="text-lg font-bold">GoodLearn</p>
+              </div>
+              <div className="ml-auto">
+                <UserAvatar />
               </div>
             </Box>
             <Drawer
