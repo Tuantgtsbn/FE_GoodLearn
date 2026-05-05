@@ -21,6 +21,6 @@ export default defineConfig({
   preview: {
     port: 3000,
     host: '0.0.0.0',
-    allowedHosts: ['goodlearn.id.vn']
+    allowedHosts: ['goodlearn.id.vn'],
   },
 });

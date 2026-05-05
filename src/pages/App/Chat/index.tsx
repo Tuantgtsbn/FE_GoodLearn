@@ -12,6 +12,9 @@ import {
   selectConversation,
 } from '@/redux/slices/ChatSlice';
 import ApiChat from '@/api/ApiChat';
+import { useDialog } from '@/context/DialogContext';
+import ModalWarningChat from '@/components/ModalWarningChat';
+import { setCookie, getCookie } from '@/utils/cookie';
 import './chat.scss';
 
 export default function ChatPage() {
@@ -27,6 +30,15 @@ export default function ChatPage() {
     (state: IRootState) => state.chat.loadingMessages
   );
   const { conversationId } = useParams<{ conversationId?: string }>();
+  const { createDialog } = useDialog();
+
+  useEffect(() => {
+    const hasSeenWarning = getCookie('chat_warning_seen');
+    if (!hasSeenWarning) {
+      void createDialog(ModalWarningChat);
+      setCookie('chat_warning_seen', 'true', 12);
+    }
+  }, [createDialog]);
 
   useEffect(() => {
     dispatch(initializeChat() as unknown as Parameters<typeof dispatch>[0]);
