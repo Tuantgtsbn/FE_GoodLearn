@@ -1,4 +1,4 @@
-import axios from 'axios';
+import { fetcher } from './Fetcher';
 
 export interface IProvince {
   code: string;
@@ -27,26 +27,34 @@ export interface IWardResponse {
   communes: IWard[];
 }
 
-const getPublicProvinces = async () => {
-  return axios
-    .get<IProvinceResponse>(
-      'https://production.cas.so/address-kit/latest/provinces'
-    )
-    .then((res) => res.data);
+const path = {
+  publicProvinces: '/addresses/provinces',
+  publicWards: '/addresses/wards',
+  publicWardsOfProvince: (provinceCode: string) =>
+    `/addresses/provinces/${provinceCode}/wards`,
 };
 
-const getPublicWardsOfProvince = async (provinceCode: string) => {
-  return axios
-    .get<IWardResponse>(
-      `https://production.cas.so/address-kit/latest/provinces/${provinceCode}/communes`
-    )
-    .then((res) => res.data);
+const getPublicProvinces = async (): Promise<IProvinceResponse> => {
+  return fetcher({
+    method: 'GET',
+    url: path.publicProvinces,
+  });
 };
 
-const getPublicWards = async () => {
-  return axios
-    .get<IWardResponse>('https://production.cas.so/address-kit/latest/communes')
-    .then((res) => res.data);
+const getPublicWardsOfProvince = async (
+  provinceCode: string
+): Promise<IWardResponse> => {
+  return fetcher({
+    method: 'GET',
+    url: path.publicWardsOfProvince(provinceCode),
+  });
+};
+
+const getPublicWards = async (): Promise<IWardResponse> => {
+  return fetcher({
+    method: 'GET',
+    url: path.publicWards,
+  });
 };
 
 export default {
