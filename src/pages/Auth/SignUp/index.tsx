@@ -77,13 +77,19 @@ export default function SignUp() {
       setStep(4);
     },
     onError: (error: any) => {
+      let errorMessage = '';
       if (isDataError(error)) {
-        if (error.errors) {
+        if (
+          error.errors &&
+          Array.isArray(error.errors) &&
+          error.errors.length > 0
+        ) {
           error.errors.forEach((err: any) => {
+            errorMessage += `${err.field}: ${err.message}\n`;
             safeSetFieldError(setError, err.field, err.message);
           });
         }
-        // toast.error(error.errorMessage || 'Đăng ký thất bại');
+        toast.error(errorMessage || 'Đăng ký thất bại');
       } else {
         toast.error('Đã xảy ra lỗi khi đăng ký');
       }
