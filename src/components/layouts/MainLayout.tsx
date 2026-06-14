@@ -63,7 +63,7 @@ const MainLayout = () => {
 
   useDocumentTitle();
 
-  if (accessToken && isLoadingUser) {
+  if (accessToken && (!isAuthenticated || isLoadingUser)) {
     return <LoadingScreen />;
   }
 

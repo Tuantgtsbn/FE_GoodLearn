@@ -6,8 +6,8 @@ import { CheckCircle, XCircle } from 'lucide-react';
 import { toast } from 'react-toastify';
 import ApiAuth from '@api/ApiAuth';
 import { loginUser } from '@redux/slices/AuthSlice';
-import { ERole } from 'src/types';
 import { useMutation } from '@tanstack/react-query';
+import { getDefaultRoute } from '../index';
 
 export default function LoginGoogleCallback() {
   const [searchParams] = useSearchParams();
@@ -22,26 +22,69 @@ export default function LoginGoogleCallback() {
   });
 
   useEffect(() => {
+    let cancelled = false;
+    const timeoutIds = new Set<ReturnType<typeof setTimeout>>();
+
+    const schedule = (callback: () => void, delay: number) => {
+      const timeoutId = setTimeout(() => {
+        timeoutIds.delete(timeoutId);
+        if (!cancelled) {
+          callback();
+        }
+      }, delay);
+
+      timeoutIds.add(timeoutId);
+    };
+
+    const closePopupOrNavigateToLogin = (delay: number) => {
+      schedule(() => {
+        if (window.opener) {
+          window.close();
+        } else {
+          navigate('/auth/login', { replace: true });
+        }
+      }, delay);
+    };
+
+    const handleCallbackError = (
+      message: string,
+      code?: string,
+      delay = 2000
+    ) => {
+      if (window.opener) {
+        window.opener.postMessage(
+          {
+            type: 'GOOGLE_LOGIN_ERROR',
+            error: { message, code },
+          },
+          window.location.origin
+        );
+        window.close();
+        return;
+      }
+
+      setStatus('error');
+      setMessage(message);
+      toast.error(message);
+      closePopupOrNavigateToLogin(delay);
+    };
+
     const handleGoogleCallback = async () => {
       const code = searchParams.get('code');
       const error = searchParams.get('error');
       // ⚠️ Case 1: Truy cập trực tiếp (không có code và error)
       // Có thể là user bookmark trang này hoặc truy cập trực tiếp
       if (!code && !error) {
-        setStatus('error');
-        setMessage(
-          'Không tìm thấy thông tin xác thực. Vui lòng đăng nhập lại.'
+        handleCallbackError(
+          'Không tìm thấy thông tin xác thực. Vui lòng đăng nhập lại.',
+          undefined,
+          2000
         );
-        toast.warning('Vui lòng đăng nhập qua Google từ trang Login!');
-        setTimeout(() => {
-          navigate('/auth/login', { replace: true });
-        }, 2000);
         return;
       }
 
       // ⚠️ Case 2: Google OAuth trả về lỗi
       if (error) {
-        setStatus('error');
         let userMessage = 'Đăng nhập thất bại. Vui lòng thử lại.';
         if (error === 'access_denied') {
           userMessage =
@@ -50,27 +93,22 @@ export default function LoginGoogleCallback() {
           userMessage = 'Yêu cầu không hợp lệ. Vui lòng đăng nhập lại.';
         }
 
-        setMessage(userMessage);
-        toast.error(userMessage);
-        setTimeout(() => {
-          navigate('/auth/login', { replace: true });
-        }, 2500);
+        handleCallbackError(userMessage, error, 2500);
         return;
       }
 
       // ⚠️ Case 3: Có code nhưng không hợp lệ
       if (!code || code.trim() === '') {
-        setStatus('error');
-        setMessage('Mã xác thực không hợp lệ hoặc đã hết hạn.');
-        toast.error('Mã xác thực không hợp lệ!');
-        setTimeout(() => {
-          navigate('/auth/login', { replace: true });
-        }, 2000);
+        handleCallbackError('Mã xác thực không hợp lệ hoặc đã hết hạn.');
         return;
       }
 
       try {
         const data = await mutateAsync(code);
+
+        if (cancelled) {
+          return;
+        }
 
         dispatch(loginUser(data));
 
@@ -97,50 +135,28 @@ export default function LoginGoogleCallback() {
 
         // Redirect theo role
         const role = data.user.role;
-        setTimeout(() => {
-          switch (role) {
-            case ERole.USER:
-              navigate('/', { replace: true });
-              break;
-            // case ERole.ADMIN:
-            //   navigate('/admin', { replace: true });
-            //   break;
-            default:
-              navigate('/', { replace: true });
-          }
+        schedule(() => {
+          navigate(getDefaultRoute(role), { replace: true });
         }, 1500);
       } catch (error: any) {
-        setStatus('error');
-        setMessage(
-          error?.errorMessage || 'Đăng nhập thất bại. Vui lòng thử lại.'
-        );
-        toast.error(error?.errorMessage || 'Đăng nhập thất bại!');
-
-        // ✅ Post error message về parent window
-        if (window.opener) {
-          window.opener.postMessage(
-            {
-              type: 'GOOGLE_LOGIN_ERROR',
-              error: {
-                message: error?.errorMessage || 'Đăng nhập thất bại',
-                code: error?.errorCode,
-              },
-            },
-            window.location.origin
-          );
+        if (cancelled) {
+          return;
         }
 
-        setTimeout(() => {
-          if (window.opener) {
-            window.close();
-          } else {
-            navigate('/auth/login');
-          }
-        }, 2000);
+        handleCallbackError(
+          error?.errorMessage || 'Đăng nhập thất bại. Vui lòng thử lại.',
+          error?.errorCode
+        );
       }
     };
 
     handleGoogleCallback();
+
+    return () => {
+      cancelled = true;
+      timeoutIds.forEach((timeoutId) => clearTimeout(timeoutId));
+      timeoutIds.clear();
+    };
   }, [searchParams, navigate, dispatch, mutateAsync]);
 
   return (

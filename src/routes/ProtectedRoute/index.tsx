@@ -17,18 +17,17 @@ function ProtectedRoute({
   requireAuth = true,
   guestOnly = false,
 }: ProtectedRouteProps) {
-  const { user, accessToken, isAuthenticated } = useSelector(
-    (state: IRootState) => state.auth
-  );
+  const { user, accessToken } = useSelector((state: IRootState) => state.auth);
   const userRole = user?.role;
+
   if (requireAuth && !accessToken) {
     return <Navigate to="/auth/login" replace />;
   }
 
-  if (guestOnly && isAuthenticated && user && userRole) {
+  if (guestOnly && accessToken) {
     switch (userRole) {
       case ERole.USER:
-        return <Navigate to="/" replace />;
+        return <Navigate to="/app" replace />;
       // case ERole.ADMIN:
       //   return <Navigate to="/admin" replace />;
       default:
@@ -36,15 +35,11 @@ function ProtectedRoute({
     }
   }
 
-  if (allowedRoles.length > 0 && userRole && !allowedRoles.includes(userRole)) {
-    switch (userRole) {
-      case ERole.USER:
-        return <Navigate to="/" replace />;
-      // case ERole.ADMIN:
-      //   return <Navigate to="/admin" replace />;
-      default:
-        return <Navigate to="/auth/login" replace />;
-    }
+  if (
+    allowedRoles.length > 0 &&
+    (!userRole || !allowedRoles.includes(userRole))
+  ) {
+    return <Navigate to="/403" replace />;
   }
 
   return <>{children}</>;

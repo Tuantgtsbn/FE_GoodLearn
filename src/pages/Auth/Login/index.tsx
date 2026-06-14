@@ -6,7 +6,7 @@ import Divider from '@/components/ui/Divider';
 import { LockIcon, Mail } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { LoginDto, type LoginDataDto } from '@/dto/auth.dto';
@@ -20,9 +20,25 @@ import ICLogo from '@/components/Icon/ICLogo';
 import { CircularProgress } from '@mui/material';
 import ModelGetUrl from './components/ModalGetUrl';
 
+export function getDefaultRoute(role?: ERole) {
+  switch (role) {
+    case ERole.USER:
+      return '/app';
+    // case ERole.ADMIN:
+    //   return '/admin';
+    default:
+      return '/';
+  }
+}
+
 export default function Login() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
+  const from = (location.state as { from?: Location } | null)?.from;
+  const redirectPath = from
+    ? `${from.pathname}${from.search}${from.hash}`
+    : undefined;
   const [validationErrs, setValidationErrs] = useState<Record<string, string>>(
     {}
   );
@@ -47,6 +63,9 @@ export default function Login() {
       const { type, data, error } = event.data;
 
       if (type === 'GOOGLE_LOGIN_SUCCESS' || type === 'GOOGLE_LOGIN_ERROR') {
+        if (isAfterPostMessage.current) {
+          return;
+        }
         isAfterPostMessage.current = true;
         setIsLoading(false);
       }
@@ -54,18 +73,9 @@ export default function Login() {
       if (type === 'GOOGLE_LOGIN_SUCCESS') {
         dispatch(loginUser(data));
         toast.success('Đăng nhập thành công!');
-        const role = data.user.role?.name;
+        const role = data.user.role;
         setTimeout(() => {
-          switch (role) {
-            case ERole.USER:
-              navigate('/', { replace: true });
-              break;
-            // case ERole.ADMIN:
-            //   navigate('/admin', { replace: true });
-            //   break;
-            default:
-              navigate('/', { replace: true });
-          }
+          navigate(redirectPath || getDefaultRoute(role), { replace: true });
         }, 500);
       } else if (type === 'GOOGLE_LOGIN_ERROR') {
         toast.error(error?.message || 'Đăng nhập Google thất bại!');
@@ -90,16 +100,7 @@ export default function Login() {
       const role = data.user.role;
 
       setTimeout(() => {
-        switch (role) {
-          case ERole.USER:
-            navigate('/', { replace: true });
-            break;
-          // case ERole.ADMIN:
-          //   navigate('/admin', { replace: true });
-          //   break;
-          default:
-            navigate('/', { replace: true });
-        }
+        navigate(redirectPath || getDefaultRoute(role), { replace: true });
       }, 100);
     },
     onError: (error: IDataError<ValidationErrorDetail>) => {

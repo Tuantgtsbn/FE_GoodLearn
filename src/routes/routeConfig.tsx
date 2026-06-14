@@ -3,6 +3,7 @@ import FeatureLandingPage from '../pages/LandingPage/Feature';
 import PriceLandingPage from '../pages/LandingPage/Price';
 import LandingPageLayout from '../components/layouts/LandingPage';
 import NotFound from '@/pages/NotFound';
+import Forbidden from '@/pages/Forbidden';
 import MainLayout from '@/components/layouts/MainLayout';
 import TermOfUse from '@/pages/LandingPage/TermOfUse';
 import Privacy from '@/pages/LandingPage/Privacy';
@@ -265,6 +266,13 @@ export const routes = [
       {
         path: 'login/google/callback',
         element: <LoginGoogleCallback />,
+      },
+      {
+        path: '403',
+        element: <Forbidden />,
+        handle: {
+          title: '403 - Không có quyền truy cập',
+        },
       },
       {
         path: '*',
