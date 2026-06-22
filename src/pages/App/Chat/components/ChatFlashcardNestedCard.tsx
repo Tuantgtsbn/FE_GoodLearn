@@ -44,12 +44,12 @@ export default function ChatFlashcardNestedCard({
   };
 
   const statusText = isFailed
-    ? 'Tao flashcard that bai'
+    ? 'Tạo flashcard thất bại'
     : isInProgress
-      ? `Dang tao flashcard... ${progress ?? 0}%`
+      ? `Đang tạo flashcard... ${progress ?? 0}%`
       : isCompleted
-        ? `${cardCount ? `${cardCount} the` : 'San sang de hoc'}`
-        : 'Dang cho xu ly';
+        ? `${cardCount ? `${cardCount} thẻ` : 'Sẵn sàng để đọc'}`
+        : 'Đang chờ xử lý';
 
   return (
     <button
@@ -77,7 +77,7 @@ export default function ChatFlashcardNestedCard({
             )}
           </div>
           <span className="chat-flashcard-nested__title">
-            {title || 'Bo flashcard moi'}
+            {title || 'Bộ flashcard mới'}
           </span>
         </div>
 
@@ -106,7 +106,7 @@ export default function ChatFlashcardNestedCard({
           </span>
           {isCompleted && (
             <span className="chat-flashcard-nested__cta">
-              Mo ngay <ChevronRight size={14} />
+              Mở ngay <ChevronRight size={14} />
             </span>
           )}
         </div>

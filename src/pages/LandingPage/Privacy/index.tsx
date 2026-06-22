@@ -20,7 +20,7 @@ export default function Privacy() {
       </header>
       <main className="max-w-4xl mx-auto px-4 pb-24 space-y-12">
         <section
-          className="bg-white brutal-border rounded-2xl p-8 brutal-shadow relative overflow-hidden"
+          className="bg-background brutal-border rounded-2xl p-8 brutal-shadow relative overflow-hidden"
           data-purpose="privacy-section"
         >
           <div className="absolute -top-4 -right-4 w-20 h-20 bg-neo-pink rounded-full brutal-border flex items-center justify-center -rotate-12">
@@ -39,7 +39,7 @@ export default function Privacy() {
             </svg>
           </div>
           <h2 className="text-3xl font-bold mb-6 flex items-center gap-3">
-            <span className="w-8 h-8 bg-black text-white rounded-full flex items-center justify-center text-sm">
+            <span className="w-8 h-8 bg-foreground text-background rounded-full flex items-center justify-center text-sm">
               01
             </span>
             Thông tin chúng tôi thu thập
@@ -51,21 +51,21 @@ export default function Privacy() {
             </p>
             <ul className="list-none space-y-3">
               <li className="flex items-start gap-3">
-                <span className="mt-1.5 w-2 h-2 bg-black rounded-full flex-shrink-0"></span>
+                <span className="mt-1.5 w-2 h-2 bg-foreground rounded-full flex-shrink-0"></span>
                 <span>
                   <strong>Thông tin tài khoản:</strong> Tên đăng nhập, email để
                   bạn có thể lưu trữ tiến độ học tập.
                 </span>
               </li>
               <li className="flex items-start gap-3">
-                <span className="mt-1.5 w-2 h-2 bg-black rounded-full flex-shrink-0"></span>
+                <span className="mt-1.5 w-2 h-2 bg-foreground rounded-full flex-shrink-0"></span>
                 <span>
                   <strong>Nội dung học tập:</strong> Các câu hỏi bạn gửi cho AI
                   để chúng mình cải thiện độ chính xác của câu trả lời.
                 </span>
               </li>
               <li className="flex items-start gap-3">
-                <span className="mt-1.5 w-2 h-2 bg-black rounded-full flex-shrink-0"></span>
+                <span className="mt-1.5 w-2 h-2 bg-foreground rounded-full flex-shrink-0"></span>
                 <span>
                   <strong>Dữ liệu thiết bị:</strong> Thông tin cơ bản về trình
                   duyệt để giao diện luôn hiển thị đẹp nhất trên máy của bạn.
@@ -75,11 +75,11 @@ export default function Privacy() {
           </div>
         </section>
         <section
-          className=" bg-white brutal-border rounded-2xl p-8 brutal-shadow relative"
+          className=" bg-background brutal-border rounded-2xl p-8 brutal-shadow relative"
           data-purpose="privacy-section"
         >
           <h2 className="text-3xl font-bold mb-6 flex items-center gap-3">
-            <span className="w-8 h-8 bg-black text-white rounded-full flex items-center justify-center text-sm">
+            <span className="w-8 h-8 bg-foreground text-background rounded-full flex items-center justify-center text-sm">
               02
             </span>
             Cách chúng tôi sử dụng thông tin
@@ -106,7 +106,7 @@ export default function Privacy() {
           </p>
         </section>
         <section
-          className="bg-white brutal-border rounded-2xl p-8 brutal-shadow relative overflow-hidden"
+          className="bg-background brutal-border rounded-2xl p-8 brutal-shadow relative overflow-hidden"
           data-purpose="privacy-section"
         >
           <div className="absolute -bottom-4 -right-4 w-24 h-24 bg-neo-purple rounded-2xl brutal-border flex items-center justify-center rotate-12">
@@ -124,7 +124,7 @@ export default function Privacy() {
             </svg>
           </div>
           <h2 className="text-3xl font-bold mb-6 flex items-center gap-3">
-            <span className="w-8 h-8 bg-black text-white rounded-full flex items-center justify-center text-sm">
+            <span className="w-8 h-8 bg-foreground text-background rounded-full flex items-center justify-center text-sm">
               03
             </span>
             Bảo mật dữ liệu
@@ -132,13 +132,13 @@ export default function Privacy() {
           <div className="space-y-4 text-lg">
             <p>Hệ thống của chúng mình sử dụng các lớp bảo mật mạnh mẽ:</p>
             <div className="flex flex-wrap gap-4">
-              <div className="bg-black text-white px-4 py-2 rounded-lg font-bold">
+              <div className="bg-foreground text-background px-4 py-2 rounded-lg font-bold">
                 Mã hóa SSL
               </div>
-              <div className="bg-black text-white px-4 py-2 rounded-lg font-bold">
+              <div className="bg-foreground text-background px-4 py-2 rounded-lg font-bold">
                 Xác thực 2 lớp
               </div>
-              <div className="bg-black text-white px-4 py-2 rounded-lg font-bold">
+              <div className="bg-foreground text-background px-4 py-2 rounded-lg font-bold">
                 Giám sát 24/7
               </div>
             </div>
@@ -159,7 +159,7 @@ export default function Privacy() {
           </p>
           <button
             onClick={() => navigate('/contact')}
-            className="inline-block bg-white brutal-border px-8 py-4 rounded-2xl font-black text-2xl brutal-shadow brutal-shadow-hover transition-all"
+            className="inline-block bg-background brutal-border px-8 py-4 rounded-2xl font-black text-2xl brutal-shadow brutal-shadow-hover transition-all"
           >
             Gửi Email Ngay!
           </button>

@@ -24,7 +24,7 @@
   .marquee-item {
     padding: 0 20px;
     font-weight: bold;
-    color: var(--text-color, #fff);
+    color: var(--text-color, inherit);
     font-size: var(--font-size, 1rem);
   }
 

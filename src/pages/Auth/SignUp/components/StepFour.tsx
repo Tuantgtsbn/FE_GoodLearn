@@ -117,18 +117,20 @@ export default function StepFour({ data }: IStepFourProps) {
   };
 
   return (
-    <div className="w-full max-w-md mx-auto bg-white/80 rounded-xl shadow-lg p-8 flex flex-col items-center gap-6 backdrop-blur-md">
-      <ShieldCheck size={40} className="text-blue-500 mb-2" />
-      <h1 className="font-semibold text-center">Xác thực OTP</h1>
-      <h2 color="text.secondary" className="text-center">
+    <div className="mx-auto flex w-full max-w-md flex-col items-center gap-6 rounded-xl bg-background/80 p-8 shadow-lg backdrop-blur-md">
+      <div className="mb-2 flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10">
+        <ShieldCheck size={40} className="text-primary" />
+      </div>
+      <h1 className="text-center font-semibold">Xác thực OTP</h1>
+      <h2 className="text-center text-muted-foreground">
         Vui lòng nhập mã OTP đã gửi về số điện thoại của bạn để hoàn tất đăng
         ký.
       </h2>
       {!isSendOTPSuccess && (
         <ErrorMessage message="Gửi OTP thất bại. Vui lòng nhấn nút thử lại." />
       )}
-      <div className="w-full flex flex-col items-center gap-4">
-        <div className="flex gap-2 w-full items-center">
+      <div className="flex w-full flex-col items-center gap-4">
+        <div className="flex w-full items-center gap-2">
           <label htmlFor="otp" className="text-lg font-medium">
             Mã OTP
           </label>
@@ -140,28 +142,28 @@ export default function StepFour({ data }: IStepFourProps) {
             maxLength={6}
             inputMode="numeric"
             pattern="[0-9]*"
-            className="flex-1 px-4 py-2 border rounded-lg text-center text-xl tracking-widest focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="flex-1 rounded-lg border bg-background px-4 py-2 text-center text-xl tracking-widest focus:outline-none focus:ring-2 focus:ring-primary"
           />
-          <p className="text-red-500">{timeLeft} s</p>
+          <p className="text-destructive">{timeLeft} s</p>
         </div>
         <button
           type="button"
           disabled={isVerifying || otp.length !== 6}
-          className={`w-full py-3 rounded-lg text-white font-semibold ${
+          className={`w-full rounded-lg py-3 font-semibold text-primary-foreground ${
             isVerifying || otp.length !== 6
-              ? 'bg-gray-400 cursor-not-allowed'
-              : 'bg-blue-500 hover:bg-blue-600'
+              ? 'cursor-not-allowed bg-muted'
+              : 'bg-primary hover:opacity-90'
           }`}
           onClick={handleSubmit}
         >
           {isVerifying ? 'Đang xác thực...' : 'Xác nhận'}
         </button>
       </div>
-      <div className="text-center mt-4">
+      <div className="mt-4 text-center">
         <p>
           Không nhận được mã OTP?{' '}
           <span
-            className="text-blue-500 font-bold text-xl underline cursor-pointer hover:text-blue-600"
+            className="cursor-pointer text-xl font-bold text-primary underline hover:opacity-80"
             onClick={handleResendOTP}
           >
             Gửi lại

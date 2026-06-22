@@ -10,13 +10,12 @@ import {
   ChevronLeft,
   ChevronRight,
   Eye,
+  Filter,
   Heart,
   LayoutGrid,
   Search,
   Sparkles,
   Plus,
-  ChevronUp,
-  ChevronDown,
 } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import clsx from 'clsx';
@@ -39,12 +38,12 @@ const GRADE_OPTIONS = Array.from({ length: 12 }, (_, i) => i + 1);
 const getSubjectColor = (colorHex: string | null, index: number): string => {
   if (colorHex) return colorHex;
   const DEFAULTS = [
-    '#F97316', // orange
-    '#3B82F6', // blue
-    '#EC4899', // pink
-    '#8B5CF6', // purple
-    '#10B981', // emerald
-    '#F59E0B', // amber
+    '#F97316',
+    '#3B82F6',
+    '#EC4899',
+    '#8B5CF6',
+    '#10B981',
+    '#F59E0B',
   ];
   return DEFAULTS[index % DEFAULTS.length];
 };
@@ -52,13 +51,22 @@ const getSubjectColor = (colorHex: string | null, index: number): string => {
 const getStatusBadge = (status: IFlashcardSetListItem['generationStatus']) => {
   switch (status) {
     case 'COMPLETED':
-      return null; // không hiển thị khi hoàn thành
+      return null;
     case 'PENDING':
-      return { label: 'Đang xử lý', class: 'bg-amber-100 text-amber-700' };
+      return {
+        label: 'Đang xử lý',
+        class: 'bg-amber-500/15 text-amber-600 dark:text-amber-400',
+      };
     case 'IN_PROGRESS':
-      return { label: 'Đang tạo', class: 'bg-blue-100 text-blue-700' };
+      return {
+        label: 'Đang tạo',
+        class: 'bg-sky-500/15 text-sky-600 dark:text-sky-400',
+      };
     case 'FAILED':
-      return { label: 'Lỗi', class: 'bg-red-100 text-red-700' };
+      return {
+        label: 'Lỗi',
+        class: 'bg-destructive/15 text-destructive',
+      };
     default:
       return null;
   }
@@ -67,19 +75,19 @@ const getStatusBadge = (status: IFlashcardSetListItem['generationStatus']) => {
 // ─── Skeleton ────────────────────────────────────────────────────────────────
 
 const FlashcardSkeleton = () => (
-  <div className="animate-pulse rounded-2xl bg-white p-5 ring-1 ring-slate-200">
+  <div className="animate-pulse rounded-2xl border bg-background p-5">
     <div className="mb-3 flex items-center gap-3">
-      <div className="h-10 w-10 rounded-full bg-slate-200" />
+      <div className="h-10 w-10 rounded-full bg-muted" />
       <div className="flex-1">
-        <div className="mb-1 h-4 w-16 rounded bg-slate-200" />
-        <div className="h-3 w-10 rounded bg-slate-100" />
+        <div className="mb-1 h-4 w-16 rounded bg-muted" />
+        <div className="h-3 w-10 rounded bg-muted" />
       </div>
     </div>
-    <div className="mb-2 h-5 w-3/4 rounded bg-slate-200" />
-    <div className="mb-1 h-4 w-full rounded bg-slate-100" />
-    <div className="mb-5 h-4 w-2/3 rounded bg-slate-100" />
+    <div className="mb-2 h-5 w-3/4 rounded bg-muted" />
+    <div className="mb-1 h-4 w-full rounded bg-muted" />
+    <div className="mb-5 h-4 w-2/3 rounded bg-muted" />
     <div className="flex gap-2">
-      <div className="h-9 flex-1 rounded-xl bg-slate-200" />
+      <div className="h-9 flex-1 rounded-xl bg-muted" />
     </div>
   </div>
 );
@@ -101,12 +109,11 @@ const FlashcardCard = ({
   return (
     <article
       onClick={onClick}
-      className="group relative flex cursor-pointer flex-col rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200 transition hover:-translate-y-1 hover:shadow-xl"
+      className="group relative flex cursor-pointer flex-col rounded-2xl border bg-background p-5 transition hover:-translate-y-1 hover:shadow-lg hover:shadow-foreground/5"
     >
-      {/* Options button (placeholder) */}
       <button
         onClick={(e) => e.stopPropagation()}
-        className="absolute right-4 top-4 rounded-lg p-1 text-slate-400 opacity-0 transition hover:bg-slate-100 hover:text-slate-700 group-hover:opacity-100"
+        className="absolute right-4 top-4 rounded-lg p-1 text-muted-foreground opacity-0 transition hover:bg-muted hover:text-foreground group-hover:opacity-100"
       >
         <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
           <circle cx="10" cy="4" r="1.5" />
@@ -115,10 +122,9 @@ const FlashcardCard = ({
         </svg>
       </button>
 
-      {/* Header */}
       <div className="mb-3 flex items-start gap-3">
         <div
-          className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full text-white"
+          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-white"
           style={{ backgroundColor: accentColor }}
         >
           <BookOpen size={18} />
@@ -134,12 +140,12 @@ const FlashcardCard = ({
               </span>
             )}
             {set.gradeLevel && (
-              <span className="rounded-full bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-600">
+              <span className="rounded-full bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground">
                 Lớp {set.gradeLevel}
               </span>
             )}
             {set.isFeatured && (
-              <span className="inline-flex items-center gap-1 rounded-full bg-amber-100 px-2 py-0.5 text-xs font-semibold text-amber-700">
+              <span className="inline-flex items-center gap-1 rounded-full bg-amber-500/15 px-2 py-0.5 text-xs font-semibold text-amber-600 dark:text-amber-400">
                 <Sparkles size={10} />
                 Nổi bật
               </span>
@@ -158,16 +164,14 @@ const FlashcardCard = ({
         </div>
       </div>
 
-      {/* Title & description */}
-      <h3 className="line-clamp-2 min-h-14 text-base font-extrabold text-slate-900">
+      <h3 className="line-clamp-2 min-h-14 text-base font-extrabold text-foreground">
         {set.title}
       </h3>
-      <p className="mt-1 line-clamp-2 min-h-10 text-sm text-slate-500">
+      <p className="mt-1 line-clamp-2 min-h-10 text-sm text-muted-foreground">
         {set.description || 'Bộ thẻ flashcard giúp bạn ôn tập hiệu quả.'}
       </p>
 
-      {/* Stats */}
-      <div className="mt-4 flex items-center gap-4 text-xs text-slate-500">
+      <div className="mt-4 flex items-center gap-4 text-xs text-muted-foreground">
         <span className="inline-flex items-center gap-1 font-medium">
           <LayoutGrid size={13} />
           {set.cardCount} thẻ
@@ -182,8 +186,7 @@ const FlashcardCard = ({
         </span>
       </div>
 
-      {/* Progress bar (color from accent) */}
-      <div className="mt-4 h-1 w-full overflow-hidden rounded-full bg-slate-100">
+      <div className="mt-4 h-1 w-full overflow-hidden rounded-full bg-muted">
         <div
           className="h-full rounded-full transition-all"
           style={{
@@ -194,9 +197,8 @@ const FlashcardCard = ({
         />
       </div>
 
-      {/* Author */}
       {set.user && (
-        <p className="mt-3 flex items-center gap-1.5 text-xs text-slate-400">
+        <p className="mt-3 flex items-center gap-1.5 text-xs text-muted-foreground">
           {set.user.avatarUrl ? (
             <img
               src={set.user.avatarUrl}
@@ -204,7 +206,7 @@ const FlashcardCard = ({
               className="h-4 w-4 rounded-full object-cover"
             />
           ) : (
-            <span className="inline-flex h-4 w-4 items-center justify-center rounded-full bg-slate-200 text-[9px] font-bold text-slate-500">
+            <span className="inline-flex h-4 w-4 items-center justify-center rounded-full bg-muted text-[9px] font-bold text-muted-foreground">
               {(set.user.fullName ?? set.user.username ?? '?')[0].toUpperCase()}
             </span>
           )}
@@ -220,13 +222,13 @@ const FlashcardCard = ({
 const QuickCreateCard = ({ onClick }: { onClick: () => void }) => (
   <article
     onClick={onClick}
-    className="flex cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed border-slate-300 bg-slate-50 p-5 text-center transition hover:border-slate-400 hover:bg-white hover:shadow-md"
+    className="flex cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed bg-muted p-5 text-center transition hover:border-primary/40 hover:bg-background hover:shadow-md"
   >
-    <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-white shadow-sm ring-1 ring-slate-200">
-      <Plus size={22} className="text-slate-600" />
+    <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-full border bg-background">
+      <Plus size={22} className="text-muted-foreground" />
     </div>
-    <p className="text-sm font-bold text-slate-800">Tạo bộ thẻ mới</p>
-    <p className="mt-1 text-xs text-slate-500">
+    <p className="text-sm font-bold text-foreground">Tạo bộ thẻ mới</p>
+    <p className="mt-1 text-xs text-muted-foreground">
       Dùng AI để tạo flashcard từ ghi chú của bạn ngay lập tức.
     </p>
   </article>
@@ -244,7 +246,6 @@ const FlashcardListPage = () => {
     'createdAt'
   );
   const [page, setPage] = useState(1);
-  const [isOpenFilter, setIsOpenFilter] = useState(false);
 
   useEffect(() => {
     const timer = window.setTimeout(() => {
@@ -295,19 +296,20 @@ const FlashcardListPage = () => {
   };
 
   return (
-    <div className="mx-auto w-full max-w-300 px-4 py-8 md:px-6 lg:px-8">
-      {/* ─── Hero Banner ──────────────────────────────────────────────── */}
-      <section className="mb-6 rounded-3xl bg-black px-6 py-7 text-white shadow-xl md:px-8 md:py-9">
-        <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+    <div className="mx-auto w-full max-w-300 space-y-8 px-4 py-8 md:px-6 lg:px-8">
+      {/* ── Hero Banner ── */}
+      <section className="relative overflow-hidden rounded-3xl bg-neutral-900 px-6 py-7 shadow-xl md:px-8 md:py-9">
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-blue-600/20 via-transparent to-purple-600/10" />
+        <div className="relative flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
           <div>
-            <p className="mb-2 inline-flex items-center gap-2 rounded-full bg-white/15 px-3 py-1 text-xs font-semibold uppercase tracking-wide">
+            <p className="mb-2 inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-white/70">
               <LayoutGrid size={14} />
               Thư viện Flashcard
             </p>
-            <h1 className="text-2xl font-black tracking-tight md:text-4xl">
+            <h1 className="text-2xl font-black tracking-tight text-white md:text-4xl">
               Bộ thẻ của bạn
             </h1>
-            <p className="mt-2 text-sm text-blue-50 md:text-base">
+            <p className="mt-2 max-w-lg text-sm text-white/50 md:text-base">
               Quản lý và ôn tập flashcard thông minh. Tạo bộ thẻ mới bằng AI chỉ
               trong vài giây.
             </p>
@@ -315,7 +317,7 @@ const FlashcardListPage = () => {
           <div className="flex flex-wrap gap-3">
             <button
               onClick={() => navigate('/app/chat')}
-              className="inline-flex items-center gap-2 rounded-2xl bg-white px-5 py-2.5 text-sm font-bold text-black transition hover:-translate-y-0.5 hover:shadow-lg"
+              className="inline-flex items-center gap-2 rounded-2xl bg-white px-5 py-2.5 text-sm font-bold text-neutral-900 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
             >
               <Sparkles size={15} />
               Tạo bằng AI
@@ -324,34 +326,31 @@ const FlashcardListPage = () => {
         </div>
       </section>
 
-      {/* ─── Filter bar ───────────────────────────────────────────────── */}
-      <section className="sticky top-2 z-20 mb-6 rounded-2xl border border-slate-200 bg-white/95 p-4 shadow-lg backdrop-blur md:p-5">
-        <div className="grid grid-cols-1 gap-3 lg:grid-cols-[2fr,1fr,1fr,1fr]">
-          {/* Search */}
+      {/* ── Filter Bar ── */}
+      <section className="rounded-2xl border bg-background p-5">
+        <div className="flex flex-col gap-4">
           <label className="relative">
             <Search
-              className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+              className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground"
               size={18}
             />
             <input
-              id="flashcard-search"
               type="text"
               value={searchInput}
               onChange={(e) => setSearchInput(e.target.value)}
               placeholder="Tìm theo tiêu đề bộ thẻ..."
-              className="w-full rounded-xl border border-slate-200 bg-slate-50 py-2.5 pl-10 pr-3 text-sm font-medium outline-none transition focus:border-blue-500 focus:bg-white"
+              className="w-full rounded-xl border bg-muted py-2.5 pl-10 pr-3 text-sm font-medium outline-none transition focus:border-primary focus:bg-background"
             />
           </label>
 
-          {/* Subject */}
-          <div className={`${isOpenFilter ? 'block' : 'hidden'}`}>
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-3 lg:grid-cols-4">
             <Select
               value={subjectId || '_all'}
               onValueChange={onFilter((v) =>
                 setSubjectId(v === '_all' ? '' : v)
               )}
             >
-              <SelectTrigger className="w-full bg-white border-slate-300">
+              <SelectTrigger className="w-full">
                 <SelectValue placeholder="Môn học" />
               </SelectTrigger>
               <SelectContent position="popper">
@@ -365,17 +364,14 @@ const FlashcardListPage = () => {
                 </SelectGroup>
               </SelectContent>
             </Select>
-          </div>
 
-          {/* Grade */}
-          <div className={`${isOpenFilter ? 'block' : 'hidden'}`}>
             <Select
               value={gradeLevel || '_all'}
               onValueChange={onFilter((v) =>
                 setGradeLevel(v === '_all' ? '' : v)
               )}
             >
-              <SelectTrigger className="w-full bg-white border-slate-300">
+              <SelectTrigger className="w-full">
                 <SelectValue placeholder="Khối lớp" />
               </SelectTrigger>
               <SelectContent position="popper">
@@ -389,12 +385,9 @@ const FlashcardListPage = () => {
                 </SelectGroup>
               </SelectContent>
             </Select>
-          </div>
 
-          {/* Sort */}
-          <div className={`${isOpenFilter ? 'block' : 'hidden'}`}>
             <Select value={sortBy} onValueChange={onFilter(setSortBy)}>
-              <SelectTrigger className="w-full bg-white border-slate-300">
+              <SelectTrigger className="w-full">
                 <SelectValue placeholder="Sắp xếp" />
               </SelectTrigger>
               <SelectContent position="popper">
@@ -405,57 +398,46 @@ const FlashcardListPage = () => {
                 </SelectGroup>
               </SelectContent>
             </Select>
-          </div>
 
-          <div className="w-full flex justify-center mt-[20px]">
-            <button
-              onClick={() => setIsOpenFilter((prev) => !prev)}
-              className=""
-            >
-              {isOpenFilter ? <ChevronUp /> : <ChevronDown />}
-            </button>
-          </div>
-        </div>
-
-        {/* Active filters summary */}
-        {(debouncedSearch ||
-          subjectId ||
-          gradeLevel ||
-          sortBy !== 'createdAt') && (
-          <div className="mt-3 flex flex-wrap items-center gap-2">
-            <span className="text-xs text-slate-500 font-medium">
-              Đang lọc:
-            </span>
-            {debouncedSearch && (
-              <span className="rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-semibold text-blue-700">
-                "{debouncedSearch}"
-              </span>
-            )}
-            {subjectId &&
-              subjectsData?.data.find((s) => s.subjectId === subjectId) && (
-                <span className="rounded-full bg-purple-100 px-2.5 py-0.5 text-xs font-semibold text-purple-700">
-                  {
-                    subjectsData.data.find((s) => s.subjectId === subjectId)
-                      ?.subjectName
-                  }
-                </span>
-              )}
-            {gradeLevel && (
-              <span className="rounded-full bg-emerald-100 px-2.5 py-0.5 text-xs font-semibold text-emerald-700">
-                Lớp {gradeLevel}
-              </span>
-            )}
             <button
               onClick={resetFilters}
-              className="rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-semibold text-slate-600 transition hover:bg-slate-200"
+              className="inline-flex items-center justify-center gap-2 rounded-xl border px-3 py-2.5 text-sm font-semibold text-muted-foreground transition hover:bg-muted hover:text-foreground"
             >
-              Xóa bộ lọc ×
+              <Filter size={16} />
+              Xóa bộ lọc
             </button>
           </div>
-        )}
+
+          {(debouncedSearch || subjectId || gradeLevel) && (
+            <div className="flex flex-wrap items-center gap-2 border-t pt-4">
+              <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                Đang lọc:
+              </span>
+              {debouncedSearch && (
+                <span className="rounded-full bg-blue-500/15 px-2.5 py-1 text-xs font-semibold text-blue-600 dark:text-blue-400">
+                  &quot;{debouncedSearch}&quot;
+                </span>
+              )}
+              {subjectId &&
+                subjectsData?.data.find((s) => s.subjectId === subjectId) && (
+                  <span className="rounded-full bg-purple-500/15 px-2.5 py-1 text-xs font-semibold text-purple-600 dark:text-purple-400">
+                    {
+                      subjectsData.data.find((s) => s.subjectId === subjectId)
+                        ?.subjectName
+                    }
+                  </span>
+                )}
+              {gradeLevel && (
+                <span className="rounded-full bg-emerald-500/15 px-2.5 py-1 text-xs font-semibold text-emerald-600 dark:text-emerald-400">
+                  Lớp {gradeLevel}
+                </span>
+              )}
+            </div>
+          )}
+        </div>
       </section>
 
-      {/* ─── Grid ─────────────────────────────────────────────────────── */}
+      {/* ── Grid ── */}
       {isPending ? (
         <section className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
           {Array.from({ length: ITEMS_PER_PAGE }).map((_, i) => (
@@ -463,24 +445,26 @@ const FlashcardListPage = () => {
           ))}
         </section>
       ) : sets.length === 0 ? (
-        <section className="rounded-3xl bg-white px-6 py-14 text-center ring-1 ring-slate-200">
-          <BookOpen className="mx-auto mb-4 text-slate-300" size={52} />
-          <h2 className="text-xl font-bold text-slate-800">
+        <section className="flex flex-col items-center rounded-3xl border bg-background px-6 py-14 text-center">
+          <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-muted">
+            <BookOpen className="text-muted-foreground" size={28} />
+          </div>
+          <h2 className="text-xl font-bold text-foreground">
             Không tìm thấy bộ thẻ nào
           </h2>
-          <p className="mt-2 text-sm text-slate-500">
+          <p className="mt-2 text-sm text-muted-foreground">
             Thử đổi từ khóa hoặc đặt lại bộ lọc.
           </p>
           <button
             onClick={resetFilters}
-            className="mt-5 rounded-xl bg-black px-5 py-2.5 text-sm font-bold text-white transition hover:bg-slate-800"
+            className="mt-5 inline-flex items-center gap-2 rounded-xl bg-primary px-5 py-2.5 text-sm font-bold text-primary-foreground transition hover:opacity-90"
           >
+            <Filter size={16} />
             Đặt lại bộ lọc
           </button>
         </section>
       ) : (
         <section className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
-          {/* Quick create card — luôn ở đầu */}
           <QuickCreateCard onClick={() => navigate('/app/chat')} />
 
           {sets.map((set, i) => (
@@ -494,10 +478,10 @@ const FlashcardListPage = () => {
         </section>
       )}
 
-      {/* ─── Pagination ───────────────────────────────────────────────── */}
+      {/* ── Pagination ── */}
       {totalPages > 1 && (
-        <section className="mt-6 flex flex-wrap items-center justify-between gap-3 rounded-2xl bg-white px-4 py-3 ring-1 ring-slate-200">
-          <p className="text-sm font-medium text-slate-600">
+        <section className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border bg-background px-5 py-3">
+          <p className="text-sm font-medium text-muted-foreground">
             Trang {metadata?.page ?? page} / {totalPages}
             {isFetching && !isPending ? ' • Đang cập nhật...' : ''}
           </p>
@@ -506,17 +490,17 @@ const FlashcardListPage = () => {
             <button
               onClick={() => setPage((prev) => Math.max(1, prev - 1))}
               disabled={(metadata?.page ?? page) <= 1}
-              className="inline-flex items-center gap-1 rounded-lg border border-slate-200 px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50"
+              className="inline-flex items-center gap-1 rounded-xl border px-3 py-2 text-sm font-semibold text-muted-foreground transition hover:bg-muted hover:text-foreground disabled:cursor-not-allowed disabled:opacity-40"
             >
               <ChevronLeft size={16} />
-              Prev
+              Trước
             </button>
             <button
               onClick={() => setPage((prev) => Math.min(totalPages, prev + 1))}
               disabled={(metadata?.page ?? page) >= totalPages}
-              className="inline-flex items-center gap-1 rounded-lg border border-slate-200 px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50"
+              className="inline-flex items-center gap-1 rounded-xl border px-3 py-2 text-sm font-semibold text-muted-foreground transition hover:bg-muted hover:text-foreground disabled:cursor-not-allowed disabled:opacity-40"
             >
-              Next
+              Sau
               <ChevronRight size={16} />
             </button>
           </div>

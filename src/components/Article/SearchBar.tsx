@@ -46,7 +46,6 @@ export function SearchBar({
   return (
     <form onSubmit={handleSubmit} className={cn('relative', className)}>
       <div className="relative flex items-center gap-5">
-        {/* Input */}
         <div className="relative flex-1">
           <Input
             ref={inputRef}
@@ -56,16 +55,15 @@ export function SearchBar({
             onKeyDown={handleKeyDown}
             placeholder={placeholder}
             className={cn(
-              'h-10 w-full border-2 border-black pl-2 pr-20 text-sm placeholder:text-gray-400 focus-visible:ring-black',
+              'h-10 w-full border pl-2 pr-20 text-sm placeholder:text-muted-foreground focus-visible:ring-primary',
               inputClassName
             )}
           />
-          {/* Clear button */}
           {query && (
             <button
               type="button"
               onClick={handleClear}
-              className="absolute right-3 top-1/2 -translate-y-1/2  flex h-6 w-6 items-center justify-center rounded-full text-gray-400 hover:text-gray-600"
+              className="absolute right-3 top-1/2 -translate-y-1/2 flex h-6 w-6 items-center justify-center rounded-full text-muted-foreground hover:text-foreground"
             >
               <svg
                 className="h-4 w-4"
@@ -84,11 +82,10 @@ export function SearchBar({
           )}
         </div>
 
-        {/* Search button */}
         <Button
           type="submit"
           size="sm"
-          className="h-10 border-2 border-black bg-black px-4 text-xs font-semibold text-white hover:bg-white hover:text-black"
+          className="h-10 border bg-primary px-4 text-xs font-semibold text-primary-foreground hover:opacity-90"
         >
           <svg
             className="mr-1 h-4 w-4"
@@ -110,7 +107,6 @@ export function SearchBar({
   );
 }
 
-// Compact search bar variant (manual search only)
 export function SearchBarCompact({
   placeholder = 'Tìm kiếm...',
   onSearch,
@@ -144,7 +140,7 @@ export function SearchBarCompact({
     <form onSubmit={handleSubmit} className={cn('relative', className)}>
       <div className="relative flex items-center gap-2">
         <svg
-          className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400 pointer-events-none"
+          className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground pointer-events-none"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -162,13 +158,13 @@ export function SearchBarCompact({
           onChange={(e) => setQuery(e.target.value)}
           onKeyDown={handleKeyDown}
           placeholder={placeholder}
-          className="h-9 w-64 border-2 border-black pl-9 pr-8 text-sm placeholder:text-gray-400 focus-visible:ring-black"
+          className="h-9 w-64 border pl-9 pr-8 text-sm placeholder:text-muted-foreground focus-visible:ring-primary"
         />
         {query && (
           <button
             type="button"
             onClick={handleClear}
-            className="flex h-9 w-9 items-center justify-center rounded-lg text-gray-400 hover:text-gray-600"
+            className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground hover:text-foreground"
           >
             <svg
               className="h-4 w-4"

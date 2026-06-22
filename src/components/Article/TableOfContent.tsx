@@ -31,7 +31,6 @@ const TocSectionList: React.FC<{
     if (onSectionClick) {
       onSectionClick(id);
     } else {
-      // Mặc định scroll đến section
       const element = document.getElementById(id);
       if (element) {
         element.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -48,7 +47,7 @@ const TocSectionList: React.FC<{
           mb: 0.5,
           transition: 'all 0.2s ease',
           '&:hover': {
-            bgcolor: '#f3f4f6',
+            bgcolor: 'var(--muted, #f3f4f6)',
           },
         },
       }}
@@ -58,7 +57,7 @@ const TocSectionList: React.FC<{
           key={item.id}
           onClick={() => handleClick(item.id)}
           sx={{
-            pl: item.level * 2, // Indent theo level (h1=1, h2=2, h3=3...)
+            pl: item.level * 2,
             py: 1,
           }}
         >
@@ -67,7 +66,7 @@ const TocSectionList: React.FC<{
             primaryTypographyProps={{
               fontSize: item.level === 1 ? '0.95rem' : '0.875rem',
               fontWeight: item.level === 1 ? 600 : 500,
-              color: '#000',
+              color: 'var(--foreground, #000)',
             }}
           />
         </ListItemButton>
@@ -81,10 +80,13 @@ const TableOfContent: React.FC<TableOfContentProps> = ({
   title = 'Mục lục',
   onSectionClick,
 }) => {
-  console.log('Rendering TableOfContent with toc:', toc);
   return (
     <Accordion
-      sx={{ boxShadow: 'none', border: '1px solid #e5e7eb', borderRadius: 2 }}
+      sx={{
+        boxShadow: 'none',
+        border: '1px solid var(--border, #e5e7eb)',
+        borderRadius: 2,
+      }}
     >
       <AccordionSummary expandIcon={<ExpandMoreIcon />}>
         <Typography color="text.secondary" fontWeight={700} fontSize={18}>

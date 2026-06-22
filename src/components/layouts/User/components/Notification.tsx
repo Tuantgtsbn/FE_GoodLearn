@@ -147,7 +147,7 @@ export default function NotificationPopover() {
               )}
             </div>
             {/* Content */}
-            <div className="max-h-[380px] overflow-y-auto hide-scrollbar">
+            <div className="max-h-[380px] overflow-y-auto scrollbar-thin hide-scrollbar">
               {isLoading ? (
                 <div className="flex justify-center items-center py-6">
                   <CircularProgress size={32} />

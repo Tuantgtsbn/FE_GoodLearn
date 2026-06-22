@@ -4,17 +4,24 @@ import './style.scss';
 const Marquee = ({
   items,
   speed = '20s',
-  bgColor = '#333',
-  textColor = '#fff',
+  bgColor = 'transparent',
+  textColor = 'inherit',
   fontSize = '1rem',
   pauseOnHover = true,
+}: {
+  items: React.ReactNode[];
+  speed?: string;
+  bgColor?: string;
+  textColor?: string;
+  fontSize?: string;
+  pauseOnHover?: boolean;
 }) => {
   // Tạo style object để truyền các biến CSS
   const marqueeStyle: CSSProperties = {
     '--speed': speed,
-    '--bg-color': bgColor,
-    '--text-color': textColor,
     '--font-size': fontSize,
+    ...(bgColor !== 'transparent' && { '--bg-color': bgColor }),
+    ...(textColor !== 'inherit' && { '--text-color': textColor }),
   } as CSSProperties;
 
   return (

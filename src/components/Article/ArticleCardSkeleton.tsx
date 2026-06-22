@@ -14,31 +14,29 @@ export function ArticleCardSkeleton({
     return (
       <div
         className={cn(
-          'group relative block overflow-hidden rounded-xl border-2 border-black bg-white',
+          'group relative block overflow-hidden rounded-xl border bg-background',
           className
         )}
       >
         <div className="flex flex-col md:flex-row">
-          {/* Thumbnail skeleton */}
           <div className="md:w-1/2">
             <Skeleton className="aspect-video w-full rounded-none" />
           </div>
 
-          {/* Content skeleton */}
           <div className="flex flex-1 flex-col justify-between p-6 md:w-1/2">
             <div className="space-y-3">
-              <Skeleton className="h-5 w-20" /> {/* Category badge */}
-              <Skeleton className="h-7 w-full" /> {/* Title line 1 */}
-              <Skeleton className="h-7 w-3/4" /> {/* Title line 2 */}
+              <Skeleton className="h-5 w-20" />
+              <Skeleton className="h-7 w-full" />
+              <Skeleton className="h-7 w-3/4" />
               <div className="space-y-2 pt-2">
-                <Skeleton className="h-4 w-full" /> {/* Summary */}
+                <Skeleton className="h-4 w-full" />
                 <Skeleton className="h-4 w-full" />
                 <Skeleton className="h-4 w-2/3" />
               </div>
             </div>
             <div className="mt-4 flex items-center justify-between">
-              <Skeleton className="h-4 w-20" /> {/* Date */}
-              <Skeleton className="h-5 w-24" /> {/* Read more */}
+              <Skeleton className="h-4 w-20" />
+              <Skeleton className="h-5 w-24" />
             </div>
           </div>
         </div>
@@ -46,38 +44,34 @@ export function ArticleCardSkeleton({
     );
   }
 
-  // Default variant
   return (
     <div
       className={cn(
-        'group relative block overflow-hidden rounded-xl border-2 border-black bg-white',
+        'group relative block overflow-hidden rounded-xl border bg-background',
         className
       )}
     >
-      {/* Thumbnail skeleton */}
       <Skeleton className="aspect-[16/10] w-full rounded-none" />
 
-      {/* Content skeleton */}
       <div className="p-4 space-y-3">
-        <Skeleton className="h-5 w-20" /> {/* Category badge */}
+        <Skeleton className="h-5 w-20" />
         <div className="space-y-2">
-          <Skeleton className="h-5 w-full" /> {/* Title line 1 */}
-          <Skeleton className="h-5 w-3/4" /> {/* Title line 2 */}
+          <Skeleton className="h-5 w-full" />
+          <Skeleton className="h-5 w-3/4" />
         </div>
         <div className="space-y-2 pt-1">
-          <Skeleton className="h-4 w-full" /> {/* Summary */}
+          <Skeleton className="h-4 w-full" />
           <Skeleton className="h-4 w-5/6" />
         </div>
         <div className="flex items-center justify-between pt-2">
-          <Skeleton className="h-4 w-16" /> {/* Date */}
-          <Skeleton className="h-4 w-20" /> {/* Read more */}
+          <Skeleton className="h-4 w-16" />
+          <Skeleton className="h-4 w-20" />
         </div>
       </div>
     </div>
   );
 }
 
-// Grid skeleton for multiple cards
 interface ArticleCardGridSkeletonProps {
   count?: number;
   className?: string;

@@ -209,9 +209,7 @@ export default function AccountSetting() {
     <div>
       <section className="mb-12">
         <div className="mb-6">
-          <h3 className="text-xl font-bold text-primary dark:text-white">
-            Thông tin cá nhân
-          </h3>
+          <h3 className="text-xl font-bold text-primary">Thông tin cá nhân</h3>
           <p className="text-sm text-slate-500">
             Cập nhật thông tin hồ sơ và địa chỉ email của bạn.
           </p>
@@ -239,7 +237,7 @@ export default function AccountSetting() {
               <button
                 type="button"
                 onClick={openFileDialog}
-                className="absolute bottom-0 right-0 p-1.5 bg-primary text-white rounded-full border-2 border-white shadow-sm flex items-center justify-center"
+                className="absolute bottom-0 right-0 p-1.5 bg-background rounded-full border-2 border-white shadow-sm flex items-center justify-center"
               >
                 <PenLine size={16} />
               </button>
@@ -368,7 +366,6 @@ export default function AccountSetting() {
             <input
               className="w-full px-4 py-2.5 border-2 border-border-muted dark:border-zinc-800 rounded-lg focus:border-primary dark:focus:border-white focus:ring-0 transition-all font-medium"
               type="number"
-              readOnly
               {...registerProfile('gradeLevel')}
             />
             {errorsProfile.gradeLevel && (

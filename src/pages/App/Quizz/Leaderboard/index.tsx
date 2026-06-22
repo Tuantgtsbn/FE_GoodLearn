@@ -41,10 +41,12 @@ const getDisplayName = (entry: IExamLeaderboardEntry) => {
 };
 
 const rankClassName = (rank: number) => {
-  if (rank === 1) return 'bg-amber-100 text-amber-700 border-amber-200';
-  if (rank === 2) return 'bg-slate-100 text-slate-700 border-slate-200';
-  if (rank === 3) return 'bg-orange-100 text-orange-700 border-orange-200';
-  return 'bg-blue-50 text-blue-700 border-blue-100';
+  if (rank === 1)
+    return 'bg-amber-500/15 text-amber-600 dark:text-amber-400 border-amber-500/30';
+  if (rank === 2) return 'bg-muted text-muted-foreground border';
+  if (rank === 3)
+    return 'bg-orange-500/15 text-orange-600 dark:text-orange-400 border-orange-500/30';
+  return 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20';
 };
 
 const LeaderboardPage = () => {
@@ -68,44 +70,19 @@ const LeaderboardPage = () => {
     return data?.leaderboard.slice(0, 3) || [];
   }, [data?.leaderboard]);
 
-  // const fakeData = [
-  //   {
-  //     user: {
-  //       id: '1',
-  //       fullName: 'Nguyễn Văn A',
-  //       avatarUrl: 'https://i.pravatar.cc/150?u=1',
-  //     },
-  //     point: 100,
-  //     rank: 1,
-  //   },
-  //   {
-  //     user: {
-  //       id: '2',
-  //       fullName: 'Nguyễn Văn B',
-  //       avatarUrl: 'https://i.pravatar.cc/150?u=2',
-  //     },
-  //     point: 90,
-  //     rank: 2,
-  //   },
-  //   {
-  //     user: {
-  //       id: '3',
-  //       fullName: 'Nguyễn Văn C',
-  //       avatarUrl: 'https://i.pravatar.cc/150?u=3',
-  //     },
-  //     point: 80,
-  //     rank: 3,
-  //   },
-  // ];
-
   const highestPoint = data?.leaderboard[0]?.point ?? null;
 
   if (isPending) {
     return (
       <div className="mx-auto flex min-h-[60vh] w-full max-w-5xl items-center justify-center px-4 py-10">
-        <div className="flex items-center gap-3 rounded-2xl bg-white px-6 py-4 text-slate-700 shadow-sm ring-1 ring-slate-200">
-          <LoaderCircle className="animate-spin" size={20} />
-          <span className="font-semibold">Đang tải bảng xếp hạng...</span>
+        <div className="flex items-center gap-3 rounded-2xl border bg-background px-6 py-4 shadow-sm">
+          <LoaderCircle
+            className="animate-spin text-muted-foreground"
+            size={20}
+          />
+          <span className="font-semibold text-muted-foreground">
+            Đang tải bảng xếp hạng...
+          </span>
         </div>
       </div>
     );
@@ -114,11 +91,11 @@ const LeaderboardPage = () => {
   if (isError || !data) {
     return (
       <div className="mx-auto w-full max-w-3xl px-4 py-10">
-        <div className="rounded-2xl bg-white p-6 text-center shadow-sm ring-1 ring-slate-200">
-          <h2 className="text-xl font-bold text-slate-900">
+        <div className="rounded-2xl border bg-background p-6 text-center">
+          <h2 className="text-xl font-bold text-foreground">
             Không thể tải bảng xếp hạng
           </h2>
-          <p className="mt-2 text-sm text-slate-600">
+          <p className="mt-2 text-sm text-muted-foreground">
             Có lỗi xảy ra khi lấy dữ liệu. Vui lòng thử lại sau.
           </p>
           <div className="mt-5 flex justify-center gap-2">
@@ -130,13 +107,13 @@ const LeaderboardPage = () => {
                   navigate('/app/quizz');
                 }
               }}
-              className="rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50"
+              className="rounded-xl border bg-background px-4 py-2 text-sm font-semibold text-muted-foreground transition hover:bg-muted"
             >
               Quay lại
             </button>
             <button
               onClick={() => void refetch()}
-              className="rounded-xl bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700"
+              className="rounded-xl bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition hover:opacity-90"
             >
               Thử lại
             </button>
@@ -147,14 +124,14 @@ const LeaderboardPage = () => {
   }
 
   return (
-    <div className="mx-auto w-full max-w-7xl px-4 py-6 md:px-6">
-      <header className="mb-5 rounded-3xl bg-linear-to-r from-cyan-600 via-blue-600 to-indigo-700 px-5 py-5 text-white shadow-xl md:px-6">
+    <div className="mx-auto w-full max-w-7xl space-y-6 px-4 py-6 md:px-6">
+      {/* Hero */}
+      <header className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-cyan-600 via-blue-600 to-indigo-700 px-5 py-5 text-white shadow-xl md:px-6">
         <button
           onClick={() => {
             if (locationState?.from === 'quizz_list') {
               navigate('/app/quizz');
             } else {
-              // Go back to the do-exam page with its state intact
               navigate(-1);
             }
           }}
@@ -173,7 +150,7 @@ const LeaderboardPage = () => {
             <h1 className="mt-2 text-2xl font-black md:text-3xl">
               {examTitle}
             </h1>
-            <p className="mt-1 text-sm text-blue-50">
+            <p className="mt-1 text-sm text-white/70">
               Top 20 người có điểm cao nhất và thứ hạng hiện tại của bạn.
             </p>
           </div>
@@ -181,59 +158,60 @@ const LeaderboardPage = () => {
           <button
             disabled={isFetching}
             onClick={() => refetch()}
-            className="rounded-xl bg-white/15 px-3 py-2 text-sm"
+            className="rounded-xl bg-white/10 px-3 py-2 text-sm transition hover:bg-white/15"
           >
             {isFetching ? 'Đang cập nhật...' : 'Đồng bộ mới nhất'}
           </button>
         </div>
       </header>
 
-      <section className="mb-5 grid grid-cols-1 gap-3 md:grid-cols-3">
-        <div className="rounded-2xl bg-white p-4 shadow-sm ring-1 ring-slate-200">
-          <p className="inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-wide text-slate-500">
+      {/* Stats */}
+      <section className="grid grid-cols-1 gap-3 md:grid-cols-3">
+        <div className="rounded-2xl border bg-background p-4">
+          <p className="inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
             <Award size={14} />
             Điểm cao nhất
           </p>
-          <p className="mt-2 text-3xl font-black text-blue-700">
+          <p className="mt-2 text-3xl font-black text-primary">
             {highestPoint !== null ? `${highestPoint.toFixed(2)}` : '--'}
           </p>
         </div>
 
-        <div className="rounded-2xl bg-white p-4 shadow-sm ring-1 ring-slate-200">
-          <p className="inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-wide text-slate-500">
+        <div className="rounded-2xl border bg-background p-4">
+          <p className="inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
             <UserRound size={14} />
             Top hiển thị
           </p>
-          <p className="mt-2 text-3xl font-black text-slate-900">
+          <p className="mt-2 text-3xl font-black text-foreground">
             {data.leaderboard.length}
           </p>
         </div>
 
-        <div className="rounded-2xl bg-white p-4 shadow-sm ring-1 ring-slate-200">
-          <p className="inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-wide text-slate-500">
+        <div className="rounded-2xl border bg-background p-4">
+          <p className="inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
             <Medal size={14} />
             Thứ hạng của bạn
           </p>
-          <p className="mt-2 text-3xl font-black text-indigo-700">
+          <p className="mt-2 text-3xl font-black text-primary">
             {data.myRank ? `#${data.myRank.rank}` : '--'}
           </p>
         </div>
       </section>
 
+      {/* Podium */}
       {topThree.length > 0 && (
-        <section className="mb-8 overflow-hidden rounded-3xl bg-white p-6 shadow-sm ring-1 ring-slate-200 md:p-10">
+        <section className="overflow-hidden rounded-3xl border bg-background p-6 md:p-10">
           <div className="mb-10 text-center">
-            <h2 className="text-3xl font-black text-slate-900 md:text-4xl">
+            <h2 className="text-3xl font-black text-foreground md:text-4xl">
               Vinh Danh Top 3
             </h2>
-            <p className="mt-2 text-base font-medium text-slate-500">
+            <p className="mt-2 text-base font-medium text-muted-foreground">
               Tổng cộng {data?.leaderboard.length.toLocaleString() || '--'}{' '}
               người tham gia đã hoàn thành bài thi
             </p>
           </div>
 
-          <div className="flex flex-row items-end justify-center gap-4 md:gap-16 w-full pt-[50px]">
-            {/* Podium ordering: Rank 2, Rank 1, Rank 3 */}
+          <div className="flex flex-row items-end justify-center gap-4 pt-[50px] md:gap-16 w-full">
             {[2, 1, 3].map((rank) => {
               const entry = topThree.find((e) => e.rank === rank);
               if (!entry)
@@ -269,14 +247,12 @@ const LeaderboardPage = () => {
                   )}
                 >
                   <div className="relative mb-4">
-                    {/* Crown Icon for #1 */}
                     {isFirst && (
-                      <div className="absolute -top-6 left-1/2 z-20 flex -translate-x-1/2 items-center justify-center text-yellow-500 bg-transparent drop-shadow-md">
+                      <div className="absolute -top-6 left-1/2 z-20 flex -translate-x-1/2 items-center justify-center text-yellow-500 drop-shadow-md">
                         <Crown size={isFirst ? 32 : 24} fill="currentColor" />
                       </div>
                     )}
 
-                    {/* Avatar with Ring */}
                     <div
                       className={clsx(
                         'rounded-full p-2 flex justify-center items-center',
@@ -291,7 +267,6 @@ const LeaderboardPage = () => {
                       />
                     </div>
 
-                    {/* Rank Badge */}
                     <div
                       className={clsx(
                         'absolute -bottom-2 left-1/2 -translate-x-1/2 rounded-full px-4 py-1 text-[10px] font-black uppercase tracking-widest text-white shadow-md md:text-xs',
@@ -303,10 +278,10 @@ const LeaderboardPage = () => {
                   </div>
 
                   <div className="mt-2 text-center">
-                    <p className="max-w-[120px] truncate text-sm font-black text-slate-900 md:max-w-[200px] md:text-xl">
+                    <p className="max-w-[120px] truncate text-sm font-black text-foreground md:max-w-[200px] md:text-xl">
                       {getDisplayName(entry)}
                     </p>
-                    <p className="mt-0.5 text-xs font-bold text-slate-500 md:text-sm">
+                    <p className="mt-0.5 text-xs font-bold text-muted-foreground md:text-sm">
                       {entry.point.toFixed(0)} Điểm
                     </p>
                   </div>
@@ -317,13 +292,14 @@ const LeaderboardPage = () => {
         </section>
       )}
 
-      <section className="rounded-2xl bg-white p-4 shadow-sm ring-1 ring-slate-200 md:p-5">
-        <h2 className="mb-3 text-base font-extrabold text-slate-900">
+      {/* Leaderboard Table */}
+      <section className="rounded-2xl border bg-background p-4 md:p-5">
+        <h2 className="mb-3 text-base font-extrabold text-foreground">
           Top 20 bảng xếp hạng
         </h2>
 
         {data.leaderboard.length === 0 ? (
-          <div className="rounded-xl bg-slate-50 p-5 text-center text-sm text-slate-600">
+          <div className="rounded-xl bg-muted p-5 text-center text-sm text-muted-foreground">
             Chưa có dữ liệu xếp hạng cho bài thi này.
           </div>
         ) : (
@@ -331,16 +307,16 @@ const LeaderboardPage = () => {
             <table className="min-w-full border-separate border-spacing-y-2">
               <thead>
                 <tr>
-                  <th className="px-3 py-2 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
+                  <th className="px-3 py-2 text-left text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                     Hạng
                   </th>
-                  <th className="px-3 py-2 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
+                  <th className="px-3 py-2 text-left text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                     Người dùng
                   </th>
-                  <th className="px-3 py-2 text-right text-xs font-semibold uppercase tracking-wide text-slate-500">
+                  <th className="px-3 py-2 text-right text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                     Điểm
                   </th>
-                  <th className="px-3 py-2 text-right text-xs font-semibold uppercase tracking-wide text-slate-500">
+                  <th className="px-3 py-2 text-right text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                     Ngày thi
                   </th>
                 </tr>
@@ -355,8 +331,8 @@ const LeaderboardPage = () => {
                       className={clsx(
                         'ring-1',
                         isMe
-                          ? 'bg-blue-50 ring-blue-200'
-                          : 'bg-white ring-slate-200'
+                          ? 'bg-blue-500/5 ring-blue-500/20'
+                          : 'bg-background ring-border'
                       )}
                     >
                       <td className="px-3 py-3 align-middle">
@@ -377,21 +353,21 @@ const LeaderboardPage = () => {
                             size="sm"
                           />
                           <div>
-                            <p className="line-clamp-1 text-sm font-semibold text-slate-900">
+                            <p className="line-clamp-1 text-sm font-semibold text-foreground">
                               {getDisplayName(entry)}
                             </p>
                             {isMe && (
-                              <p className="text-xs font-semibold text-blue-700">
+                              <p className="text-xs font-semibold text-primary">
                                 Bạn
                               </p>
                             )}
                           </div>
                         </div>
                       </td>
-                      <td className="px-3 py-3 text-right align-middle text-sm font-black text-slate-900">
+                      <td className="px-3 py-3 text-right align-middle text-sm font-black text-foreground">
                         {entry.point.toFixed(2)}%
                       </td>
-                      <td className="px-3 py-3 text-right align-middle text-sm text-slate-600">
+                      <td className="px-3 py-3 text-right align-middle text-sm text-muted-foreground">
                         <span className="inline-flex items-center gap-1 font-bold">
                           {formatExamDate(entry.examDate)}
                         </span>
@@ -409,19 +385,19 @@ const LeaderboardPage = () => {
         !data.leaderboard.some(
           (entry) => entry.user.id === data.myRank?.user.id
         ) && (
-          <section className="mt-5 rounded-2xl border border-indigo-200 bg-indigo-50 p-4">
-            <h3 className="text-sm font-bold text-indigo-900">
+          <section className="rounded-2xl border border-blue-500/20 bg-blue-500/5 p-4">
+            <h3 className="text-sm font-bold text-blue-700 dark:text-blue-400">
               Thứ hạng của bạn
             </h3>
             <div className="mt-2 flex flex-wrap items-center justify-between gap-3">
-              <p className="text-sm text-indigo-900">
+              <p className="text-sm text-blue-700/80 dark:text-blue-400/80">
                 Bạn đang đứng hạng{' '}
                 <span className="font-black">#{data.myRank.rank}</span> với{' '}
                 <span className="font-black">
                   {data.myRank.point.toFixed(2)}%
                 </span>
               </p>
-              <p className="text-xs text-indigo-700">
+              <p className="text-xs text-blue-600/70 dark:text-blue-400/70">
                 Ngày thi: {formatExamDate(data.myRank.examDate)}
               </p>
             </div>

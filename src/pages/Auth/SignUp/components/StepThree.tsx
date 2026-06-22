@@ -38,7 +38,7 @@ export default function StepThree() {
     <div className="space-y-4">
       <div className="flex flex-col gap-2">
         <label
-          className="block text-sm font-medium text-gray-700 mb-1"
+          className="block text-sm font-medium text-foreground mb-1"
           id="city"
         >
           Chọn tỉnh
@@ -84,7 +84,7 @@ export default function StepThree() {
       </div>
       <div className="flex flex-col gap-2">
         <label
-          className="block text-sm font-medium text-gray-700 mb-1"
+          className="block text-sm font-medium text-foreground mb-1"
           id="ward"
         >
           Chọn xã, phường

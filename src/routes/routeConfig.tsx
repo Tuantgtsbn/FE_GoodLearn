@@ -192,13 +192,6 @@ export const routes = [
             },
           },
           {
-            path: 'flashcard/:setId',
-            element: <DoFlashcardPlayer />,
-            handle: {
-              title: 'GoodLearn | Học Flashcard',
-            },
-          },
-          {
             path: 'chat/:conversationId?',
             element: <ChatPage />,
             handle: {

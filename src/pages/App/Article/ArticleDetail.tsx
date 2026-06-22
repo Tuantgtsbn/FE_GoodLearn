@@ -20,9 +20,6 @@ const ArticleDetailPage = () => {
     enabled: !!slug,
   });
 
-  console.log('Article detail data:', article);
-
-  // Fetch related articles
   const { data: relatedArticlesData, isPending: relatedArticlesPending } =
     useQuery({
       queryKey: [QUERY_KEY.ARTICLE.RELATED_ARTICLES, article?.id],
@@ -40,15 +37,15 @@ const ArticleDetailPage = () => {
     return (
       <div className="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
         <div className="animate-pulse space-y-6">
-          <div className="h-10 w-3/4 rounded bg-gray-200" />
+          <div className="h-10 w-3/4 rounded bg-muted" />
           <div className="flex items-center gap-3">
-            <div className="h-10 w-10 rounded-full bg-gray-200" />
-            <div className="h-4 w-32 rounded bg-gray-200" />
+            <div className="h-10 w-10 rounded-full bg-muted" />
+            <div className="h-4 w-32 rounded bg-muted" />
           </div>
           <div className="space-y-3">
-            <div className="h-4 w-full rounded bg-gray-200" />
-            <div className="h-4 w-5/6 rounded bg-gray-200" />
-            <div className="h-4 w-4/6 rounded bg-gray-200" />
+            <div className="h-4 w-full rounded bg-muted" />
+            <div className="h-4 w-5/6 rounded bg-muted" />
+            <div className="h-4 w-4/6 rounded bg-muted" />
           </div>
         </div>
       </div>
@@ -58,15 +55,15 @@ const ArticleDetailPage = () => {
   if (!article) {
     return (
       <div className="mx-auto max-w-4xl px-4 py-16 text-center sm:px-6 lg:px-8">
-        <h1 className="text-2xl font-bold text-gray-900">
+        <h1 className="text-2xl font-bold text-foreground">
           Không tìm thấy bài viết
         </h1>
-        <p className="mt-2 text-gray-600">
+        <p className="mt-2 text-muted-foreground">
           Bài viết bạn tìm kiếm không tồn tại hoặc đã bị xóa.
         </p>
         <button
-          onClick={() => navigate('/articles')}
-          className="mt-6 rounded-xl border-2 border-black bg-black px-6 py-2.5 text-sm font-bold text-white transition hover:bg-white hover:text-black"
+          onClick={() => navigate('/app/article')}
+          className="mt-6 rounded-xl bg-primary px-6 py-2.5 text-sm font-bold text-primary-foreground transition hover:opacity-90"
         >
           Quay lại danh sách
         </button>
@@ -91,18 +88,18 @@ const ArticleDetailPage = () => {
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
       {/* Breadcrumb */}
-      <nav className="mb-6 text-sm text-gray-500">
+      <nav className="mb-6 text-sm text-muted-foreground">
         <ol className="flex items-center gap-2">
           <li>
             <button
               onClick={() => navigate('/app/article')}
-              className="hover:text-black transition-colors"
+              className="transition-colors hover:text-foreground"
             >
               Bài viết
             </button>
           </li>
           <li>/</li>
-          <li className="max-w-[200px] truncate text-black font-medium sm:max-w-md">
+          <li className="max-w-[200px] truncate text-foreground font-medium sm:max-w-md">
             {article.title}
           </li>
         </ol>
@@ -113,46 +110,43 @@ const ArticleDetailPage = () => {
         <article className="min-w-0 overflow-hidden">
           {/* Header */}
           <header className="mb-8">
-            {/* Category badge */}
             {article.category && (
-              <span className="mb-4 inline-block rounded-lg bg-blue-100 px-3 py-1 text-sm font-semibold text-blue-700">
+              <span className="mb-4 inline-block rounded-lg bg-blue-500/15 px-3 py-1 text-sm font-semibold text-blue-600 dark:text-blue-400">
                 {article.category.name}
               </span>
             )}
 
-            {/* Title */}
-            <h1 className="text-3xl font-black leading-tight tracking-tight text-black sm:text-4xl lg:text-5xl">
+            <h1 className="text-3xl font-black mt-4 mb-4 leading-tight tracking-tight text-foreground sm:text-4xl lg:text-5xl">
               {article.title}
             </h1>
 
-            {/* Summary */}
             {article.summary && (
-              <p className="mt-4 text-lg text-gray-600">{article.summary}</p>
+              <p className="mt-4 mb-4 text-lg text-muted-foreground">
+                {article.summary}
+              </p>
             )}
 
             <TableOfContent toc={article.toc} />
 
             {/* Author & Date */}
-            <div className="mt-6 flex flex-wrap items-center gap-4 border-t border-gray-200 pt-6">
-              {/* Avatar */}
+            <div className="mt-6 flex flex-wrap items-center gap-4 border-t pt-6">
               {article.author?.avatarFullUrl ? (
                 <img
                   src={article.author.avatarFullUrl}
                   alt={article.author.fullName || 'avatar'}
-                  className="h-12 w-12 rounded-full object-cover ring-2 ring-gray-100"
+                  className="h-12 w-12 rounded-full object-cover ring-2 ring-border"
                 />
               ) : (
-                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gray-200 text-lg font-bold text-gray-600">
+                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-muted text-lg font-bold text-muted-foreground">
                   {(article.author?.fullName || '?')[0].toUpperCase()}
                 </div>
               )}
 
-              {/* Info */}
               <div className="flex-1">
-                <p className="font-semibold text-gray-900">
+                <p className="font-semibold text-foreground">
                   {article.author?.fullName || 'Tác giả'}
                 </p>
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-muted-foreground">
                   {formatDate(article.publishedAt || article.createdAt)}
                   {article.viewCount !== undefined && (
                     <span className="ml-3 inline-flex items-center gap-1">
@@ -181,13 +175,12 @@ const ArticleDetailPage = () => {
                 </p>
               </div>
 
-              {/* Tags */}
               {article.articleTags && article.articleTags.length > 0 && (
                 <div className="flex flex-wrap gap-2">
                   {article.articleTags.map((at) => (
                     <span
                       key={at.tagId}
-                      className="rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-600"
+                      className="rounded-full bg-muted px-3 py-1 text-xs font-medium text-muted-foreground"
                     >
                       #{at.tag.name}
                     </span>
@@ -213,32 +206,34 @@ const ArticleDetailPage = () => {
 
           {/* Content */}
           <div
-            className=" max-w-none overflow-hidden prose-headings:font-bold prose-headings:text-black prose-a:text-blue-600 prose-img:rounded-xl prose-img:max-w-full"
+            className="mx-auto my-8 bg-white dark:bg-black text-black dark:text-white rounded-2xl shadow-xl border border-slate-200 dark:border-neutral-800
+             prose dark:prose-invert max-w-none
+             prose-indigo 
+             prose-headings:text-indigo-600 dark:prose-headings:text-indigo-400"
             dangerouslySetInnerHTML={{ __html: article.content }}
           />
         </article>
 
-        {/* Sidebar - Table of Contents */}
+        {/* Sidebar */}
         <aside className="hidden w-full lg:block">
           <div className="space-y-6">
-            {/* Related articles */}
             {relatedArticlesPending ? (
-              <div className="rounded-xl border-2 border-black bg-white p-4">
-                <h3 className="mb-3 text-2xl font-bold text-black">
+              <div className="rounded-xl border bg-background p-4">
+                <h3 className="mb-3 text-2xl font-bold text-foreground">
                   Bài viết liên quan
                 </h3>
                 <div className="space-y-3">
                   {Array.from({ length: 3 }).map((_, i) => (
                     <div
                       key={i}
-                      className="h-16 animate-pulse rounded-lg bg-gray-200"
+                      className="h-16 animate-pulse rounded-lg bg-muted"
                     />
                   ))}
                 </div>
               </div>
             ) : relatedArticles.length > 0 ? (
-              <div className="rounded-xl border-2 border-black bg-white p-4">
-                <h3 className="mb-3 flex items-center gap-2 text-2xl font-bold text-black">
+              <div className="rounded-xl border bg-background p-4">
+                <h3 className="mb-3 flex items-center gap-2 text-2xl font-bold text-foreground">
                   <svg
                     className="h-4 w-4"
                     fill="none"
@@ -274,8 +269,8 @@ const ArticleDetailPage = () => {
       </div>
 
       {/* Related articles for mobile/tablet */}
-      <section className="mt-12 border-t border-gray-200 pt-10 lg:hidden">
-        <h2 className="mb-6 flex items-center gap-2 text-2xl font-bold text-black">
+      <section className="mt-12 border-t pt-10 lg:hidden">
+        <h2 className="mb-6 flex items-center gap-2 text-2xl font-bold text-foreground">
           <svg
             className="h-6 w-6"
             fill="none"
@@ -306,8 +301,8 @@ const ArticleDetailPage = () => {
             ))}
           </div>
         ) : (
-          <div className="rounded-xl border-2 border-dashed border-gray-300 px-6 py-12 text-center">
-            <p className="text-sm text-gray-500">
+          <div className="rounded-xl border border-dashed px-6 py-12 text-center">
+            <p className="text-sm text-muted-foreground">
               Không có bài viết liên quan nào.
             </p>
           </div>

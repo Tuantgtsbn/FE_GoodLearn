@@ -18,31 +18,29 @@ export function CategoryList({
 }: CategoryListProps) {
   return (
     <div className={cn('flex flex-wrap items-center gap-2', className)}>
-      {/* All categories button */}
       {showAll && (
         <button
           onClick={() => onSelectCategory(null)}
           className={cn(
-            'rounded-lg border-2 border-black px-4 py-2 text-sm font-semibold transition-all',
+            'rounded-lg border px-4 py-2 text-sm font-semibold transition-all',
             selectedCategoryId === null
-              ? 'bg-black text-white'
-              : 'bg-white text-black hover:bg-black hover:text-white'
+              ? 'bg-primary text-primary-foreground'
+              : 'bg-background text-foreground hover:bg-primary hover:text-primary-foreground'
           )}
         >
           Tất cả
         </button>
       )}
 
-      {/* Category buttons */}
       {categories.map((category) => (
         <button
           key={category.id}
           onClick={() => onSelectCategory(category.id)}
           className={cn(
-            'rounded-lg border-2 border-black px-4 py-2 text-sm font-semibold transition-all',
+            'rounded-lg border px-4 py-2 text-sm font-semibold transition-all',
             selectedCategoryId === category.id
-              ? 'bg-black text-white'
-              : 'bg-white text-black hover:bg-black hover:text-white'
+              ? 'bg-primary text-primary-foreground'
+              : 'bg-background text-foreground hover:bg-primary hover:text-primary-foreground'
           )}
         >
           {category.name}
@@ -52,7 +50,6 @@ export function CategoryList({
   );
 }
 
-// Category with icon variant
 interface CategoryWithIcon {
   id: string;
   name: string;
@@ -80,10 +77,10 @@ export function CategoryListWithIcons({
         <button
           onClick={() => onSelectCategory(null)}
           className={cn(
-            'inline-flex items-center gap-2 rounded-lg border-2 border-black px-4 py-2 text-sm font-semibold transition-all',
+            'inline-flex items-center gap-2 rounded-lg border px-4 py-2 text-sm font-semibold transition-all',
             selectedCategoryId === null
-              ? 'bg-black text-white'
-              : 'bg-white text-black hover:bg-black hover:text-white'
+              ? 'bg-primary text-primary-foreground'
+              : 'bg-background text-foreground hover:bg-primary hover:text-primary-foreground'
           )}
         >
           <svg
@@ -108,10 +105,10 @@ export function CategoryListWithIcons({
           key={category.id}
           onClick={() => onSelectCategory(category.id)}
           className={cn(
-            'inline-flex items-center gap-2 rounded-lg border-2 border-black px-4 py-2 text-sm font-semibold transition-all',
+            'inline-flex items-center gap-2 rounded-lg border px-4 py-2 text-sm font-semibold transition-all',
             selectedCategoryId === category.id
-              ? 'bg-black text-white'
-              : 'bg-white text-black hover:bg-black hover:text-white'
+              ? 'bg-primary text-primary-foreground'
+              : 'bg-background text-foreground hover:bg-primary hover:text-primary-foreground'
           )}
         >
           {category.icon}

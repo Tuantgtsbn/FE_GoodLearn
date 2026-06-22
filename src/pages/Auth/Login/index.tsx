@@ -24,8 +24,6 @@ export function getDefaultRoute(role?: ERole) {
   switch (role) {
     case ERole.USER:
       return '/app';
-    // case ERole.ADMIN:
-    //   return '/admin';
     default:
       return '/';
   }
@@ -167,14 +165,14 @@ export default function Login() {
 
   return (
     <div>
-      <div className="flex flex-col items-center mb-8">
+      <div className="mb-8 flex flex-col items-center">
         <div className="mb-4 rotate-3">
           <ICLogo width={80} height={80} />
         </div>
-        <h1 className="text-zinc-900 text-2xl font-extrabold tracking-tight uppercase italic">
+        <h1 className="text-2xl font-extrabold uppercase italic tracking-tight text-foreground">
           GoodLearn
         </h1>
-        <p className="text-zinc-500 text-sm mt-1">
+        <p className="mt-1 text-sm text-muted-foreground">
           Ứng dụng học tập thông minh của riêng bạn
         </p>
       </div>
@@ -207,13 +205,13 @@ export default function Login() {
           message={errors.password?.message || validationErrs['password']}
         />
       </div>
-      <div className="flex items-center justify-end mt-2">
+      <div className="mt-2 flex items-center justify-end">
         <Link to="/auth/forgot-password">
-          <p className="text-[#2563eb] font-[500]">Quên mật khẩu?</p>
+          <p className="font-medium text-primary">Quên mật khẩu?</p>
         </Link>
       </div>
       <Button
-        className="w-full cursor-pointer text-2xl font-bold h-[50px] mt-4"
+        className="mt-4 h-[50px] w-full cursor-pointer text-2xl font-bold"
         onClick={handleSubmit(onSubmit)}
         loading={isPending ?? null}
       >
@@ -224,7 +222,7 @@ export default function Login() {
       </Divider>
       <div className="flex flex-col gap-4">
         <Button
-          className="cursor-pointer h-[40px]"
+          className="h-[40px] cursor-pointer"
           onClick={() => setOpen(true)}
         >
           <span className="flex">
@@ -235,12 +233,12 @@ export default function Login() {
         </Button>
       </div>
 
-      <div className="text-center mt-4">
-        <p className="text-gray-600">
+      <div className="mt-4 text-center">
+        <p className="text-muted-foreground">
           Chưa có tài khoản?{' '}
           <Link
             to="/auth/register"
-            className="text-blue-600 hover:underline font-medium"
+            className="font-medium text-primary hover:underline"
           >
             Đăng ký ngay
           </Link>

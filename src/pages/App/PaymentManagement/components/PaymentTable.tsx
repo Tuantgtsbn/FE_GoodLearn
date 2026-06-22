@@ -1,145 +1,135 @@
-import type { IPaymentListItem } from '@/api/ApiPayment';
 import clsx from 'clsx';
-import { CheckCircle, AlertCircle, XCircle, Clock } from 'lucide-react';
+import type { IPaymentListItem } from '@/api/ApiPayment';
+
+const formatDateTime = (iso: string) => {
+  try {
+    return new Date(iso).toLocaleDateString('vi-VN', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+  } catch {
+    return iso;
+  }
+};
+
+const getStatusDisplay = (status: string) => {
+  switch (status) {
+    case 'PAID':
+      return {
+        label: 'Thành công',
+        className: 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400',
+      };
+    case 'PENDING':
+      return {
+        label: 'Đang xử lý',
+        className: 'bg-amber-500/15 text-amber-600 dark:text-amber-400',
+      };
+    case 'UNPAID':
+      return {
+        label: 'Chưa TT',
+        className: 'bg-yellow-500/15 text-yellow-600 dark:text-yellow-400',
+      };
+    case 'FAILED':
+      return {
+        label: 'Thất bại',
+        className: 'bg-destructive/15 text-destructive',
+      };
+    case 'CANCELED':
+      return { label: 'Đã hủy', className: 'bg-muted text-muted-foreground' };
+    case 'REFUNDED':
+      return {
+        label: 'Hoàn tiền',
+        className: 'bg-blue-500/15 text-blue-600 dark:text-blue-400',
+      };
+    default:
+      return { label: status, className: 'bg-muted text-muted-foreground' };
+  }
+};
+
+const formatCurrency = (value: number) => {
+  return new Intl.NumberFormat('vi-VN', {
+    style: 'currency',
+    currency: 'VND',
+  }).format(value);
+};
 
 interface PaymentTableProps {
   payments: IPaymentListItem[];
 }
 
-const getStatusDisplay = (status: string) => {
-  const statusMap: Record<
-    string,
-    { label: string; color: string; icon: React.ReactNode }
-  > = {
-    PAID: {
-      label: 'Thành công',
-      color: 'bg-green-100 text-green-700',
-      icon: <CheckCircle size={16} />,
-    },
-    PENDING: {
-      label: 'Đang xử lý',
-      color: 'bg-amber-100 text-amber-700',
-      icon: <Clock size={16} />,
-    },
-    UNPAID: {
-      label: 'Chưa thanh toán',
-      color: 'bg-yellow-100 text-yellow-700',
-      icon: <AlertCircle size={16} />,
-    },
-    FAILED: {
-      label: 'Thất bại',
-      color: 'bg-red-100 text-red-700',
-      icon: <XCircle size={16} />,
-    },
-    CANCELED: {
-      label: 'Đã hủy',
-      color: 'bg-gray-100 text-gray-700',
-      icon: <XCircle size={16} />,
-    },
-    REFUNDED: {
-      label: 'Đã hoàn tiền',
-      color: 'bg-blue-100 text-blue-700',
-      icon: <CheckCircle size={16} />,
-    },
-  };
-
-  return statusMap[status] || statusMap.UNPAID;
-};
-
-const formatDate = (dateString: string) => {
-  const date = new Date(dateString);
-  const day = String(date.getDate()).padStart(2, '0');
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const year = date.getFullYear();
-  return `${day}/${month}/${year}`;
-};
-
-const formatAmount = (amount: string | number) => {
-  const num = typeof amount === 'string' ? parseFloat(amount) : amount;
-  return new Intl.NumberFormat('vi-VN', {
-    style: 'currency',
-    currency: 'VND',
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
-  }).format(num);
-};
-
 export default function PaymentTable({ payments }: PaymentTableProps) {
   return (
-    <div className="overflow-x-auto rounded-lg bg-white shadow-sm ring-1 ring-gray-200">
-      <table className="w-full">
-        <thead>
-          <tr className="border-b border-gray-200 bg-gray-50">
-            <th className="px-4 py-4 text-left text-sm font-semibold text-gray-900 md:px-6">
-              ID ĐƠN HÀNG
-            </th>
-            <th className="px-4 py-4 text-left text-sm font-semibold text-gray-900 md:px-6">
-              TÊN GÓI
-            </th>
-            <th className="hidden px-4 py-4 text-left text-sm font-semibold text-gray-900 md:px-6 lg:table-cell">
-              NGÀY MUA
-            </th>
-            <th className="px-4 py-4 text-left text-sm font-semibold text-gray-900 md:px-6">
-              SỐ TIỀN
-            </th>
-            <th className="px-4 py-4 text-left text-sm font-semibold text-gray-900 md:px-6">
-              TRẠNG THÁI
-            </th>
-          </tr>
-        </thead>
-        <tbody className="divide-y divide-gray-200">
-          {payments.map((payment) => {
-            const statusDisplay = getStatusDisplay(payment.paymentStatus);
-            const packageName = payment.package?.name || 'N/A';
-            const purchaseDate = formatDate(payment.createdAt);
-            const amount = formatAmount(payment.amountPaid);
+    <div className="overflow-hidden rounded-xl border bg-background">
+      <div className="overflow-x-auto">
+        <table className="min-w-full">
+          <thead>
+            <tr className="border-b bg-muted">
+              <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                Mã đơn hàng
+              </th>
+              <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                Gói
+              </th>
+              <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                Số tiền
+              </th>
+              <th className="hidden px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-muted-foreground sm:table-cell">
+                Ngày mua
+              </th>
+              <th className="px-4 py-3 text-center text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                Trạng thái
+              </th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-border">
+            {payments.map((payment) => {
+              const status = getStatusDisplay(payment.paymentStatus);
 
-            return (
-              <tr key={payment.orderId} className="hover:bg-gray-50 transition">
-                {/* Order ID */}
-                <td className="px-4 py-4 text-sm font-medium text-gray-900 md:px-6">
-                  <code className="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-700">
-                    #{payment.code}
-                  </code>
-                </td>
-
-                {/* Package Name */}
-                <td className="px-4 py-4 text-sm text-gray-700 md:px-6">
-                  <div className="max-w-xs">
-                    <p className="font-medium">{packageName}</p>
-                    <p className="text-xs text-gray-500 md:hidden">
-                      {purchaseDate}
+              return (
+                <tr key={payment.orderId} className="transition hover:bg-muted">
+                  <td className="px-4 py-3">
+                    <p className="text-sm font-semibold text-foreground">
+                      {payment.code || '--'}
                     </p>
-                  </div>
-                </td>
-
-                {/* Purchase Date (hidden on mobile) */}
-                <td className="hidden px-4 py-4 text-sm text-gray-600 md:px-6 lg:table-cell">
-                  {purchaseDate}
-                </td>
-
-                {/* Amount */}
-                <td className="px-4 py-4 text-sm font-semibold text-gray-900 md:px-6">
-                  {amount}
-                </td>
-
-                {/* Status */}
-                <td className="px-4 py-4 md:px-6">
-                  <span
-                    className={clsx(
-                      'inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold',
-                      statusDisplay.color
-                    )}
-                  >
-                    {statusDisplay.icon}
-                    {statusDisplay.label}
-                  </span>
-                </td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
+                    <code className="mt-0.5 inline-block rounded bg-muted px-1.5 py-0.5 text-[11px] text-muted-foreground">
+                      {payment.orderId}
+                    </code>
+                  </td>
+                  <td className="px-4 py-3">
+                    <p className="text-sm text-muted-foreground">
+                      {payment.package?.name || '--'}
+                    </p>
+                    <p className="text-xs text-muted-foreground sm:hidden">
+                      {formatDateTime(payment.createdAt)}
+                    </p>
+                  </td>
+                  <td className="px-4 py-3 text-left">
+                    <p className="text-sm font-semibold text-foreground">
+                      {formatCurrency(Number(payment.amountPaid))}
+                    </p>
+                  </td>
+                  <td className="hidden px-4 py-3 text-left text-sm text-muted-foreground sm:table-cell">
+                    {formatDateTime(payment.createdAt)}
+                  </td>
+                  <td className="px-4 py-3 text-center">
+                    <span
+                      className={clsx(
+                        'inline-block rounded-full px-2.5 py-1 text-xs font-semibold',
+                        status.className
+                      )}
+                    >
+                      {status.label}
+                    </span>
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }

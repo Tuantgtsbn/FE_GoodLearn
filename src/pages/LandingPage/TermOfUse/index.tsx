@@ -18,7 +18,7 @@ export default function TermOfUse() {
         </p>
       </header>
       <section
-        className="mb-10 bg-white brutal-border rounded-2xl p-8 shadow-brutal"
+        className="mb-10 bg-background brutal-border rounded-2xl p-8 shadow-brutal"
         data-purpose="section-acceptance"
       >
         <div className="flex items-center gap-3 mb-4">
@@ -27,7 +27,7 @@ export default function TermOfUse() {
             1. Chấp nhận điều khoản
           </h2>
         </div>
-        <div className="space-y-4 text-gray-800 leading-relaxed font-medium">
+        <div className="space-y-4 text-muted-foreground leading-relaxed font-medium">
           <p>
             Bằng việc truy cập và sử dụng GoodLearn, bạn đồng ý tuân thủ các
             điều khoản này. Nếu bạn không đồng ý, rất tiếc là chúng mình không
@@ -40,7 +40,7 @@ export default function TermOfUse() {
         </div>
       </section>
       <section
-        className="mb-10 bg-white brutal-border rounded-2xl p-8 shadow-brutal"
+        className="mb-10 bg-background brutal-border rounded-2xl p-8 shadow-brutal"
         data-purpose="section-ip"
       >
         <div className="flex items-center gap-3 mb-4">
@@ -49,7 +49,7 @@ export default function TermOfUse() {
             2. Quyền sở hữu trí tuệ
           </h2>
         </div>
-        <div className="space-y-4 text-gray-800 leading-relaxed font-medium">
+        <div className="space-y-4 text-muted-foreground leading-relaxed font-medium">
           <p>
             Tất cả nội dung trên GoodLearn bao gồm bài giảng, mã nguồn, hình ảnh
             và logo đều thuộc sở hữu của chúng mình.
@@ -64,7 +64,7 @@ export default function TermOfUse() {
         </div>
       </section>
       <section
-        className="mb-10 bg-white brutal-border rounded-2xl p-8 shadow-brutal"
+        className="mb-10 bg-background brutal-border rounded-2xl p-8 shadow-brutal"
         data-purpose="section-responsibility"
       >
         <div className="flex items-center gap-3 mb-4">
@@ -73,7 +73,7 @@ export default function TermOfUse() {
             3. Trách nhiệm người dùng
           </h2>
         </div>
-        <div className="space-y-4 text-gray-800 leading-relaxed font-medium">
+        <div className="space-y-4 text-muted-foreground leading-relaxed font-medium">
           <p>Khi tham gia học tập cùng GoodLearn, bạn cam kết:</p>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="p-4 bg-gray-50 brutal-border rounded-xl">
@@ -102,7 +102,7 @@ export default function TermOfUse() {
         </div>
       </section>
       <div
-        className="text-center p-6 bg-white brutal-border rounded-2xl shadow-brutal-sm"
+        className="text-center p-6 bg-background brutal-border rounded-2xl shadow-brutal-sm"
         data-purpose="contact-note"
       >
         <p className="font-bold italic">

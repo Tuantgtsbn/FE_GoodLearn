@@ -36,23 +36,21 @@ const FlashcardCard: React.FC<FlashcardCardProps> = ({
   isFlipped,
   onFlip,
 }) => {
-  // Render based on type
   const renderFront = () => {
     return (
       <div className="flex h-full flex-col p-8 sm:p-12">
         <div className="flex w-full items-start justify-between">
-          <span className="rounded-md border border-slate-800 px-3 py-1 text-[11px] font-black uppercase tracking-widest text-slate-800">
+          <span className="rounded-md border px-3 py-1 text-[11px] font-black uppercase tracking-widest text-muted-foreground">
             {subjectName}
           </span>
-          <Lightbulb size={24} className="text-slate-900" strokeWidth={1.5} />
+          <Lightbulb size={24} className="text-foreground" strokeWidth={1.5} />
         </div>
 
         <div className="flex flex-1 flex-col items-center justify-center">
-          <h2 className="text-center text-3xl font-extrabold leading-tight text-slate-900 md:text-4xl lg:text-5xl">
+          <h2 className="text-center text-3xl font-extrabold leading-tight text-foreground md:text-4xl lg:text-5xl">
             {card.frontContent}
           </h2>
 
-          {/* Render options if multiple choice */}
           {(card.type === 'MULTIPLE_CHOICE' || card.type === 'TRUE_FALSE') &&
             card.options &&
             card.options.length > 0 && (
@@ -60,9 +58,9 @@ const FlashcardCard: React.FC<FlashcardCardProps> = ({
                 {card.options.map((opt, i) => (
                   <div
                     key={opt.id || i}
-                    className="flex items-center rounded-xl border-2 border-slate-200 bg-white px-5 py-4 text-left font-bold text-slate-700 shadow-sm"
+                    className="flex items-center rounded-xl border bg-background px-5 py-4 text-left font-bold text-muted-foreground shadow-sm"
                   >
-                    <span className="mr-4 flex h-8 w-8 items-center justify-center rounded-full bg-slate-100 text-sm text-slate-500">
+                    <span className="mr-4 flex h-8 w-8 items-center justify-center rounded-full bg-muted text-sm">
                       {String.fromCharCode(65 + i)}
                     </span>
                     {opt.text}
@@ -78,7 +76,7 @@ const FlashcardCard: React.FC<FlashcardCardProps> = ({
               e.stopPropagation();
               onFlip();
             }}
-            className="group flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-slate-400 transition hover:text-slate-700"
+            className="group flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-muted-foreground transition hover:text-foreground"
           >
             <span className="text-lg">👆</span> Click to flip
           </button>
@@ -91,19 +89,19 @@ const FlashcardCard: React.FC<FlashcardCardProps> = ({
     return (
       <div className="flex h-full flex-col p-8 sm:p-12">
         <div className="flex w-full items-start justify-between">
-          <span className="rounded-md bg-slate-100 px-3 py-1 text-[11px] font-black uppercase tracking-widest text-slate-500">
+          <span className="rounded-md bg-muted px-3 py-1 text-[11px] font-black uppercase tracking-widest text-muted-foreground">
             Answer
           </span>
         </div>
 
         <div className="relative z-10 flex flex-1 flex-col justify-center">
           {card.type === 'BASIC' ? (
-            <div className="text-center text-2xl font-bold leading-relaxed text-slate-800 md:text-3xl">
+            <div className="text-center text-2xl font-bold leading-relaxed text-foreground md:text-3xl">
               {card.backContent}
             </div>
           ) : (
             <div className="flex w-full flex-col items-center">
-              <h3 className="mb-6 text-center text-xl font-bold text-slate-900 md:text-2xl">
+              <h3 className="mb-6 text-center text-xl font-bold text-foreground md:text-2xl">
                 {card.frontContent}
               </h3>
               <div className="w-full max-w-2xl text-left">
@@ -111,10 +109,10 @@ const FlashcardCard: React.FC<FlashcardCardProps> = ({
                   <div
                     key={opt.id || i}
                     className={clsx(
-                      'mb-3 flex items-center gap-4 rounded-xl px-5 py-4 font-semibold text-slate-800 transition',
+                      'mb-3 flex items-center gap-4 rounded-xl px-5 py-4 font-semibold transition',
                       opt.isCorrect
-                        ? 'border-2 border-emerald-500 bg-emerald-50'
-                        : 'border-2 border-transparent bg-slate-50 opacity-50'
+                        ? 'border-2 border-emerald-500/40 bg-emerald-500/10 text-foreground'
+                        : 'border-2 border-transparent bg-muted opacity-50 text-muted-foreground'
                     )}
                   >
                     <div
@@ -122,7 +120,7 @@ const FlashcardCard: React.FC<FlashcardCardProps> = ({
                         'flex h-6 w-6 items-center justify-center rounded-full',
                         opt.isCorrect
                           ? 'bg-emerald-500 text-white'
-                          : 'bg-slate-300 text-slate-500'
+                          : 'bg-border text-muted-foreground'
                       )}
                     >
                       {opt.isCorrect ? (
@@ -134,11 +132,11 @@ const FlashcardCard: React.FC<FlashcardCardProps> = ({
                 ))}
               </div>
               {card.explanation && (
-                <div className="mt-6 w-full max-w-2xl rounded-2xl bg-slate-50 p-6 text-slate-700">
-                  <p className="mb-2 text-xs font-bold uppercase tracking-wider text-slate-400">
+                <div className="mt-6 w-full max-w-2xl rounded-2xl bg-muted p-6">
+                  <p className="mb-2 text-xs font-bold uppercase tracking-wider text-muted-foreground">
                     Giải thích
                   </p>
-                  <p className="text-sm font-medium leading-relaxed sm:text-base">
+                  <p className="text-sm font-medium leading-relaxed text-muted-foreground sm:text-base">
                     {card.explanation}
                   </p>
                 </div>
@@ -147,8 +145,7 @@ const FlashcardCard: React.FC<FlashcardCardProps> = ({
           )}
         </div>
 
-        {/* Watermark icon backend */}
-        <div className="pointer-events-none absolute bottom-8 right-12 z-0 text-slate-100/50">
+        <div className="pointer-events-none absolute bottom-8 right-12 z-0 text-muted/50">
           <GraduationCap size={160} />
         </div>
       </div>
@@ -162,21 +159,20 @@ const FlashcardCard: React.FC<FlashcardCardProps> = ({
     >
       <div
         className={clsx(
-          'transform-style-preserve-3d absolute h-full w-full rounded-3xl bg-white shadow-2xl transition-all duration-500 ease-in-out',
+          'transform-style-preserve-3d absolute h-full w-full rounded-3xl bg-background shadow-2xl transition-all duration-500 ease-in-out',
           { 'rotate-y-180': isFlipped }
         )}
       >
         {/* Front Face */}
         <div
           className={clsx(
-            'backface-hidden absolute inset-0 h-full w-full rounded-3xl border border-slate-200'
+            'backface-hidden absolute inset-0 h-full w-full rounded-3xl border'
           )}
         >
-          {/* Decorative corners */}
-          <div className="absolute left-6 top-6 h-1.5 w-1.5 rounded-full bg-slate-200"></div>
-          <div className="absolute right-6 top-6 h-1.5 w-1.5 rounded-full bg-slate-200"></div>
-          <div className="absolute bottom-6 left-6 h-1.5 w-1.5 rounded-full bg-slate-200"></div>
-          <div className="absolute bottom-6 right-6 h-1.5 w-1.5 rounded-full bg-slate-200"></div>
+          <div className="absolute left-6 top-6 h-1.5 w-1.5 rounded-full bg-border" />
+          <div className="absolute right-6 top-6 h-1.5 w-1.5 rounded-full bg-border" />
+          <div className="absolute bottom-6 left-6 h-1.5 w-1.5 rounded-full bg-border" />
+          <div className="absolute bottom-6 right-6 h-1.5 w-1.5 rounded-full bg-border" />
 
           {renderFront()}
         </div>
@@ -184,14 +180,13 @@ const FlashcardCard: React.FC<FlashcardCardProps> = ({
         {/* Back Face */}
         <div
           className={clsx(
-            'backface-hidden rotate-y-180 absolute inset-0 h-full w-full overflow-hidden rounded-3xl border border-slate-200 bg-white'
+            'backface-hidden rotate-y-180 absolute inset-0 h-full w-full overflow-hidden rounded-3xl border bg-background'
           )}
         >
-          {/* Decorative corners */}
-          <div className="absolute left-6 top-6 h-1.5 w-1.5 rounded-full bg-slate-200 z-20"></div>
-          <div className="absolute right-6 top-6 h-1.5 w-1.5 rounded-full bg-slate-200 z-20"></div>
-          <div className="absolute bottom-6 left-6 h-1.5 w-1.5 rounded-full bg-slate-200 z-20"></div>
-          <div className="absolute bottom-6 right-6 h-1.5 w-1.5 rounded-full bg-slate-200 z-20"></div>
+          <div className="absolute left-6 top-6 h-1.5 w-1.5 rounded-full bg-border z-20" />
+          <div className="absolute right-6 top-6 h-1.5 w-1.5 rounded-full bg-border z-20" />
+          <div className="absolute bottom-6 left-6 h-1.5 w-1.5 rounded-full bg-border z-20" />
+          <div className="absolute bottom-6 right-6 h-1.5 w-1.5 rounded-full bg-border z-20" />
 
           {renderBack()}
         </div>
@@ -206,7 +201,6 @@ const DoFlashcardPlayer = () => {
   const { setId } = useParams();
   const navigate = useNavigate();
 
-  // Fetch set
   const { data, isPending } = useQuery({
     queryKey: [QUERY_KEY.FLASHCARD.GET_SET, setId],
     queryFn: () => ApiFlashcard.getFlashcardSetDetail(setId!),
@@ -244,10 +238,8 @@ const DoFlashcardPlayer = () => {
     navigate('/app/flashcards');
   }, [navigate, resetProgressAndSession]);
 
-  // Listen to keyboard shortcuts
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      // Ignore if typing in input
       if (
         document.activeElement?.tagName === 'INPUT' ||
         document.activeElement?.tagName === 'TEXTAREA'
@@ -283,9 +275,9 @@ const DoFlashcardPlayer = () => {
 
   if (isPending) {
     return (
-      <div className="flex h-screen items-center justify-center bg-slate-50">
-        <div className="animate-pulse text-lg font-bold text-slate-400">
-          Loading flashcards...
+      <div className="flex h-screen items-center justify-center bg-background">
+        <div className="animate-pulse text-lg font-bold text-muted-foreground">
+          Đang tải flashcard...
         </div>
       </div>
     );
@@ -293,11 +285,11 @@ const DoFlashcardPlayer = () => {
 
   if (!setDetail) {
     return (
-      <div className="flex h-screen flex-col items-center justify-center bg-slate-50">
-        <h1 className="text-2xl font-bold text-slate-800">
+      <div className="flex h-screen flex-col items-center justify-center bg-background">
+        <h1 className="text-2xl font-bold text-foreground">
           Không tìm thấy thẻ
         </h1>
-        <p className="mt-2 text-slate-500">
+        <p className="mt-2 text-muted-foreground">
           Bộ thẻ chưa có nội dung hoặc tất cả đều đã được hiểu.
         </p>
         <button
@@ -308,7 +300,7 @@ const DoFlashcardPlayer = () => {
               handleExitToLibrary();
             }
           }}
-          className="mt-6 rounded-xl bg-black px-6 py-3 font-bold text-white transition hover:bg-slate-800"
+          className="mt-6 rounded-xl bg-primary px-6 py-3 font-bold text-primary-foreground transition hover:opacity-90"
         >
           {studyMode === 'REVIEW' ? 'Quay lại học tất cả' : 'Quay lại thư viện'}
         </button>
@@ -316,55 +308,56 @@ const DoFlashcardPlayer = () => {
     );
   }
 
-  // Render Summary Screen
   if (isFinished) {
     return (
-      <div className="flex min-h-screen flex-col items-center justify-center bg-[#F9FAFB] p-6">
+      <div className="flex min-h-screen flex-col items-center justify-center bg-background p-6">
         <div className="flex max-w-lg flex-col items-center text-center">
-          <div className="relative mb-6 flex h-24 w-24 items-center justify-center rounded-full bg-slate-50 border-2 border-slate-100 shadow-sm">
-            <Trophy size={48} className="text-slate-800" strokeWidth={1.5} />
+          <div className="relative mb-6 flex h-24 w-24 items-center justify-center rounded-full border bg-muted">
+            <Trophy size={48} className="text-foreground" strokeWidth={1.5} />
             <Star
               size={16}
-              className="absolute -right-1 top-2 text-slate-700"
+              className="absolute -right-1 top-2 text-muted-foreground"
             />
             <div className="absolute -left-2 top-8 text-xl">🎉</div>
           </div>
 
-          <h1 className="mb-2 text-3xl font-black text-slate-900 md:text-4xl">
+          <h1 className="mb-2 text-3xl font-black text-foreground md:text-4xl">
             Thống kê
           </h1>
-          <p className="mb-10 font-medium text-slate-500">
+          <p className="mb-10 font-medium text-muted-foreground">
             Bạn đã hoàn thành bộ thẻ này trong{' '}
-            <span className="font-bold text-slate-700">{sessionTimeStr}</span>.
+            <span className="font-bold text-foreground">{sessionTimeStr}</span>.
           </p>
 
           <div className="mb-8 flex w-full flex-col justify-center gap-4 sm:flex-row">
-            {/* Đã hiểu Card */}
-            <div className="relative flex flex-1 flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white p-5 text-left shadow-sm">
-              <span className="text-sm font-bold text-slate-800">Đã hiểu</span>
-              <div className="mt-2 text-4xl font-black text-slate-900">
+            <div className="relative flex flex-1 flex-col overflow-hidden rounded-2xl border bg-background p-5 text-left">
+              <span className="text-sm font-bold text-foreground">Đã hiểu</span>
+              <div className="mt-2 text-4xl font-black text-foreground">
                 {understoodCount}{' '}
-                <span className="text-sm font-medium text-slate-500">thẻ</span>
+                <span className="text-sm font-medium text-muted-foreground">
+                  thẻ
+                </span>
               </div>
               <Check
                 size={90}
-                className="absolute -bottom-4 -right-4 text-emerald-50 opacity-50"
+                className="absolute -bottom-4 -right-4 text-emerald-500/10"
                 strokeWidth={3}
               />
             </div>
 
-            {/* Chưa hiểu Card */}
-            <div className="relative flex flex-1 flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white p-5 text-left shadow-sm">
-              <span className="text-sm font-bold text-slate-800">
+            <div className="relative flex flex-1 flex-col overflow-hidden rounded-2xl border bg-background p-5 text-left">
+              <span className="text-sm font-bold text-foreground">
                 Chưa hiểu
               </span>
-              <div className="mt-2 text-4xl font-black text-slate-900">
+              <div className="mt-2 text-4xl font-black text-foreground">
                 {notUnderstoodCount}{' '}
-                <span className="text-sm font-medium text-slate-500">thẻ</span>
+                <span className="text-sm font-medium text-muted-foreground">
+                  thẻ
+                </span>
               </div>
               <X
                 size={90}
-                className="absolute -bottom-4 -right-4 text-rose-50 opacity-50"
+                className="absolute -bottom-4 -right-4 text-destructive/10"
                 strokeWidth={3}
               />
             </div>
@@ -375,14 +368,14 @@ const DoFlashcardPlayer = () => {
               <>
                 <button
                   onClick={handleReviewNotUnderstood}
-                  className="flex w-full items-center justify-center gap-2 rounded-xl bg-black py-4 font-bold text-white transition hover:bg-slate-800 hover:shadow-lg"
+                  className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-4 font-bold text-primary-foreground transition hover:opacity-90"
                 >
                   <RotateCcw size={18} />
                   Ôn lại {notUnderstoodCount} câu chưa hiểu
                 </button>
                 <button
                   onClick={resetProgressAndSession}
-                  className="flex w-full items-center justify-center gap-2 rounded-xl border-2 border-slate-200 bg-white py-4 font-bold text-slate-700 transition hover:bg-slate-50"
+                  className="flex w-full items-center justify-center gap-2 rounded-xl border bg-background py-4 font-bold text-muted-foreground transition hover:bg-muted"
                 >
                   <RotateCcw size={18} />
                   Học lại từ đầu
@@ -391,7 +384,7 @@ const DoFlashcardPlayer = () => {
             ) : (
               <button
                 onClick={resetProgressAndSession}
-                className="flex w-full items-center justify-center gap-2 rounded-xl bg-black py-4 font-bold text-white transition hover:bg-slate-800 hover:shadow-lg"
+                className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-4 font-bold text-primary-foreground transition hover:opacity-90"
               >
                 <RotateCcw size={18} />
                 Học lại từ đầu
@@ -400,7 +393,7 @@ const DoFlashcardPlayer = () => {
 
             <button
               onClick={handleExitToLibrary}
-              className="flex w-full items-center justify-center gap-2 rounded-xl border-2 border-slate-200 bg-white py-4 font-bold text-slate-700 transition hover:bg-slate-50"
+              className="flex w-full items-center justify-center gap-2 rounded-xl border bg-background py-4 font-bold text-muted-foreground transition hover:bg-muted"
             >
               <Home size={18} />
               Về màn hình chính
@@ -413,11 +406,11 @@ const DoFlashcardPlayer = () => {
 
   if (cards.length === 0) {
     return (
-      <div className="flex h-screen flex-col items-center justify-center bg-slate-50">
-        <h1 className="text-2xl font-bold text-slate-800">
+      <div className="flex h-screen flex-col items-center justify-center bg-background">
+        <h1 className="text-2xl font-bold text-foreground">
           Không tìm thấy thẻ
         </h1>
-        <p className="mt-2 text-slate-500">
+        <p className="mt-2 text-muted-foreground">
           Bộ thẻ chưa có nội dung hoặc tất cả đều đã được hiểu.
         </p>
         <button
@@ -428,7 +421,7 @@ const DoFlashcardPlayer = () => {
               handleExitToLibrary();
             }
           }}
-          className="mt-6 rounded-xl bg-black px-6 py-3 font-bold text-white transition hover:bg-slate-800"
+          className="mt-6 rounded-xl bg-primary px-6 py-3 font-bold text-primary-foreground transition hover:opacity-90"
         >
           {studyMode === 'REVIEW' ? 'Quay lại học tất cả' : 'Quay lại thư viện'}
         </button>
@@ -436,46 +429,44 @@ const DoFlashcardPlayer = () => {
     );
   }
 
-  // Safety guard: If no current card but session is not finished, show loading
   if (!currentCard) {
     return (
-      <div className="flex h-screen items-center justify-center bg-slate-50">
-        <div className="animate-pulse text-lg font-bold text-slate-400">
-          Loading flashcards...
+      <div className="flex h-screen items-center justify-center bg-background">
+        <div className="animate-pulse text-lg font-bold text-muted-foreground">
+          Đang tải flashcard...
         </div>
       </div>
     );
   }
 
   return (
-    <div className="flex min-h-screen flex-col bg-[#F9FAFB] pb-12">
+    <div className="flex min-h-screen flex-col bg-background pb-12">
       {/* ─── Header ───────────────────────────────────────────────────── */}
-      <header className="flex w-full flex-col bg-white">
+      <header className="flex w-full flex-col border-b bg-background">
         <div className="flex items-center justify-between px-6 py-4">
           <div className="flex items-center gap-3">
-            <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-slate-100 text-slate-800">
+            <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted text-foreground">
               <GraduationCap size={22} />
             </span>
-            <h1 className="text-xl font-extrabold text-slate-900">
+            <h1 className="text-xl font-extrabold text-foreground">
               {setDetail.title}
             </h1>
           </div>
           <button
             onClick={handleExitToLibrary}
-            className="flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 text-slate-600 transition hover:bg-slate-200"
+            className="flex h-10 w-10 items-center justify-center rounded-full bg-muted text-muted-foreground transition hover:bg-accent hover:text-foreground"
           >
             <X size={20} strokeWidth={2.5} />
           </button>
         </div>
 
-        {/* Progress Bar */}
-        <div className="relative h-1.5 w-full bg-slate-100">
+        <div className="relative h-1.5 w-full bg-muted">
           <div
-            className="absolute left-0 top-0 h-full bg-blue-600 transition-all duration-300"
+            className="absolute left-0 top-0 h-full bg-primary transition-all duration-300"
             style={{ width: `${progressPercent}%` }}
           />
         </div>
-        <div className="flex justify-between px-6 py-3 text-xs font-bold uppercase tracking-wider text-slate-500">
+        <div className="flex justify-between px-6 py-3 text-xs font-bold uppercase tracking-wider text-muted-foreground">
           <span>Tiến độ</span>
           <span>
             Thẻ {currentIndex + 1} / {totalCards}
@@ -500,11 +491,11 @@ const DoFlashcardPlayer = () => {
                 onClick={handleNotUnderstood}
                 className="group flex flex-col items-center gap-2"
               >
-                <div className="flex items-center gap-3 rounded-full border-2 border-slate-200 bg-white px-8 py-4 font-bold text-slate-700 shadow-sm transition hover:border-slate-300 hover:bg-slate-50">
-                  <PenOff size={18} className="text-slate-400" />
+                <div className="flex items-center gap-3 rounded-full border bg-background px-8 py-4 font-bold text-muted-foreground shadow-sm transition hover:bg-muted">
+                  <PenOff size={18} className="text-muted-foreground" />
                   Chưa hiểu
                 </div>
-                <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
+                <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
                   Phím 1
                 </span>
               </button>
@@ -513,36 +504,36 @@ const DoFlashcardPlayer = () => {
                 onClick={handleUnderstood}
                 className="group flex flex-col items-center gap-2"
               >
-                <div className="flex items-center gap-3 rounded-full bg-slate-900 px-8 py-4 font-bold text-white shadow-lg transition hover:bg-black hover:shadow-xl">
+                <div className="flex items-center gap-3 rounded-full bg-primary px-8 py-4 font-bold text-primary-foreground shadow-lg transition hover:opacity-90">
                   <Star size={18} className="fill-yellow-400 text-yellow-400" />
                   Đã hiểu
                 </div>
-                <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
+                <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
                   Phím 2
                 </span>
               </button>
             </div>
           ) : (
-            <div className="flex items-center rounded-2xl border bg-white p-2 shadow-sm ring-1 ring-slate-100 animate-in fade-in zoom-in-95">
+            <div className="flex items-center rounded-2xl border bg-background p-2 shadow-sm animate-in fade-in zoom-in-95">
               <button
                 onClick={handlePrev}
                 disabled={currentIndex === 0}
-                className="p-3 text-slate-400 transition hover:text-slate-800 disabled:opacity-20 disabled:hover:text-slate-400"
+                className="p-3 text-muted-foreground transition hover:text-foreground disabled:opacity-20"
               >
                 <ChevronLeft size={24} strokeWidth={2.5} />
               </button>
-              <div className="mx-2 h-8 w-px bg-slate-200" />
+              <div className="mx-2 h-8 w-px bg-border" />
               <button
                 onClick={handleFlip}
-                className="p-3 text-slate-700 transition hover:text-blue-600"
+                className="p-3 text-muted-foreground transition hover:text-primary"
               >
                 <RotateCcw size={22} strokeWidth={2.5} />
               </button>
-              <div className="mx-2 h-8 w-px bg-slate-200" />
+              <div className="mx-2 h-8 w-px bg-border" />
               <button
                 onClick={handleNext}
                 disabled={currentIndex === totalCards - 1}
-                className="p-3 text-slate-400 transition hover:text-slate-800 disabled:opacity-20 disabled:hover:text-slate-400"
+                className="p-3 text-muted-foreground transition hover:text-foreground disabled:opacity-20"
               >
                 <ChevronRight size={24} strokeWidth={2.5} />
               </button>
@@ -551,7 +542,6 @@ const DoFlashcardPlayer = () => {
         </div>
       </main>
 
-      {/* Global CSS for 3D Flip */}
       <style>{`
         .perspective-1000 { perspective: 1000px; }
         .transform-style-preserve-3d { transform-style: preserve-3d; }

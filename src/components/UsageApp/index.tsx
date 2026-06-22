@@ -25,30 +25,12 @@ function UsageApp() {
   };
 
   const tabs = [
-    {
-      label: '🤖 Chatbot AI',
-      tab: 'chatbot',
-    },
-    {
-      label: '📽️ Tạo Video/Flashcard',
-      tab: 'video-flashcard',
-    },
-    {
-      label: '📝 Thi Trắc Nghiệm',
-      tab: 'quiz',
-    },
-    {
-      label: '🗂️ Học Flashcard',
-      tab: 'flashcard',
-    },
-    {
-      label: '🎤 Karaoke Quan Họ',
-      tab: 'karaoke',
-    },
-    {
-      label: '📰 Tin tức',
-      tab: 'news',
-    },
+    { label: '🤖 Chatbot AI', tab: 'chatbot' },
+    { label: '📽️ Tạo Video/Flashcard', tab: 'video-flashcard' },
+    { label: '📝 Thi Trắc Nghiệm', tab: 'quiz' },
+    { label: '🗂️ Học Flashcard', tab: 'flashcard' },
+    { label: '🎤 Karaoke Quan Họ', tab: 'karaoke' },
+    { label: '📰 Tin tức', tab: 'news' },
   ];
 
   const content = (() => {
@@ -56,47 +38,100 @@ function UsageApp() {
       case 'chatbot':
         return <ChatbotUsage />;
       case 'video-flashcard':
-        return <VideoFlashcardUsage />;
+        return (
+          <Suspense
+            fallback={
+              <div className="flex h-[400px] items-center justify-center border-4 border bg-background">
+                Đang tải...
+              </div>
+            }
+          >
+            <VideoFlashcardUsage />
+          </Suspense>
+        );
       case 'quiz':
-        return <QuizUsage />;
+        return (
+          <Suspense
+            fallback={
+              <div className="flex h-[400px] items-center justify-center border-4 border bg-background">
+                Đang tải...
+              </div>
+            }
+          >
+            <QuizUsage />
+          </Suspense>
+        );
       case 'flashcard':
-        return <FlashcardUsage />;
+        return (
+          <Suspense
+            fallback={
+              <div className="flex h-[400px] items-center justify-center border-4 border bg-background">
+                Đang tải...
+              </div>
+            }
+          >
+            <FlashcardUsage />
+          </Suspense>
+        );
       case 'karaoke':
-        return <KaraokeUsage />;
+        return (
+          <Suspense
+            fallback={
+              <div className="flex h-[400px] items-center justify-center border-4 border bg-background">
+                Đang tải...
+              </div>
+            }
+          >
+            <KaraokeUsage />
+          </Suspense>
+        );
       case 'news':
-        return <NewsUsage />;
+        return (
+          <Suspense
+            fallback={
+              <div className="flex h-[400px] items-center justify-center border-4 border bg-background">
+                Đang tải...
+              </div>
+            }
+          >
+            <NewsUsage />
+          </Suspense>
+        );
     }
   })();
 
   return (
-    <main className="flex-grow w-full max-w-screen-xl mx-auto px-6 py-12 md:py-20 flex flex-col gap-16">
-      <section className="text-center flex flex-col items-center gap-6">
+    <main className="mx-auto flex w-full max-w-screen-xl flex-grow flex-col gap-16 px-6 py-12 md:py-20">
+      {/* Hero */}
+      <section className="flex flex-col items-center gap-6 text-center">
         <div className="relative inline-block">
-          <div className="absolute inset-0 bg-zinc-900 translate-x-2 translate-y-2 lg:translate-x-3 lg:translate-y-3"></div>
-          <div className="relative bg-white border-4 border-zinc-900 px-8 py-6 lg:px-12 lg:py-8">
-            <h1 className="font-headline text-4xl md:text-6xl lg:text-7xl font-black uppercase tracking-tighter text-zinc-900">
+          <div className="absolute inset-0 translate-x-2 translate-y-2 bg-foreground dark:bg-[#3c3a3a] lg:translate-x-3 lg:translate-y-3" />
+          <div className="relative border-4 bg-background px-8 py-6 lg:px-12 lg:py-8">
+            <h1 className="font-headline text-4xl font-black uppercase tracking-tighter text-foreground md:text-6xl lg:text-7xl">
               📖 Cẩm nang sử dụng GoodLearn
             </h1>
           </div>
         </div>
-        <p className="font-body text-xl md:text-2xl font-semibold text-zinc-700 max-w-3xl mt-4">
+        <p className="font-body mt-4 max-w-3xl text-xl font-semibold text-muted-foreground md:text-2xl">
           Trợ lý AI đồng hành cùng bạn trên con đường tự học.
         </p>
       </section>
+
+      {/* Tabs */}
       <section className="flex flex-wrap justify-center gap-4">
         {tabs.map((tab) => (
           <a
-            className="relative group block cursor-pointer"
-            onClick={() => handleSetTab(tab.tab)}
             key={tab.label}
+            className="group relative block cursor-pointer"
+            onClick={() => handleSetTab(tab.tab)}
           >
-            <div className="absolute inset-0 bg-zinc-900 rounded-full translate-x-1 translate-y-1 transition-transform group-hover:translate-x-1.5 group-hover:translate-y-1.5"></div>
+            <div className="absolute inset-0 translate-x-1 translate-y-1 rounded-full bg-foreground transition-transform group-hover:translate-x-1.5 group-hover:translate-y-1.5" />
             <div
               className={cn(
-                'relative border-2 rounded-full px-6 py-3 font-bold font-inter whitespace-nowrap transition-colors duration-200',
+                'relative rounded-full border-2 px-6 py-3 font-bold whitespace-nowrap transition-colors duration-200',
                 tab.tab === currentTab
-                  ? 'bg-zinc-900 text-white border-zinc-900'
-                  : 'bg-white text-zinc-900 border-zinc-900 hover:bg-zinc-50'
+                  ? 'bg-foreground text-background border-foreground'
+                  : 'bg-background text-foreground border hover:bg-muted'
               )}
             >
               {tab.label}
@@ -104,11 +139,13 @@ function UsageApp() {
           </a>
         ))}
       </section>
-      <section className="w-full max-w-5xl mx-auto relative mt-4">
-        <div className="absolute inset-0 bg-zinc-900 translate-x-2 translate-y-2 lg:translate-x-3 lg:translate-y-3"></div>
+
+      {/* Content */}
+      <section className="relative mx-auto mt-4 w-full max-w-5xl">
+        <div className="absolute inset-0 translate-x-2 translate-y-2 bg-foreground dark:bg-[#3c3a3a] lg:translate-x-3 lg:translate-y-3" />
         <Suspense
           fallback={
-            <div className="w-full h-[400px] flex justify-center items-center border-4 border-zinc-900 bg-white">
+            <div className="flex h-[400px] items-center justify-center border-4 bg-background">
               Đang tải...
             </div>
           }
@@ -116,21 +153,22 @@ function UsageApp() {
           {content}
         </Suspense>
       </section>
-      <section className="mt-12 grid grid-cols-1 md:grid-cols-2 gap-8 items-center border-4 border-zinc-900 bg-white p-8 lg:p-12 relative">
-        <div className="absolute inset-0 bg-zinc-900 translate-x-2 translate-y-2 -z-10"></div>
+
+      {/* Test account CTA */}
+      <section className="relative mt-12 grid grid-cols-1 items-center gap-8 border-4 bg-background p-8 md:grid-cols-2 lg:p-12">
+        <div className="absolute inset-0 translate-x-2 translate-y-2 bg-foreground dark:bg-[#3c3a3a] -z-10" />
         <div className="flex flex-col gap-6">
-          <h3 className="font-headline text-3xl font-black uppercase">
+          <h3 className="font-headline text-3xl font-black uppercase text-foreground">
             Sẵn sàng trải nghiệm?
           </h3>
-          <p className="font-body font-semibold text-zinc-600">
+          <p className="font-body font-semibold text-muted-foreground">
             Sử dụng tài khoản dùng thử để khám phá ngay hôm nay.
           </p>
-          <div className="bg-zinc-100 border-2 border-zinc-900 p-4 font-mono text-sm inline-block w-fit">
-            <div className="font-bold text-zinc-900 text-lg mb-1">
+          <div className="inline-block w-fit border-2 bg-muted p-4 font-mono text-sm">
+            <div className="mb-1 text-lg font-bold text-foreground">
               Tài khoản Test: test@gmail.com
             </div>
-
-            <div className="font-bold text-zinc-900 text-lg">
+            <div className="text-lg font-bold text-foreground">
               Mật khẩu: 123456789
             </div>
           </div>

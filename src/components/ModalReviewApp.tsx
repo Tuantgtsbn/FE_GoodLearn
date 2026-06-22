@@ -125,14 +125,14 @@ export default function ModalReviewApp({
 
   return (
     <div
-      className="bg-white rounded-lg shadow-lg w-full max-w-md max-h-[90vh] overflow-y-auto"
+      className="bg-background rounded-lg shadow-lg w-full max-w-md max-h-[90vh] overflow-y-auto scrollbar-thin"
       onClick={(e) => e.stopPropagation()}
     >
       {/* Header */}
-      <div className="sticky top-0 bg-white p-5 border-b border-gray-100 flex justify-between items-center">
+      <div className="sticky top-0 p-5 border-b flex justify-between items-center">
         <div>
-          <h2 className="font-bold text-gray-900 text-2xl">Đánh giá website</h2>
-          <p className="text-md text-gray-500 mt-1">
+          <h2 className="font-bold text-2xl">Đánh giá website</h2>
+          <p className="text-md mt-1">
             Cảm nhận của cậu về trải nhiệm học tập cùng AI là gì?
           </p>
         </div>
@@ -204,14 +204,14 @@ export default function ModalReviewApp({
 
         {/* Comment Section */}
         <div className="space-y-3 border-t pt-5">
-          <label className="block text-md font-bold text-gray-700 uppercase tracking-wide">
+          <label className="block text-md font-bold uppercase tracking-wide">
             Cảm nhận của cậu
           </label>
           <textarea
             value={content}
             onChange={(e) => setContent(e.target.value)}
             placeholder="Chia sẻ cảm nhận của cậu ở đây nhé..."
-            className="w-full h-24 p-3 text-sm border bg-[#f1f1f1] border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-gray-400 focus:border-transparent resize-none placeholder:text-gray-400"
+            className="w-full h-24 p-3 text-sm border rounded-lg focus:outline-none focus:ring-1 focus:ring-gray-400 focus:border-transparent resize-none placeholder:text-gray-400"
             disabled={isSubmitting}
             maxLength={1000}
           />
@@ -239,18 +239,18 @@ export default function ModalReviewApp({
       </div>
 
       {/* Footer */}
-      <div className="sticky bottom-0 bg-white border-t border-gray-100 p-4 flex gap-3">
+      <div className="sticky bottom-0 border-t p-4 flex gap-3">
         <button
           onClick={handleClose}
           disabled={isSubmitting}
-          className="px-6 py-2 font-bold basis-[40%] border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors disabled:opacity-50 text-sm"
+          className="px-6 py-2 font-bold basis-[40%] border border-gray-300 rounded-lg disabled:opacity-50 text-sm"
         >
           Hủy
         </button>
         <button
           onClick={handleSubmit}
           disabled={isSubmitting || rating === 0 || !content.trim()}
-          className="px-6 py-2 font-bold flex-1 bg-gray-900 text-white rounded-lg hover:bg-black transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+          className="px-6 py-2 font-bold flex-1 bg-black dark:bg-white text-white dark:text-black rounded-lg disabled:opacity-50 disabled:cursor-not-allowed text-sm"
         >
           {isSubmitting ? 'Đang gửi...' : 'Gửi đánh giá'}
         </button>

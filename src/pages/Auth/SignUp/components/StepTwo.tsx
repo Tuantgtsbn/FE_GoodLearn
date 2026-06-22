@@ -44,7 +44,7 @@ export default function StepTwo() {
         )}
       </div>
       <div className="flex flex-col gap-2 font-medium">
-        <label className="block font-medium text-gray-700 mb-1">
+        <label className="block font-medium text-foreground mb-1">
           Chọn ngày sinh
         </label>
 
@@ -69,7 +69,7 @@ export default function StepTwo() {
         )}
       </div>
       <div className="flex flex-col gap-2">
-        <label className="block font-medium text-gray-700 mb-1">
+        <label className="block font-medium text-foreground mb-1">
           Giới tính
         </label>
         <Controller
@@ -101,13 +101,13 @@ export default function StepTwo() {
         )}
       </div>
       <div className="flex flex-col gap-2">
-        <label className="block font-medium text-gray-700 mb-1">
+        <label className="block font-medium text-foreground mb-1">
           Tiểu sử cá nhân (tùy chọn)
         </label>
         <div className="flex flex-col gap-2">
           <textarea
             placeholder="Tiểu sử cá nhân"
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm resize-none h-24 p-2"
+            className="mt-1 block w-full rounded-md border shadow-sm focus:border-primary focus:ring-primary sm:text-sm resize-none h-24 p-2"
             {...register('bio')}
           />
           {errors.bio && (

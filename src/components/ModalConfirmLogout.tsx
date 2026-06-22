@@ -66,7 +66,7 @@ export default function ModalConfirmLogout({
               Ở lại học tiếp
             </button>
           </div>
-          <div className="bg-zinc-50 py-4 border-t border-zinc-100 text-center">
+          <div className="py-4 border-t text-center">
             <p className="text-zinc-400 text-xs font-medium uppercase tracking-widest">
               GoodLearn • Trợ lý học AI
             </p>

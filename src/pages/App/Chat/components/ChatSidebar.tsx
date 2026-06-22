@@ -6,7 +6,7 @@ import {
   createNewConversation,
   toggleSidebar,
 } from '@/redux/slices/ChatSlice';
-import { Plus, MessageSquare, Settings } from 'lucide-react';
+import { Plus, MessageSquare } from 'lucide-react';
 import Avatar from '@/components/ui/Avatar';
 import clsx from 'clsx';
 
@@ -124,10 +124,6 @@ export default function ChatSidebar({ isOpen }: ChatSidebarProps) {
 
         {/* Footer */}
         <div className="chat-sidebar__footer">
-          <div className="chat-sidebar__footer-item">
-            <Settings size={16} />
-            <span>Cài đặt</span>
-          </div>
           {user && (
             <div className="chat-sidebar__footer-item">
               <Avatar

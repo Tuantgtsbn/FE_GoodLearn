@@ -15,7 +15,6 @@ import clsx from 'clsx';
 import { Button } from '@/components/ui/button';
 import PaymentTable from './components/PaymentTable';
 import CommonInput from '@/components/CommonInput';
-import './index.scss';
 
 const ITEMS_PER_PAGE = 10;
 
@@ -35,7 +34,6 @@ export default function PaymentManagement() {
   const [debouncedSearch, setDebouncedSearch] = useState('');
   const [paymentStatus, setPaymentStatus] = useState<string>('');
 
-  // Debounce search input
   useEffect(() => {
     const timer = setTimeout(() => {
       setDebouncedSearch(searchInput.trim());
@@ -50,9 +48,7 @@ export default function PaymentManagement() {
     sortBy: 'createdAt',
     sortOrder: 'desc',
     ...(paymentStatus &&
-      paymentStatus !== '_all' && {
-        paymentStatus: paymentStatus as any,
-      }),
+      paymentStatus !== '_all' && { paymentStatus: paymentStatus as any }),
     ...(debouncedSearch && { search: debouncedSearch }),
   };
 
@@ -79,25 +75,23 @@ export default function PaymentManagement() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="min-h-screen p-4 md:p-8 w-[90%] mx-auto max-w-[1400px]">
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">
+    <div className="min-h-screen">
+      <div className="mx-auto w-[90%] max-w-[1400px] space-y-6 p-4 md:p-8">
+        <div>
+          <h1 className="text-3xl font-bold text-foreground">
             Quản lý thanh toán
           </h1>
-          <p className="mt-1 text-gray-600">
+          <p className="mt-1 text-muted-foreground">
             Xem và quản lý lịch sử giao dịch khóa học của bạn
           </p>
         </div>
 
         {/* Filters */}
-        <div className="mb-6 rounded-lg bg-white p-4 shadow-sm ring-1 ring-gray-200">
+        <div className="rounded-xl border bg-background p-4">
           <div className="grid gap-4 sm:grid-cols-12">
-            {/* Search */}
             <div className="sm:col-span-6 md:col-span-8">
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+                <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                 <CommonInput
                   type="text"
                   placeholder="Tìm ID đơn hàng..."
@@ -108,10 +102,9 @@ export default function PaymentManagement() {
               </div>
             </div>
 
-            {/* Status Filter */}
-            <div className="sm:col-span-6 md:col-span-4 mx_selector">
+            <div className="sm:col-span-6 md:col-span-4">
               <Select value={paymentStatus} onValueChange={setPaymentStatus}>
-                <SelectTrigger className="w-full bg-white">
+                <SelectTrigger className="w-full h-[50px]">
                   <SelectValue placeholder="Lọc theo trạng thái" />
                 </SelectTrigger>
                 <SelectContent>
@@ -127,15 +120,14 @@ export default function PaymentManagement() {
             </div>
           </div>
 
-          {/* Active filters display */}
-          <div className="mt-4 flex flex-wrap gap-2">
+          <div className="mt-4 flex flex-wrap items-center gap-2">
             {debouncedSearch && (
-              <span className="inline-flex items-center rounded-full bg-blue-100 px-3 py-1 text-sm font-medium text-blue-700">
-                ID: "{debouncedSearch}"
+              <span className="inline-flex items-center rounded-full bg-blue-500/15 px-3 py-1 text-sm font-medium text-blue-600 dark:text-blue-400">
+                ID: &quot;{debouncedSearch}&quot;
               </span>
             )}
             {paymentStatus && paymentStatus !== '_all' && (
-              <span className="inline-flex items-center rounded-full bg-green-100 px-3 py-1 text-sm font-medium text-green-700">
+              <span className="inline-flex items-center rounded-full bg-emerald-500/15 px-3 py-1 text-sm font-medium text-emerald-600 dark:text-emerald-400">
                 {
                   PAYMENT_STATUS_OPTIONS.find(
                     (opt) => opt.value === paymentStatus
@@ -146,7 +138,7 @@ export default function PaymentManagement() {
             {(debouncedSearch || paymentStatus) && (
               <button
                 onClick={handleReset}
-                className="text-sm text-gray-600 hover:text-gray-900"
+                className="text-sm text-muted-foreground transition hover:text-foreground"
               >
                 ✕ Xóa bộ lọc
               </button>
@@ -156,19 +148,17 @@ export default function PaymentManagement() {
 
         {/* Table */}
         {isPending ? (
-          <div className="rounded-lg bg-white p-8 text-center shadow-sm ring-1 ring-gray-200">
-            <div className="inline-block">
-              <div className="h-8 w-8 animate-spin rounded-full border-4 border-gray-300 border-t-blue-600"></div>
-            </div>
-            <p className="mt-4 text-gray-600">Đang tải dữ liệu...</p>
+          <div className="rounded-xl border bg-background p-8 text-center">
+            <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-muted border-t-primary" />
+            <p className="mt-4 text-muted-foreground">Đang tải dữ liệu...</p>
           </div>
         ) : isError || (payments.length === 0 && !isPending) ? (
-          <div className="rounded-lg bg-white p-12 text-center shadow-sm ring-1 ring-gray-200">
-            <Filter className="mx-auto h-12 w-12 text-gray-400" />
-            <h3 className="mt-4 text-lg font-semibold text-gray-900">
+          <div className="rounded-xl border bg-background p-12 text-center">
+            <Filter className="mx-auto h-12 w-12 text-muted-foreground" />
+            <h3 className="mt-4 text-lg font-semibold text-foreground">
               Không tìm thấy giao dịch nào
             </h3>
-            <p className="mt-2 text-gray-600">
+            <p className="mt-2 text-muted-foreground">
               {isError
                 ? 'Có lỗi khi tải dữ liệu. Vui lòng thử lại.'
                 : 'Hãy điều chỉnh bộ lọc để xem danh sách giao dịch của bạn.'}
@@ -185,8 +175,8 @@ export default function PaymentManagement() {
 
         {/* Pagination */}
         {payments.length > 0 && totalPages > 1 && (
-          <div className="mt-8 flex flex-col items-center justify-between gap-4 sm:flex-row">
-            <p className="text-sm text-gray-600">
+          <div className="flex flex-col items-center justify-between gap-4 rounded-xl border bg-background p-4 sm:flex-row">
+            <p className="text-sm text-muted-foreground">
               Đang hiển thị{' '}
               {Math.min(
                 (page - 1) * ITEMS_PER_PAGE + 1,
@@ -203,8 +193,8 @@ export default function PaymentManagement() {
                 className={clsx(
                   'flex h-9 w-9 items-center justify-center rounded-lg border transition',
                   page === 1
-                    ? 'border-gray-200 text-gray-300 cursor-not-allowed'
-                    : 'border-gray-300 text-gray-700 hover:bg-gray-100'
+                    ? 'text-muted-foreground/30 cursor-not-allowed'
+                    : 'text-muted-foreground hover:bg-muted hover:text-foreground'
                 )}
               >
                 <ChevronLeft size={18} />
@@ -219,8 +209,8 @@ export default function PaymentManagement() {
                       className={clsx(
                         'h-9 w-9 rounded-lg font-medium transition',
                         pageNum === page
-                          ? 'bg-gray-900 text-white'
-                          : 'border border-gray-300 text-gray-700 hover:bg-gray-100'
+                          ? 'bg-primary text-primary-foreground'
+                          : 'border text-muted-foreground hover:bg-muted hover:text-foreground'
                       )}
                     >
                       {pageNum}
@@ -235,8 +225,8 @@ export default function PaymentManagement() {
                 className={clsx(
                   'flex h-9 w-9 items-center justify-center rounded-lg border transition',
                   page === totalPages
-                    ? 'border-gray-200 text-gray-300 cursor-not-allowed'
-                    : 'border-gray-300 text-gray-700 hover:bg-gray-100'
+                    ? 'text-muted-foreground/30 cursor-not-allowed'
+                    : 'text-muted-foreground hover:bg-muted hover:text-foreground'
                 )}
               >
                 <ChevronRight size={18} />

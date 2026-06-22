@@ -74,7 +74,7 @@ export default function UserAvatar() {
         <p className="text-[14px] font-bold text-foreground leading-none">
           {user?.username}
         </p>
-        <p className="text-[12px] text-zinc-400 mt-1">{user?.email}</p>
+        <p className="text-[12px] text-foreground/80 mt-1">{user?.email}</p>
       </div>
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
@@ -104,71 +104,71 @@ export default function UserAvatar() {
             </div>
             <div
               onClick={() => handleClickMenu(handleClickQuota)}
-              className="group cursor-pointer flex items-center justify-between px-[25px] py-4 hover:bg-[#efebeb] dark:hover:bg-gray-700 transition-all duration-200"
+              className="group cursor-pointer flex items-center justify-between px-[25px] py-4 hover:bg-[#efebeb] dark:hover:bg-zinc-800 transition-all duration-200"
             >
               <div className="flex items-center gap-4">
                 <Coins />
-                <span className="text-base font-bold uppercase tracking-wide">
+                <span className="text-sm font-bold uppercase tracking-wide">
                   Chi tiết hạn mức
                 </span>
               </div>
             </div>
             <div
               onClick={() => handleClickMenu(handleClickPaymentManagement)}
-              className="group cursor-pointer flex items-center justify-between px-[25px] py-4 hover:bg-[#efebeb] dark:hover:bg-gray-700 transition-all duration-200"
+              className="group cursor-pointer flex items-center justify-between px-[25px] py-4 hover:bg-[#efebeb] dark:hover:bg-zinc-800 transition-all duration-200"
             >
               <div className="flex items-center gap-4">
                 <CreditCard />
-                <span className="text-base font-bold uppercase tracking-wide">
+                <span className="text-sm font-bold uppercase tracking-wide">
                   Quản lý thanh toán
                 </span>
               </div>
             </div>
             <div
               onClick={() => handleClickMenu(handleClickBuyPackage)}
-              className="group cursor-pointer flex items-center justify-between px-[25px] py-4 hover:bg-[#efebeb] dark:hover:bg-gray-700 transition-all duration-200"
+              className="group cursor-pointer flex items-center justify-between px-[25px] py-4 hover:bg-[#efebeb] dark:hover:bg-zinc-800 transition-all duration-200"
             >
               <div className="flex items-center gap-4">
                 <Package />
-                <span className="text-base font-bold uppercase tracking-wide">
+                <span className="text-sm font-bold uppercase tracking-wide">
                   Mua gói
                 </span>
               </div>
             </div>
             <div
               onClick={() => handleClickMenu(handleClickSetting)}
-              className="group cursor-pointer flex items-center justify-between px-[25px] py-4 hover:bg-[#efebeb] dark:hover:bg-gray-700 transition-all duration-200"
+              className="group cursor-pointer flex items-center justify-between px-[25px] py-4 hover:bg-[#efebeb] dark:hover:bg-zinc-800 transition-all duration-200"
             >
               <div className="flex items-center gap-4">
                 <Settings />
-                <span className="text-base font-bold uppercase tracking-wide">
+                <span className="text-sm font-bold uppercase tracking-wide">
                   Cài đặt
                 </span>
               </div>
             </div>
             <div
               onClick={() => handleClickMenu(handleClickRating)}
-              className="group cursor-pointer flex items-center justify-between px-[25px] py-4 hover:bg-[#efebeb] dark:hover:bg-gray-700 transition-all duration-200"
+              className="group cursor-pointer flex items-center justify-between px-[25px] py-4 hover:bg-[#efebeb] dark:hover:bg-zinc-800 transition-all duration-200"
             >
               <div className="flex items-center gap-4">
                 <Star />
-                <span className="text-base font-bold uppercase tracking-wide">
+                <span className="text-sm font-bold uppercase tracking-wide">
                   Đánh giá website
                 </span>
               </div>
             </div>
             <div
               onClick={() => handleClickMenu(handleLogout)}
-              className="group cursor-pointer flex items-center justify-between px-[25px] py-4 hover:bg-[#efebeb] dark:hover:bg-gray-700 transition-all duration-200"
+              className="group cursor-pointer flex items-center justify-between px-[25px] py-4 hover:bg-[#efebeb] dark:hover:bg-zinc-800 transition-all duration-200"
             >
               <div className="flex items-center gap-4">
                 <LogOut />
-                <span className="text-base font-bold uppercase tracking-wide">
+                <span className="text-sm font-bold uppercase tracking-wide">
                   Đăng xuất
                 </span>
               </div>
             </div>
-            <div className="p-4 bg-slate-50 rouned border-t border-slate-100 flex justify-center italic text-[10px] text-slate-400 uppercase tracking-widest">
+            <div className="p-4 rouned border-t flex justify-center italic text-[10px] text-slate-400 uppercase tracking-widest">
               GoodLearn AI - Học là nhất
             </div>
           </nav>

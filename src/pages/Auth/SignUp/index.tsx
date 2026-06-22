@@ -136,27 +136,27 @@ export default function SignUp() {
 
   return (
     <>
-      <div className="flex flex-col items-center mb-8">
+      <div className="mb-8 flex flex-col items-center">
         <div className="mb-4 rotate-3">
           <ICLogo width={80} height={80} />
         </div>
-        <h1 className="text-zinc-900 text-2xl font-extrabold tracking-tight uppercase italic">
+        <h1 className="text-2xl font-extrabold uppercase italic tracking-tight text-foreground">
           GoodLearn
         </h1>
-        <p className="text-zinc-500 text-sm mt-1">
+        <p className="mt-1 text-sm text-muted-foreground">
           Ứng dụng học tập thông minh của riêng bạn
         </p>
       </div>
       <FormProvider {...methods}>
-        <div className="md:w-full max-w-[600px] p-8 rounded-lg shadow-[2px_2px_8px_rgba(0,0,0,0.1),-2px_-2px_8px_rgba(0,0,0,0.1)] space-y-4">
-          <p className="text-[24px] font-bold text-center">Đăng ký tài khoản</p>
+        <div className="w-full max-w-[600px] space-y-4 rounded-lg p-8 shadow-[2px_2px_8px_rgba(0,0,0,0.1),-2px_-2px_8px_rgba(0,0,0,0.1)] md:w-full">
+          <p className="text-center text-[24px] font-bold">Đăng ký tài khoản</p>
           <div className="flex justify-between">
             {Array.from({ length: formSteps }).map((_, index) => (
               <div
                 key={index}
-                className={clsx('h-[3px] w-[30%]', {
+                className={clsx('h-[3px] w-[30%] rounded-full', {
                   'bg-green-500': index + 1 < step,
-                  'bg-gray-300': index + 1 >= step,
+                  'bg-muted': index + 1 >= step,
                 })}
               ></div>
             ))}
@@ -171,7 +171,8 @@ export default function SignUp() {
                 <Button
                   type="button"
                   onClick={handlePrevStep}
-                  className="bg-gray-500 text-white px-3 py-1 hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                  variant="secondary"
+                  className="flex items-center gap-2 px-3 py-1 disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   <span>Quay lại</span>
                 </Button>
@@ -181,7 +182,7 @@ export default function SignUp() {
                   type="button"
                   onClick={handleNextStep}
                   disabled={registerMutation.isPending && step === formSteps}
-                  className="bg-blue-500 text-white px-3 py-1 hover:bg-blue-700 ml-auto disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                  className="ml-auto flex items-center gap-2 px-3 py-1 disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   {registerMutation.isPending && step === formSteps ? (
                     <>
@@ -197,7 +198,7 @@ export default function SignUp() {
           </form>
           <div>
             <h3
-              className="text-[#2563eb] font-[500] hover:underline hover:cursor-pointer max-w-fit mx-auto"
+              className="mx-auto max-w-fit cursor-pointer font-medium text-primary hover:underline"
               onClick={() => navigate('/auth/login')}
             >
               Bạn đã có tài khoản?

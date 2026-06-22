@@ -124,10 +124,16 @@ const SORT_OPTIONS: Array<{ value: LibrarySortBy; label: string }> = [
 ];
 
 const STATUS_STYLES: Record<LibraryGenerationStatus, string> = {
-  PENDING: 'bg-amber-100 text-amber-700',
-  IN_PROGRESS: 'bg-sky-100 text-sky-700',
-  COMPLETED: 'bg-emerald-100 text-emerald-700',
-  FAILED: 'bg-rose-100 text-rose-700',
+  PENDING: 'bg-amber-500/15 text-amber-600 dark:text-amber-400',
+  IN_PROGRESS: 'bg-sky-500/15 text-sky-600 dark:text-sky-400',
+  COMPLETED: 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400',
+  FAILED: 'bg-destructive/15 text-destructive',
+};
+
+const FILTER_CHIP_STYLES: Record<string, string> = {
+  search: 'bg-blue-500/15 text-blue-600 dark:text-blue-400',
+  grade: 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400',
+  sort: 'bg-amber-500/15 text-amber-600 dark:text-amber-400',
 };
 
 const CONTENT_ACCENTS: Record<LibraryContentType, string[]> = {
@@ -260,7 +266,7 @@ const mapVideoToLibraryItem = (
 };
 
 const LoadingCard = () => (
-  <article className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
+  <article className="overflow-hidden rounded-[1.75rem] border bg-background">
     <Skeleton className="aspect-16/10 w-full rounded-none" />
     <div className="flex flex-col gap-3 p-5">
       <div className="flex items-center gap-2">
@@ -291,7 +297,7 @@ const VideoFrameThumbnail = ({
   const videoRef = useRef<HTMLVideoElement | null>(null);
 
   return (
-    <div className="relative aspect-16/10 w-full overflow-hidden bg-slate-900">
+    <div className="relative aspect-16/10 w-full overflow-hidden bg-neutral-900">
       {!hasError && (
         <video
           ref={videoRef}
@@ -306,7 +312,6 @@ const VideoFrameThumbnail = ({
           onLoadedMetadata={(event) => {
             const video = event.currentTarget;
             try {
-              // Seek về gần 0s để browser render được frame đầu.
               video.currentTime = 0.01;
               video.pause();
             } catch {
@@ -324,7 +329,7 @@ const VideoFrameThumbnail = ({
       )}
 
       {(!isReady || hasError) && (
-        <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-slate-700 to-slate-900 text-white">
+        <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-neutral-700 to-neutral-900 text-white">
           <Play size={24} />
         </div>
       )}
@@ -345,14 +350,14 @@ const EmptyState = ({
   onAction: () => void;
   icon: ComponentType<{ size?: number }>;
 }) => (
-  <div className="rounded-4xl border border-dashed border-slate-300 bg-white/80 px-6 py-14 text-center shadow-sm backdrop-blur">
-    <div className="mx-auto flex size-16 items-center justify-center rounded-2xl bg-slate-100 text-slate-700">
+  <div className="flex flex-col items-center rounded-[1.75rem] border border-dashed bg-background px-6 py-14 text-center">
+    <div className="flex size-16 items-center justify-center rounded-2xl bg-muted text-muted-foreground">
       <Icon size={28} />
     </div>
-    <h2 className="mt-5 text-2xl font-black tracking-tight text-slate-900">
+    <h2 className="mt-5 text-2xl font-black tracking-tight text-foreground">
       {title}
     </h2>
-    <p className="mx-auto mt-2 max-w-xl text-sm text-slate-500">
+    <p className="mx-auto mt-2 max-w-xl text-sm text-muted-foreground">
       {description}
     </p>
     <Button className="mt-6 rounded-2xl px-5" onClick={onAction}>
@@ -539,11 +544,12 @@ const Library = () => {
 
   return (
     <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 px-4 py-6 sm:px-6 lg:px-8">
-      <section className="relative overflow-hidden rounded-4xl bg-slate-950 px-6 py-8 text-white shadow-[0_24px_80px_rgba(15,23,42,0.35)] sm:px-8 sm:py-10">
-        <div className="absolute inset-0 opacity-45">
-          <div className="absolute -left-20 top-0 size-64 rounded-full bg-blue-500/30 blur-3xl" />
-          <div className="absolute right-0 top-16 size-72 rounded-full bg-fuchsia-500/20 blur-3xl" />
-          <div className="absolute bottom-0 left-1/2 size-56 -translate-x-1/2 rounded-full bg-emerald-500/20 blur-3xl" />
+      {/* ── Hero Banner ── */}
+      <section className="relative overflow-hidden rounded-[1.75rem] bg-neutral-900 px-6 py-8 text-white shadow-xl sm:px-8 sm:py-10">
+        <div className="pointer-events-none absolute inset-0">
+          <div className="absolute -left-20 top-0 size-64 rounded-full bg-blue-600/20 blur-3xl" />
+          <div className="absolute right-0 top-16 size-72 rounded-full bg-fuchsia-500/15 blur-3xl" />
+          <div className="absolute bottom-0 left-1/2 size-56 -translate-x-1/2 rounded-full bg-emerald-500/15 blur-3xl" />
         </div>
 
         <div className="relative flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
@@ -555,12 +561,12 @@ const Library = () => {
             <h1 className="text-3xl font-black tracking-tight sm:text-5xl">
               Thư viện cá nhân và nội dung công khai
             </h1>
-            <p className="mt-3 max-w-2xl text-sm leading-6 text-slate-200 sm:text-base">
+            <p className="mt-3 max-w-2xl text-sm leading-6 text-white/55 sm:text-base">
               Quản lý video và flashcard của riêng bạn, đồng thời khám phá nội
               dung public từ cộng đồng ngay trong cùng một màn hình.
             </p>
 
-            <div className="mt-5 flex flex-wrap gap-3 text-sm text-slate-200">
+            <div className="mt-5 flex flex-wrap gap-3 text-sm text-white/55">
               <span className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1.5">
                 <UserRound size={14} />
                 {activeScopeLabel ?? 'Của tôi'}
@@ -638,7 +644,8 @@ const Library = () => {
         </div>
       </section>
 
-      <section className="rounded-4xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
+      {/* ── Filter Bar ── */}
+      <section className="rounded-[1.75rem] border bg-background p-5">
         <div className="flex flex-col gap-4">
           <div className="flex flex-wrap gap-2">
             {CONTENT_OPTIONS.map((option) => {
@@ -656,8 +663,8 @@ const Library = () => {
                   className={clsx(
                     'inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition',
                     isActive
-                      ? 'bg-slate-950 text-white shadow-md'
-                      : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                      ? 'bg-primary text-primary-foreground shadow-sm'
+                      : 'bg-muted text-muted-foreground hover:bg-accent hover:text-foreground'
                   )}
                 >
                   <Icon size={14} />
@@ -671,7 +678,7 @@ const Library = () => {
             <label className="relative">
               <Search
                 size={16}
-                className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+                className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
               />
               <Input
                 value={searchInput}
@@ -681,7 +688,7 @@ const Library = () => {
                     ? 'Tìm theo tiêu đề, mô tả hoặc chủ đề video...'
                     : 'Tìm theo tiêu đề hoặc mô tả flashcard...'
                 }
-                className="h-11 rounded-2xl border-slate-200 bg-slate-50 pl-10"
+                className="h-11 rounded-2xl bg-muted pl-10"
               />
             </label>
 
@@ -693,7 +700,7 @@ const Library = () => {
                   setPage(1);
                 }}
               >
-                <SelectTrigger className="h-11 rounded-2xl border-slate-200 bg-slate-50">
+                <SelectTrigger className="h-11 rounded-2xl">
                   <SelectValue placeholder="Phạm vi" />
                 </SelectTrigger>
                 <SelectContent position="popper">
@@ -721,7 +728,7 @@ const Library = () => {
                   setPage(1);
                 }}
               >
-                <SelectTrigger className="h-11 rounded-2xl border-slate-200 bg-slate-50">
+                <SelectTrigger className="h-11 rounded-2xl">
                   <SelectValue placeholder="Khối lớp" />
                 </SelectTrigger>
                 <SelectContent position="popper">
@@ -743,7 +750,7 @@ const Library = () => {
                   setPage(1);
                 }}
               >
-                <SelectTrigger className="h-11 rounded-2xl border-slate-200 bg-slate-50">
+                <SelectTrigger className="h-11 rounded-2xl">
                   <SelectValue placeholder="Sắp xếp" />
                 </SelectTrigger>
                 <SelectContent position="popper">
@@ -759,45 +766,65 @@ const Library = () => {
             </div>
           </div>
 
-          <div className="flex flex-wrap items-center gap-2 text-sm text-slate-500">
-            <span className="font-medium text-slate-600">Đang lọc:</span>
-            <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700">
+          <div className="flex flex-wrap items-center gap-2 text-sm">
+            <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+              Đang lọc:
+            </span>
+            <span className="rounded-full bg-muted px-3 py-1 text-xs font-semibold text-foreground">
               {contentType === 'video' ? 'Video' : 'Flashcard'}
             </span>
-            <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700">
+            <span className="rounded-full bg-muted px-3 py-1 text-xs font-semibold text-foreground">
               {activeScopeLabel ?? 'Của tôi'}
             </span>
             {debouncedSearch && (
-              <span className="rounded-full bg-blue-100 px-3 py-1 text-xs font-semibold text-blue-700">
+              <span
+                className={clsx(
+                  'rounded-full px-3 py-1 text-xs font-semibold',
+                  FILTER_CHIP_STYLES.search
+                )}
+              >
                 &quot;{debouncedSearch}&quot;
               </span>
             )}
             {gradeLevel && (
-              <span className="rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-700">
+              <span
+                className={clsx(
+                  'rounded-full px-3 py-1 text-xs font-semibold',
+                  FILTER_CHIP_STYLES.grade
+                )}
+              >
                 Lớp {gradeLevel}
               </span>
             )}
             {sortBy !== 'createdAt' && (
-              <span className="rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-700">
+              <span
+                className={clsx(
+                  'rounded-full px-3 py-1 text-xs font-semibold',
+                  FILTER_CHIP_STYLES.sort
+                )}
+              >
                 {SORT_OPTIONS.find((option) => option.value === sortBy)?.label}
               </span>
             )}
-            {(debouncedSearch ||
-              gradeLevel ||
-              sortBy !== 'createdAt' ||
-              scope !== 'mine') && (
-              <button
-                type="button"
-                onClick={resetFilters}
-                className="rounded-full bg-slate-900 px-3 py-1 text-xs font-semibold text-white transition hover:bg-slate-700"
-              >
-                Xóa bộ lọc
-              </button>
-            )}
           </div>
+
+          {(debouncedSearch ||
+            gradeLevel ||
+            sortBy !== 'createdAt' ||
+            scope !== 'mine') && (
+            <button
+              type="button"
+              onClick={resetFilters}
+              className="inline-flex items-center gap-2 self-start rounded-xl bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition hover:opacity-90"
+            >
+              <ArrowRight size={14} className="rotate-180" />
+              Xóa bộ lọc
+            </button>
+          )}
         </div>
       </section>
 
+      {/* ── Content Grid ── */}
       {isPending ? (
         <section className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
           {Array.from({ length: ITEMS_PER_PAGE }).map((_, index) => (
@@ -852,7 +879,7 @@ const Library = () => {
                     }
                   }}
                   className={clsx(
-                    'group overflow-hidden rounded-[1.75rem] border border-slate-200 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl',
+                    'group overflow-hidden rounded-[1.75rem] border bg-background transition duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-foreground/5',
                     item.type === 'video' &&
                       !canOpenVideo &&
                       'cursor-not-allowed opacity-80',
@@ -894,7 +921,6 @@ const Library = () => {
                         </div>
                       )
                     ) : (
-                      // giữ nguyên block fallback flashcard
                       <div
                         className="aspect-16/10 w-full"
                         style={{
@@ -914,10 +940,10 @@ const Library = () => {
                       </div>
                     )}
 
-                    <div className="absolute inset-0 bg-linear-to-t from-slate-950/75 via-slate-950/10 to-transparent opacity-90" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-neutral-950/75 via-neutral-950/10 to-transparent opacity-90" />
 
                     <div className="absolute left-4 top-4 flex flex-wrap gap-2">
-                      <span className="rounded-full bg-white/90 px-3 py-1 text-xs font-bold text-slate-900 backdrop-blur">
+                      <span className="rounded-full bg-white/90 px-3 py-1 text-xs font-bold text-neutral-900 backdrop-blur">
                         {item.type === 'video' ? 'Video' : 'Flashcard'}
                       </span>
                       {item.isPublic && (
@@ -959,7 +985,7 @@ const Library = () => {
                             <Button
                               type="button"
                               variant="ghost"
-                              className="w-full justify-start box-border!"
+                              className="w-full justify-start"
                               onClick={(event) => {
                                 event.stopPropagation();
                                 void handleToggleVisibility(item);
@@ -979,7 +1005,7 @@ const Library = () => {
                     )}
 
                     {item.gradeLevel && (
-                      <div className="absolute bottom-4 left-4 rounded-full bg-white/90 px-3 py-1 text-xs font-semibold text-slate-900 backdrop-blur">
+                      <div className="absolute bottom-4 left-4 rounded-full bg-white/90 px-3 py-1 text-xs font-semibold text-neutral-900 backdrop-blur">
                         Lớp {item.gradeLevel}
                       </div>
                     )}
@@ -987,9 +1013,9 @@ const Library = () => {
 
                   <div className="flex flex-col gap-4 p-5">
                     <div>
-                      <div className="flex flex-wrap items-center gap-2 text-xs text-slate-500">
+                      <div className="flex flex-wrap items-center gap-2 text-xs">
                         {item.subjectLabel && (
-                          <span className="rounded-full bg-slate-100 px-2.5 py-1 font-semibold text-slate-700">
+                          <span className="rounded-full bg-muted px-2.5 py-1 font-semibold text-muted-foreground">
                             {item.subjectLabel}
                           </span>
                         )}
@@ -1002,16 +1028,16 @@ const Library = () => {
                           {getStatusLabel(item.generationStatus)}
                         </span>
                       </div>
-                      <h3 className="mt-3 line-clamp-2 text-lg font-black leading-tight text-slate-900">
+                      <h3 className="mt-3 line-clamp-2 text-lg font-black leading-tight text-foreground">
                         {item.title}
                       </h3>
-                      <p className="mt-2 line-clamp-2 text-sm leading-6 text-slate-500">
+                      <p className="mt-2 line-clamp-2 text-sm leading-6 text-muted-foreground">
                         {item.description || 'Không có mô tả cho nội dung này.'}
                       </p>
                     </div>
 
-                    <div className="flex flex-wrap items-center gap-2 text-xs font-semibold text-slate-500">
-                      <span className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2.5 py-1">
+                    <div className="flex flex-wrap items-center gap-2 text-xs font-semibold text-muted-foreground">
+                      <span className="inline-flex items-center gap-1 rounded-full bg-muted px-2.5 py-1">
                         {item.type === 'video' ? (
                           <Clock3 size={12} />
                         ) : (
@@ -1019,17 +1045,17 @@ const Library = () => {
                         )}
                         {item.primaryMetricLabel}
                       </span>
-                      <span className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2.5 py-1">
+                      <span className="inline-flex items-center gap-1 rounded-full bg-muted px-2.5 py-1">
                         <Eye size={12} />
                         {item.secondaryMetricLabel}
                       </span>
-                      <span className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2.5 py-1">
+                      <span className="inline-flex items-center gap-1 rounded-full bg-muted px-2.5 py-1">
                         <Heart size={12} />
                         {item.tertiaryMetricLabel}
                       </span>
                     </div>
 
-                    <div className="flex items-center justify-between gap-3 border-t border-slate-100 pt-4">
+                    <div className="flex items-center justify-between gap-3 border-t pt-4">
                       <div className="flex min-w-0 items-center gap-3">
                         <Avatar
                           name={
@@ -1042,12 +1068,12 @@ const Library = () => {
                           className="shrink-0"
                         />
                         <div className="min-w-0">
-                          <p className="truncate text-sm font-semibold text-slate-900">
+                          <p className="truncate text-sm font-semibold text-foreground">
                             {item.owner?.fullName ??
                               item.owner?.username ??
                               'Người dùng'}
                           </p>
-                          <p className="text-xs text-slate-500">
+                          <p className="text-xs text-muted-foreground">
                             {isOwner
                               ? 'Của bạn'
                               : `Tạo ngày ${formatDate(item.createdAt)}`}
@@ -1067,8 +1093,8 @@ const Library = () => {
                         className={clsx(
                           'inline-flex shrink-0 items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition',
                           item.type === 'video' && !canOpenVideo
-                            ? 'bg-slate-100 text-slate-400'
-                            : 'bg-slate-950 text-white hover:bg-slate-800'
+                            ? 'bg-muted text-muted-foreground'
+                            : 'bg-primary text-primary-foreground hover:opacity-90'
                         )}
                       >
                         {item.actionLabel}
@@ -1082,21 +1108,21 @@ const Library = () => {
           </section>
 
           {totalPages > 1 && (
-            <section className="flex flex-col items-center justify-between gap-4 rounded-[1.75rem] border border-slate-200 bg-white px-5 py-4 shadow-sm md:flex-row">
-              <p className="text-sm text-slate-500">
+            <section className="flex flex-col items-center justify-between gap-4 rounded-[1.75rem] border bg-background px-5 py-4 md:flex-row">
+              <p className="text-sm text-muted-foreground">
                 Đang hiển thị{' '}
-                <span className="font-semibold text-slate-900">
+                <span className="font-semibold text-foreground">
                   {Math.min(
                     (page - 1) * ITEMS_PER_PAGE + 1,
                     metadata?.totalItems ?? 0
                   )}
                 </span>{' '}
                 đến{' '}
-                <span className="font-semibold text-slate-900">
+                <span className="font-semibold text-foreground">
                   {Math.min(page * ITEMS_PER_PAGE, metadata?.totalItems ?? 0)}
                 </span>{' '}
                 trong{' '}
-                <span className="font-semibold text-slate-900">
+                <span className="font-semibold text-foreground">
                   {formatCompactNumber(metadata?.totalItems ?? 0)}
                 </span>{' '}
                 mục
@@ -1110,8 +1136,8 @@ const Library = () => {
                   className={clsx(
                     'inline-flex size-10 items-center justify-center rounded-full border transition',
                     page === 1
-                      ? 'border-slate-200 text-slate-300'
-                      : 'border-slate-300 text-slate-700 hover:bg-slate-100'
+                      ? 'border text-muted-foreground/40'
+                      : 'text-muted-foreground hover:bg-muted hover:text-foreground'
                   )}
                 >
                   <ChevronLeft size={16} />
@@ -1129,8 +1155,8 @@ const Library = () => {
                       className={clsx(
                         'inline-flex size-9 items-center justify-center rounded-full text-sm font-semibold transition',
                         pageNumber === page
-                          ? 'bg-slate-950 text-white'
-                          : 'text-slate-600 hover:bg-slate-100'
+                          ? 'bg-primary text-primary-foreground'
+                          : 'text-muted-foreground hover:bg-muted hover:text-foreground'
                       )}
                     >
                       {pageNumber}
@@ -1147,8 +1173,8 @@ const Library = () => {
                   className={clsx(
                     'inline-flex size-10 items-center justify-center rounded-full border transition',
                     page === totalPages
-                      ? 'border-slate-200 text-slate-300'
-                      : 'border-slate-300 text-slate-700 hover:bg-slate-100'
+                      ? 'border text-muted-foreground/40'
+                      : 'text-muted-foreground hover:bg-muted hover:text-foreground'
                   )}
                 >
                   <ChevronRight size={16} />
@@ -1160,7 +1186,7 @@ const Library = () => {
       )}
 
       {isFetching && !isPending && (
-        <div className="fixed bottom-6 right-6 rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-600 shadow-lg">
+        <div className="fixed bottom-6 right-6 z-40 rounded-full border bg-background px-4 py-2 text-sm font-medium text-muted-foreground shadow-lg">
           Đang cập nhật dữ liệu...
         </div>
       )}

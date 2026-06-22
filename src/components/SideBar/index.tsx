@@ -152,7 +152,7 @@ const MenuItemWithChildren: React.FC<{
                 handleClose();
               }}
               sx={{
-                mx: 1,
+                mx: 0,
                 my: 0.5,
                 borderRadius: '8px',
                 transition: 'all 0.2s',
@@ -380,7 +380,7 @@ const SideBar: React.FC<ISideBarProps> = ({
   if (orientation === 'horizontal') {
     return (
       <header
-        className={`w-full bg-white border-b border-gray-100 flex items-center px-4 shadow-sm ${className || ''}`}
+        className={`w-full bg-background flex items-center px-4 shadow-sm ${className || ''}`}
         style={{ height: '64px' }}
       >
         {header}

@@ -50,10 +50,10 @@ export default function ContactPage() {
         <div className="grid-pattern absolute inset-0 -z-10"></div>
         <div className="container mx-auto text-center relative">
           <div className="inline-block relative">
-            <h1 className="text-5xl md:text-7xl font-black uppercase tracking-tight mb-4 bg-white border-4 border-black p-6 rounded-brutal shadow-brutal relative">
+            <h1 className="text-5xl md:text-7xl font-black uppercase tracking-tight mb-4 bg-background border-4 border p-6 rounded-brutal shadow-brutal relative">
               Liên Hệ <span className="text-brandCyan">Ngay!</span>
             </h1>
-            <div className="absolute -top-4 -right-4 w-12 h-12 bg-brandYellow border-4 border-black rounded-full z-20 flex items-center justify-center font-black animate-bounce">
+            <div className="absolute -top-4 -right-4 w-12 h-12 bg-brandYellow border-4 border rounded-full z-20 flex items-center justify-center font-black animate-bounce">
               !
             </div>
           </div>
@@ -67,9 +67,9 @@ export default function ContactPage() {
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
             <div className="lg:col-span-5 space-y-8 order-2 lg:order-1">
-              <div className="bg-brandCyan border-4 border-black p-8 rounded-brutal shadow-brutal h-full flex flex-col justify-center">
+              <div className="bg-brandCyan border-4 border p-8 rounded-brutal shadow-brutal h-full flex flex-col justify-center">
                 <div className="flex items-center gap-4 mb-8">
-                  <div className="bg-white border-4 border-black p-3 rounded-brutal shadow-brutal-sm">
+                  <div className="bg-background border-4 border p-3 rounded-brutal shadow-brutal-sm">
                     <svg
                       className="w-8 h-8"
                       fill="none"
@@ -118,11 +118,11 @@ export default function ContactPage() {
             </div>
             <div className="lg:col-span-7 order-1 lg:order-2">
               <section
-                className="bg-white border-4 border-black p-8 md:p-10 rounded-brutal shadow-brutal"
+                className="bg-background border-4 border p-8 md:p-10 rounded-brutal shadow-brutal"
                 data-purpose="contact-form-container"
               >
                 <div className="flex items-center gap-4 mb-10">
-                  <div className="bg-brandYellow border-4 border-black p-3 rounded-brutal shadow-brutal-sm">
+                  <div className="bg-brandYellow border-4 border p-3 rounded-brutal shadow-brutal-sm">
                     <svg
                       className="w-8 h-8"
                       fill="none"
@@ -152,7 +152,7 @@ export default function ContactPage() {
                         Tên của bạn
                       </label>
                       <input
-                        className="mb-1 border-4 border-black p-4 rounded-brutal focus:ring-0 focus:bg-brandYellow/10 transition-all shadow-brutal-sm outline-none font-bold placeholder:text-black/30"
+                        className="mb-1 border-4 border p-4 rounded-brutal focus:ring-0 focus:bg-brandYellow/10 transition-all shadow-brutal-sm outline-none font-bold placeholder:text-muted-foreground"
                         id="name"
                         placeholder="Nguyễn Văn A"
                         type="text"
@@ -170,7 +170,7 @@ export default function ContactPage() {
                         Email
                       </label>
                       <input
-                        className="mb-1 border-4 border-black p-4 rounded-brutal focus:ring-0 focus:bg-brutal-blue/10 transition-all shadow-brutal-sm outline-none font-bold placeholder:text-black/30 truncate"
+                        className="mb-1 border-4 border p-4 rounded-brutal focus:ring-0 focus:bg-brutal-blue/10 transition-all shadow-brutal-sm outline-none font-bold placeholder:text-muted-foreground truncate"
                         id="email"
                         placeholder="example@email.com"
                         type="email"
@@ -189,7 +189,7 @@ export default function ContactPage() {
                       Lời nhắn cho chúng tớ
                     </label>
                     <textarea
-                      className="mb-1 border-4 border-black p-4 rounded-brutal focus:ring-0 focus:bg-brandYellow/10 transition-all shadow-brutal-sm outline-none font-bold placeholder:text-black/30 min-h-[160px]"
+                      className="mb-1 border-4 border p-4 rounded-brutal focus:ring-0 focus:bg-brandYellow/10 transition-all shadow-brutal-sm outline-none font-bold placeholder:text-muted-foreground min-h-[160px]"
                       id="message"
                       placeholder="Bạn muốn hỏi gì về AI?"
                       rows={5}
@@ -200,7 +200,7 @@ export default function ContactPage() {
                     />
                   </div>
                   <button
-                    className="w-full bg-brandYellow border-4 border-black py-5 rounded-brutal text-2xl font-black shadow-brutal hover:translate-x-[4px] hover:translate-y-[4px] hover:shadow-none transition-all uppercase tracking-wider"
+                    className="w-full bg-brandYellow border-4 border py-5 rounded-brutal text-2xl font-black shadow-brutal hover:translate-x-[4px] hover:translate-y-[4px] hover:shadow-none transition-all uppercase tracking-wider"
                     type="submit"
                     disabled={isPending}
                   >

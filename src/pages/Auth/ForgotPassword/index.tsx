@@ -35,7 +35,7 @@ const ForgotPasswordPage = () => {
 
   const passwordStrength = useMemo(() => {
     const pwd = resetForm.watch('password');
-    if (!pwd) return { percent: 'w-0', color: 'bg-gray-200', text: '' };
+    if (!pwd) return { percent: 'w-0', color: 'bg-muted', text: '' };
     let score = 0;
     if (pwd.length >= 8) score++;
     if (/[a-z]/.test(pwd)) score++;
@@ -123,7 +123,7 @@ const ForgotPasswordPage = () => {
   };
 
   const renderStepper = () => (
-    <div className="flex items-center justify-center gap-8 mb-8 space-x-4">
+    <div className="mb-8 flex items-center justify-center gap-8 space-x-4">
       {[
         { label: 'Nhập email', value: STEP.EMAIL },
         { label: 'Nhập mã', value: STEP.CODE },
@@ -131,19 +131,19 @@ const ForgotPasswordPage = () => {
       ].map((item, idx) => (
         <div key={item.value} className="flex items-center gap-2">
           <div
-            className={`w-10 h-10 rounded-full flex items-center justify-center border-2 text-sm font-semibold ${
+            className={`flex h-10 w-10 items-center justify-center rounded-full border-2 text-sm font-semibold ${
               step === item.value
-                ? 'bg-blue-600 text-white border-blue-600'
+                ? 'bg-primary text-primary-foreground border-primary'
                 : step > item.value
-                  ? 'border-blue-600 text-blue-600'
-                  : 'border-gray-200 text-gray-400'
+                  ? 'border-primary text-primary'
+                  : 'border text-muted-foreground'
             }`}
           >
             {idx + 1}
           </div>
           <span
             className={`text-sm font-medium ${
-              step >= item.value ? 'text-gray-900' : 'text-gray-400'
+              step >= item.value ? 'text-foreground' : 'text-muted-foreground'
             }`}
           >
             {item.label}
@@ -155,15 +155,17 @@ const ForgotPasswordPage = () => {
 
   return (
     <div>
-      <div className="h-[100%] max-w-[750px] p-12 rounded-lg shadow-[2px_2px_8px_rgba(0,0,0,0.1),-2px_-2px_8px_rgba(0,0,0,0.1)] space-y-8">
+      <div className="h-full max-w-[750px] space-y-8 rounded-lg p-12 shadow-[2px_2px_8px_rgba(0,0,0,0.1),-2px_-2px_8px_rgba(0,0,0,0.1)]">
         <div className="mb-8">
-          <div className="flex items-center justify-center mb-2">
-            <div className="w-12 h-12 rounded-xl flex items-center justify-center text-blue-600">
+          <div className="mb-2 flex items-center justify-center">
+            <div className="flex h-12 w-12 items-center justify-center rounded-xl text-primary">
               <ShieldCheck size={26} />
             </div>
-            <h1 className="text-3xl font-bold text-gray-900">Quên mật khẩu</h1>
+            <h1 className="text-3xl font-bold text-foreground">
+              Quên mật khẩu
+            </h1>
           </div>
-          <p className="text-sm text-center text-gray-500 mt-2">
+          <p className="mt-2 text-center text-sm text-muted-foreground">
             Thực hiện lần lượt các bước để lấy lại quyền truy cập tài khoản của
             bạn.
           </p>
@@ -174,14 +176,14 @@ const ForgotPasswordPage = () => {
         {step === STEP.EMAIL && (
           <form onSubmit={handleSendCode} className="space-y-8">
             <div>
-              <label className="block text-sm font-bold text-gray-700 mb-2">
+              <label className="mb-2 block text-sm font-bold text-foreground">
                 Email đăng nhập
               </label>
               <div className="relative">
                 <input
                   type="email"
                   placeholder="example@email.com"
-                  className="w-full border border-gray-300 rounded-md py-2 pl-12 pr-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full rounded-md border bg-background py-2 pl-12 pr-4 focus:outline-none focus:ring-2 focus:ring-primary"
                   {...emailForm.register('email', {
                     required: 'Vui lòng nhập email',
                     pattern: {
@@ -191,24 +193,24 @@ const ForgotPasswordPage = () => {
                   })}
                 />
                 <Mail
-                  className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
+                  className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground"
                   size={18}
                 />
               </div>
               {emailForm.formState.errors.email && (
-                <p className="text-sm text-red-500 mt-1">
+                <p className="mt-1 text-sm text-destructive">
                   {emailForm.formState.errors.email.message}
                 </p>
               )}
-              <p className="text-sm text-center text-gray-500 mt-2">
+              <p className="mt-2 text-center text-sm text-muted-foreground">
                 Chúng tôi sẽ gửi mã gồm 6 ký tự đến email của bạn để xác nhận
                 danh tính.
               </p>
             </div>
-            <div className="flex justify-center items-center gap-3 w-full">
+            <div className="flex w-full items-center justify-center gap-3">
               <Link
                 to="/auth/login"
-                className="w-28 flex items-center justify-center gap-2 border border-blue-600 text-blue-600 font-semibold py-3 rounded-xl hover:bg-blue-50 transition disabled:opacity-60"
+                className="flex w-28 items-center justify-center gap-2 rounded-xl border border-primary py-3 font-semibold text-primary transition hover:bg-accent disabled:opacity-60"
               >
                 Huỷ
               </Link>
@@ -216,7 +218,7 @@ const ForgotPasswordPage = () => {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="flex-1 max-w-xs flex items-center justify-center gap-2 bg-blue-600 text-white font-semibold py-3 rounded-xl shadow-lg shadow-blue-500/30 hover:bg-blue-700 disabled:opacity-60"
+                className="flex max-w-xs flex-1 items-center justify-center gap-2 rounded-xl bg-primary py-3 font-semibold text-primary-foreground shadow-lg shadow-primary/20 transition hover:opacity-90 disabled:opacity-60"
               >
                 {isSubmitting && (
                   <RefreshCw className="animate-spin" size={18} />
@@ -229,12 +231,12 @@ const ForgotPasswordPage = () => {
 
         {step === STEP.CODE && (
           <form onSubmit={handleVerifyCode} className="space-y-6">
-            <div className="text-sm text-gray-600 bg-blue-50 border border-blue-100 rounded-xl p-4">
+            <div className="rounded-xl border bg-accent p-4 text-sm text-muted-foreground">
               Chúng tôi đã gửi mã đến <strong>{email}</strong>. Nếu bạn nhập sai
               email,
               <button
                 type="button"
-                className="text-blue-600 font-semibold ml-1 hover:underline"
+                className="ml-1 font-semibold text-primary hover:underline"
                 onClick={() => setStep(STEP.EMAIL)}
               >
                 bấm nhập lại.
@@ -242,28 +244,28 @@ const ForgotPasswordPage = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="mb-2 block text-sm font-medium text-foreground">
                 Mã xác thực (6 ký tự)
               </label>
               <input
                 type="text"
                 maxLength={6}
                 inputMode="numeric"
-                className="w-full border border-gray-300 rounded-xl py-3 px-4 tracking-[0.5em] text-center text-lg font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full rounded-xl border bg-background px-4 py-3 text-center text-lg font-semibold tracking-[0.5em] focus:outline-none focus:ring-2 focus:ring-primary"
                 {...codeForm.register('code', {
                   required: 'Vui lòng nhập mã',
                   minLength: { value: 6, message: 'Mã gồm 6 ký tự' },
                 })}
               />
               {codeForm.formState.errors.code && (
-                <p className="text-sm text-red-500 mt-1">
+                <p className="mt-1 text-sm text-destructive">
                   {codeForm.formState.errors.code.message}
                 </p>
               )}
             </div>
 
             <div className="flex items-center justify-between text-sm">
-              <span className="text-gray-600">
+              <span className="text-muted-foreground">
                 Còn lại:{' '}
                 <strong>
                   {countdown > 0
@@ -275,7 +277,7 @@ const ForgotPasswordPage = () => {
                 type="button"
                 onClick={handleResendCode}
                 disabled={countdown > 0}
-                className="font-semibold text-blue-600 disabled:text-gray-400 hover:underline flex items-center gap-1"
+                className="flex items-center gap-1 font-semibold text-primary hover:underline disabled:text-muted-foreground"
               >
                 <RefreshCw size={16} />
                 Gửi lại mã
@@ -285,7 +287,7 @@ const ForgotPasswordPage = () => {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full bg-blue-600 text-white font-semibold py-3 rounded-xl shadow-lg shadow-blue-500/30 hover:bg-blue-700 disabled:opacity-60"
+              className="w-full rounded-xl bg-primary py-3 font-semibold text-primary-foreground shadow-lg shadow-primary/20 transition hover:opacity-90 disabled:opacity-60"
             >
               {isSubmitting ? 'Đang xác thực...' : 'Xác thực mã'}
             </button>
@@ -295,26 +297,26 @@ const ForgotPasswordPage = () => {
         {step === STEP.RESET && (
           <form onSubmit={handleResetPassword} className="space-y-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="mb-2 block text-sm font-medium text-foreground">
                 Mật khẩu mới
               </label>
               <div className="relative">
                 <input
                   type={showPassword.new ? 'text' : 'password'}
                   placeholder="Nhập mật khẩu mới"
-                  className="w-full border border-gray-300 rounded-xl py-3 pl-12 pr-12 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full rounded-xl border bg-background py-3 pl-12 pr-12 focus:outline-none focus:ring-2 focus:ring-primary"
                   {...resetForm.register('password', {
                     required: 'Vui lòng nhập mật khẩu mới',
                     minLength: { value: 8, message: 'Ít nhất 8 ký tự' },
                   })}
                 />
                 <Lock
-                  className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
+                  className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground"
                   size={18}
                 />
                 <button
                   type="button"
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground"
                   onClick={() =>
                     setShowPassword((prev) => ({ ...prev, new: !prev.new }))
                   }
@@ -323,32 +325,32 @@ const ForgotPasswordPage = () => {
                 </button>
               </div>
               {resetForm.formState.errors.password && (
-                <p className="text-sm text-red-500 mt-1">
+                <p className="mt-1 text-sm text-destructive">
                   {resetForm.formState.errors.password.message}
                 </p>
               )}
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="mb-2 block text-sm font-medium text-foreground">
                 Nhập lại mật khẩu mới
               </label>
               <div className="relative">
                 <input
                   type={showPassword.confirm ? 'text' : 'password'}
                   placeholder="Xác nhận mật khẩu"
-                  className="w-full border border-gray-300 rounded-xl py-3 pl-12 pr-12 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full rounded-xl border bg-background py-3 pl-12 pr-12 focus:outline-none focus:ring-2 focus:ring-primary"
                   {...resetForm.register('confirmPassword', {
                     required: 'Vui lòng xác nhận mật khẩu',
                   })}
                 />
                 <Lock
-                  className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
+                  className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground"
                   size={18}
                 />
                 <button
                   type="button"
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground"
                   onClick={() =>
                     setShowPassword((prev) => ({
                       ...prev,
@@ -364,24 +366,24 @@ const ForgotPasswordPage = () => {
                 </button>
               </div>
               {resetForm.formState.errors.confirmPassword && (
-                <p className="text-sm text-red-500 mt-1">
+                <p className="mt-1 text-sm text-destructive">
                   {resetForm.formState.errors.confirmPassword.message}
                 </p>
               )}
             </div>
 
             <div className="space-y-2">
-              <div className="w-full h-2 bg-gray-200 rounded-full">
+              <div className="h-2 w-full rounded-full bg-muted">
                 <div
                   className={`h-2 rounded-full transition-all ${passwordStrength.color} ${passwordStrength.percent}`}
                 ></div>
               </div>
               {passwordStrength.text && (
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-muted-foreground">
                   Độ mạnh: {passwordStrength.text}
                 </p>
               )}
-              <ul className="text-sm text-gray-500 list-disc list-inside">
+              <ul className="list-inside list-disc text-sm text-muted-foreground">
                 <li>Ít nhất 8 ký tự</li>
                 <li>Chứa chữ hoa, chữ thường, số và ký tự đặc biệt</li>
               </ul>
@@ -390,7 +392,7 @@ const ForgotPasswordPage = () => {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full bg-blue-600 text-white font-semibold py-3 rounded-xl shadow-lg shadow-blue-500/30 hover:bg-blue-700 disabled:opacity-60"
+              className="w-full rounded-xl bg-primary py-3 font-semibold text-primary-foreground shadow-lg shadow-primary/20 transition hover:opacity-90 disabled:opacity-60"
             >
               {isSubmitting ? 'Đang lưu...' : 'Hoàn tất đặt lại mật khẩu'}
             </button>

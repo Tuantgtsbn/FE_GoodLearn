@@ -84,20 +84,20 @@ function PriceLandingPage() {
           ⭐
         </div>
         <div className="max-w-4xl mx-auto">
-          <h1 className="text-5xl md:text-7xl font-black mb-6 leading-tight">
+          <h1 className="text-5xl md:text-7xl font-black dark:text-white mb-6 leading-tight">
             Chọn Gói Liền Ngay, <br />
-            <span className="bg-neo-pink px-4 neo-border shadow-brutal-sm inline-block transform -rotate-2">
+            <span className="bg-neo-pink text-black px-4 neo-border shadow-brutal-sm inline-block transform -rotate-2">
               'Hack' Điểm Cực Hay! 🚀
             </span>
           </h1>
-          <p className="text-xl md:text-2xl font-bold text-gray-700 mt-8">
+          <p className="text-xl md:text-2xl font-bold text-muted-foreground mt-8">
             Nâng cấp trải nghiệm học tập trong kỷ nguyên số.
           </p>
         </div>
       </header>
       <section className="max-w-7xl mx-auto px-4 pb-16">
         {isPending ? (
-          <div className="neo-border rounded-2xl bg-white p-8 text-center font-black text-xl shadow-brutal-sm">
+          <div className="neo-border rounded-2xl bg-background p-8 text-center font-black text-xl shadow-brutal-sm">
             Đang tải danh sách gói...
           </div>
         ) : (
@@ -115,58 +115,58 @@ function PriceLandingPage() {
         )}
       </section>
       <section className="max-w-4xl mx-auto px-4 py-16">
-        <h2 className="text-4xl font-black mb-12 text-center underline decoration-neo-purple decoration-8 underline-offset-13">
+        <h2 className="text-4xl dark:text-white font-black mb-12 text-center underline decoration-neo-purple decoration-8 underline-offset-13">
           Câu hỏi thường gặp
         </h2>
         <div className="space-y-6">
-          <details className="group neo-border rounded-2xl bg-white shadow-brutal-sm">
-            <summary className="flex justify-between items-center p-6 cursor-pointer font-black text-xl list-none">
+          <details className="group neo-border rounded-2xl bg-background shadow-brutal-sm">
+            <summary className="flex justify-between dark:text-white items-center p-6 cursor-pointer font-black text-xl list-none">
               Credit dùng để làm gì?
               <span className="transform group-open:rotate-180 transition-transform">
                 ▼
               </span>
             </summary>
-            <div className="p-6 pt-2 font-bold text-gray-700 leading-relaxed border-t-2 border-black">
+            <div className="p-6 pt-2 font-bold dark:text-white text-black leading-relaxed border-t-2 border">
               Credit được dùng để sử dụng các dịch vụ cao cấp như Trò chuyện hỏi
               đáp với AI, Tạo Video bài giảng, Voice AI (gọi điện luyện tiếng
               anh). Mỗi tính năng sẽ tiêu tốn một lượng credit nhất định.
             </div>
           </details>
-          <details className="group neo-border rounded-2xl bg-white shadow-brutal-sm">
-            <summary className="flex justify-between items-center p-6 cursor-pointer font-black text-xl list-none">
+          <details className="group neo-border rounded-2xl bg-background shadow-brutal-sm">
+            <summary className="flex justify-between dark:text-white items-center p-6 cursor-pointer font-black text-xl list-none">
               Tôi có thể hủy gói không?
               <span className="transform group-open:rotate-180 transition-transform">
                 ▼
               </span>
             </summary>
-            <div className="p-6 pt-2 font-bold text-gray-700 leading-relaxed border-t-2 border-black">
+            <div className="p-6 pt-2 font-bold dark:text-white text-black leading-relaxed border-t-2 border">
               Sau khi đăng ký, bạn không thể hủy gói đã mua. Tuy nhiên, chúng
               mình cam kết mang đến giá trị xứng đáng với số tiền bạn bỏ ra. Nếu
               có bất kỳ vấn đề nào, đừng ngần ngại liên hệ với đội ngũ hỗ trợ
               của chúng mình để được giải quyết nhanh chóng nhé!
             </div>
           </details>
-          <details className="group neo-border rounded-2xl bg-white shadow-brutal-sm">
-            <summary className="flex justify-between items-center p-6 cursor-pointer font-black text-xl list-none">
+          <details className="group neo-border rounded-2xl bg-background shadow-brutal-sm">
+            <summary className="flex justify-between dark:text-white items-center p-6 cursor-pointer font-black text-xl list-none">
               Có ưu đãi cho học sinh, sinh viên không?
               <span className="transform group-open:rotate-180 transition-transform">
                 ▼
               </span>
             </summary>
-            <div className="p-6 pt-2 font-bold text-gray-700 leading-relaxed border-t-2 border-black">
+            <div className="p-6 pt-2 font-bold dark:text-white text-black leading-relaxed border-t-2 border">
               Chúng mình luôn có những đợt flash sale vào các dịp như đầu năm
               học, Giáng sinh, Tết, Black Friday. Hãy theo dõi Fanpage hoặc đăng
               ký email để không bỏ lỡ voucher ưu đãi nhé!
             </div>
           </details>
-          <details className="group neo-border rounded-2xl bg-white shadow-brutal-sm">
-            <summary className="flex justify-between items-center p-6 cursor-pointer font-black text-xl list-none">
+          <details className="group neo-border rounded-2xl bg-background shadow-brutal-sm">
+            <summary className="flex justify-between dark:text-white items-center p-6 cursor-pointer font-black text-xl list-none">
               Tôi có thể mua thêm credit không?
               <span className="transform group-open:rotate-180 transition-transform">
                 ▼
               </span>
             </summary>
-            <div className="p-6 pt-2 font-bold text-gray-700 leading-relaxed border-t-2 border-black">
+            <div className="p-6 pt-2 font-bold dark:text-white text-black leading-relaxed border-t-2 border">
               Hoàn toàn có thể!. Khi bạn đăng ký một gói trả phí, bạn sẽ nhận
               được một lượng credit nhất định. Nếu bạn sử dụng hết credit đó và
               muốn tiếp tục trải nghiệm các tính năng cao cấp, bạn có thể mua

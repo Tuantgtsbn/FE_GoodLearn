@@ -20,9 +20,9 @@ export default function UserSetting({ onClose }: IUserSettingProps) {
         <nav className="flex flex-col gap-1">
           <div
             className={clsx(
-              'flex items-center gap-3 px-3 py-2 rounded-lg  dark:bg-zinc-800 text-primary dark:text-white',
+              'flex items-center gap-3 px-3 py-2 rounded-lg  dark:bg-zinc-800 text-primary cursor-pointer',
               {
-                'font-semibold bg-zinc-100 dark:bg-zinc-700': activeTab === 1,
+                'font-semibold bg-zinc-200 dark:bg-zinc-600!': activeTab === 1,
               }
             )}
             onClick={() => setActiveTab(1)}
@@ -32,9 +32,9 @@ export default function UserSetting({ onClose }: IUserSettingProps) {
           </div>
           <div
             className={clsx(
-              'flex items-center gap-3 px-3 py-2 rounded-lg  dark:bg-zinc-800 text-primary dark:text-white',
+              'flex items-center gap-3 px-3 py-2 rounded-lg  dark:bg-zinc-800 text-primary cursor-pointer',
               {
-                'font-semibold bg-zinc-100 dark:bg-zinc-700': activeTab === 2,
+                'font-semibold bg-zinc-200 dark:bg-zinc-600!': activeTab === 2,
               }
             )}
             onClick={() => setActiveTab(2)}
@@ -54,7 +54,7 @@ export default function UserSetting({ onClose }: IUserSettingProps) {
           </button>
         </div>
 
-        <div className="p-8 overflow-y-auto max-h-[600px]">
+        <div className="p-8 overflow-y-auto  scrollbar-thin max-h-[600px]">
           <div
             className={clsx({
               hidden: activeTab !== 1,

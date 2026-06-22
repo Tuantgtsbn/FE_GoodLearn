@@ -1,21 +1,23 @@
 .mx_LandingPageFeature {
-  background-color: #ffffff;
+  background-color: var(--background);
   background-image:
-    linear-gradient(#e5e7eb 1px, transparent 1px),
-    linear-gradient(90deg, #e5e7eb 1px, transparent 1px);
+    linear-gradient(var(--border, #e5e7eb) 1px, transparent 1px),
+    linear-gradient(90deg, var(--border, #e5e7eb) 1px, transparent 1px);
   background-size: 40px 40px;
 
   .neo-brutal-card {
-    @apply border-2 border-black rounded-2xl shadow-brutal transition-all duration-200;
+    @apply border-2 rounded-2xl shadow-brutal transition-all duration-200;
+    border-color: var(--foreground);
   }
 
   .neo-brutal-card:hover {
     transform: translate(-2px, -2px);
-    box-shadow: 10px 10px 0px 0px rgba(0, 0, 0, 1);
+    box-shadow: 10px 10px 0px 0px var(--foreground);
   }
 
   .neo-brutal-btn {
-    @apply border-2 border-black px-6 py-3 font-extrabold rounded-xl shadow-brutal-sm transition-all active:translate-x-[2px] active:translate-y-[2px] active:shadow-none uppercase tracking-tight;
+    @apply px-6 py-3 font-extrabold rounded-xl shadow-brutal-sm transition-all active:translate-x-[2px] active:translate-y-[2px] active:shadow-none uppercase tracking-tight;
+    border: 2px solid var(--foreground);
   }
 
   .doodle-icon {

@@ -16,6 +16,7 @@ import {
   ArrowLeft,
   CheckCircle2,
   Clock3,
+  Eye,
   LoaderCircle,
   RotateCcw,
   Search,
@@ -49,22 +50,47 @@ const formatDuration = (seconds: number | null) => {
   return `${mins}p ${secs}s`;
 };
 
-const statusClassName = (attempt: IExamHistoryItem) => {
-  if (attempt.status === 'IN_PROGRESS') {
-    return 'bg-amber-50 text-amber-700 ring-amber-100';
+const StatusBadge = ({ attempt }: { attempt: IExamHistoryItem }) => {
+  const isPassed = attempt.isPassed === true;
+  const isInProgress = attempt.status === 'IN_PROGRESS';
+
+  const baseClasses =
+    'inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-bold';
+
+  if (isInProgress) {
+    return (
+      <span
+        className={clsx(
+          baseClasses,
+          'bg-amber-500/15 text-amber-600 dark:text-amber-400'
+        )}
+      >
+        <Clock3 size={12} />
+        Đang làm dở
+      </span>
+    );
   }
 
-  if (attempt.isPassed === true) {
-    return 'bg-emerald-50 text-emerald-700 ring-emerald-100';
+  if (isPassed) {
+    return (
+      <span
+        className={clsx(
+          baseClasses,
+          'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400'
+        )}
+      >
+        <CheckCircle2 size={12} />
+        Đạt
+      </span>
+    );
   }
 
-  return 'bg-rose-50 text-rose-700 ring-rose-100';
-};
-
-const statusLabel = (attempt: IExamHistoryItem) => {
-  if (attempt.status === 'IN_PROGRESS') return 'Đang làm dở';
-  if (attempt.isPassed === true) return 'Đạt';
-  return 'Chưa đạt';
+  return (
+    <span className={clsx(baseClasses, 'bg-destructive/15 text-destructive')}>
+      <XCircle size={12} />
+      Chưa đạt
+    </span>
+  );
 };
 
 const ExamHistoryPage = () => {
@@ -110,163 +136,177 @@ const ExamHistoryPage = () => {
   };
 
   return (
-    <div className="mx-auto w-full max-w-6xl px-4 py-6 md:px-6">
-      <header className="mb-5 rounded-3xl bg-linear-to-r from-slate-900 via-slate-800 to-slate-700 px-5 py-5 text-white shadow-xl md:px-6">
-        <button
-          onClick={() => navigate('/app/quizz')}
-          className="mb-3 inline-flex items-center gap-1.5 text-sm font-semibold text-white/90 hover:text-white"
-        >
-          <ArrowLeft size={16} />
-          Quay lại danh sách đề thi
-        </button>
-
-        <div className="flex flex-wrap items-end justify-between gap-3">
-          <div>
-            <h1 className="text-2xl font-black md:text-3xl">
-              Lịch sử kết quả thi
-            </h1>
-            <p className="mt-1 text-sm text-slate-200">
-              Theo dõi toàn bộ lượt làm bài đã nộp và mở nhanh phần xem đáp án
-              chi tiết.
-            </p>
-          </div>
-
+    <div className="mx-auto w-full max-w-5xl space-y-6 px-4 py-8 md:px-6">
+      {/* ── Hero Banner ── */}
+      <section className="relative overflow-hidden rounded-3xl bg-neutral-900 px-6 py-7 shadow-xl md:px-8 md:py-9">
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-blue-600/15 via-transparent to-purple-600/8" />
+        <div className="relative">
           <button
-            onClick={() => void refetch()}
-            disabled={isFetching}
-            className="rounded-xl bg-white/15 px-3 py-2 text-sm font-semibold disabled:opacity-60"
+            onClick={() => navigate('/app/quizz')}
+            className="mb-4 inline-flex items-center gap-1.5 text-sm font-semibold text-white/70 transition hover:text-white"
           >
-            {isFetching ? 'Đang đồng bộ...' : 'Làm mới'}
+            <ArrowLeft size={16} />
+            Quay lại danh sách đề thi
           </button>
+
+          <div className="flex flex-wrap items-end justify-between gap-4">
+            <div>
+              <h1 className="text-2xl font-black text-white md:text-3xl">
+                Lịch sử kết quả thi
+              </h1>
+              <p className="mt-2 max-w-lg text-sm text-white/50 md:text-base">
+                Theo dõi toàn bộ lượt làm bài đã nộp và xem đáp án chi tiết.
+              </p>
+            </div>
+
+            <button
+              onClick={() => void refetch()}
+              disabled={isFetching}
+              className="inline-flex items-center gap-2 rounded-xl bg-white/10 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-white/15 disabled:opacity-60"
+            >
+              <RotateCcw
+                size={16}
+                className={clsx(isFetching && 'animate-spin')}
+              />
+              {isFetching ? 'Đang đồng bộ...' : 'Làm mới'}
+            </button>
+          </div>
         </div>
-      </header>
-
-      <section className="mb-4 grid grid-cols-1 gap-3 rounded-2xl bg-white p-4 shadow-sm ring-1 ring-slate-200 md:grid-cols-[2fr,1fr,1fr]">
-        <label className="relative">
-          <Search
-            size={16}
-            className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
-          />
-          <input
-            value={searchQuizId}
-            onChange={(event) => {
-              setSearchQuizId(event.target.value);
-              setPage(1);
-            }}
-            placeholder="Lọc theo quizId (UUID)"
-            className="w-full rounded-xl border border-slate-200 bg-slate-50 py-2.5 pl-9 pr-3 text-sm font-medium outline-none transition focus:border-blue-500 focus:bg-white"
-          />
-        </label>
-
-        <Select
-          value={attemptFilter}
-          onValueChange={(value) => {
-            setAttemptFilter(value as 'all' | 'passed' | 'failed');
-            setPage(1);
-          }}
-        >
-          <SelectTrigger className="w-full bg-white border-slate-300">
-            <SelectValue placeholder="Tất cả" />
-          </SelectTrigger>
-          <SelectContent position="popper">
-            <SelectGroup>
-              <SelectItem value="all">Tất cả</SelectItem>
-              <SelectItem value="passed">Chỉ bài đạt</SelectItem>
-              <SelectItem value="failed">Chỉ bài chưa đạt</SelectItem>
-            </SelectGroup>
-          </SelectContent>
-        </Select>
-
-        <button
-          onClick={clearFilters}
-          className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 px-3 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-50"
-        >
-          <RotateCcw size={16} />
-          Xóa lọc
-        </button>
       </section>
 
-      {isPending ? (
-        <div className="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
-          <div className="flex items-center justify-center gap-2 text-slate-600">
-            <LoaderCircle className="animate-spin" size={20} />
-            <span className="text-sm font-semibold">
-              Đang tải lịch sử thi...
-            </span>
-          </div>
+      {/* ── Filter Bar ── */}
+      <section className="rounded-2xl border bg-background p-5">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-[2fr,1fr,auto]">
+          <label className="relative">
+            <Search
+              size={16}
+              className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground"
+            />
+            <input
+              value={searchQuizId}
+              onChange={(event) => {
+                setSearchQuizId(event.target.value);
+                setPage(1);
+              }}
+              placeholder="Lọc theo mã đề (UUID)"
+              className="w-full rounded-xl border bg-muted py-2.5 pl-9 pr-3 text-sm font-medium outline-none transition focus:border-primary focus:bg-background"
+            />
+          </label>
+
+          <Select
+            value={attemptFilter}
+            onValueChange={(value) => {
+              setAttemptFilter(value as 'all' | 'passed' | 'failed');
+              setPage(1);
+            }}
+          >
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="Tất cả" />
+            </SelectTrigger>
+            <SelectContent position="popper">
+              <SelectGroup>
+                <SelectItem value="all">Tất cả</SelectItem>
+                <SelectItem value="passed">Bài đạt</SelectItem>
+                <SelectItem value="failed">Bài chưa đạt</SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+
+          <button
+            onClick={clearFilters}
+            className="inline-flex items-center justify-center gap-2 rounded-xl border px-4 py-2.5 text-sm font-semibold text-muted-foreground transition hover:bg-muted hover:text-foreground"
+          >
+            <RotateCcw size={16} />
+            Xóa lọc
+          </button>
         </div>
+      </section>
+
+      {/* ── Content ── */}
+      {isPending ? (
+        <section className="flex items-center justify-center gap-3 rounded-2xl border bg-background px-6 py-12">
+          <LoaderCircle
+            className="animate-spin text-muted-foreground"
+            size={20}
+          />
+          <span className="text-sm font-semibold text-muted-foreground">
+            Đang tải lịch sử thi...
+          </span>
+        </section>
       ) : isError ? (
-        <div className="rounded-2xl bg-white p-6 text-center shadow-sm ring-1 ring-slate-200">
-          <p className="text-base font-bold text-slate-900">
+        <section className="flex flex-col items-center rounded-2xl border bg-background px-6 py-12 text-center">
+          <XCircle size={36} className="mb-3 text-destructive" />
+          <p className="text-base font-bold text-foreground">
             Không thể tải dữ liệu
           </p>
-          <p className="mt-1 text-sm text-slate-600">
+          <p className="mt-1 text-sm text-muted-foreground">
             Vui lòng thử lại sau hoặc kiểm tra kết nối mạng.
           </p>
-        </div>
+          <button
+            onClick={() => void refetch()}
+            className="mt-4 rounded-xl bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition hover:opacity-90"
+          >
+            Thử lại
+          </button>
+        </section>
       ) : historyItems.length === 0 ? (
-        <div className="rounded-2xl bg-white p-6 text-center shadow-sm ring-1 ring-slate-200">
-          <p className="text-base font-bold text-slate-900">
+        <section className="flex flex-col items-center rounded-2xl border bg-background px-6 py-12 text-center">
+          <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-xl bg-muted">
+            <Clock3 size={22} className="text-muted-foreground" />
+          </div>
+          <p className="text-base font-bold text-foreground">
             Chưa có kết quả thi
           </p>
-          <p className="mt-1 text-sm text-slate-600">
+          <p className="mt-1 text-sm text-muted-foreground">
             Sau khi hoàn thành bài thi, kết quả sẽ được hiển thị tại đây.
           </p>
-        </div>
+        </section>
       ) : (
         <section className="space-y-3">
           {historyItems.map((attempt) => (
             <article
               key={attempt.attemptId}
-              className="rounded-2xl bg-white p-4 shadow-sm ring-1 ring-slate-200 md:p-5"
+              className="rounded-2xl border bg-background p-5 transition hover:shadow-md hover:shadow-foreground/5"
             >
-              <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
-                <div>
-                  <h2 className="text-base font-extrabold text-slate-900 md:text-lg">
+              <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+                <div className="min-w-0 flex-1">
+                  <h2 className="text-base font-extrabold text-foreground md:text-lg">
                     {attempt.quiz.title}
                   </h2>
-                  <p className="mt-1 text-xs font-medium text-slate-500">
-                    Quiz ID: {attempt.quizId}
+                  <p className="mt-1 text-xs font-medium text-muted-foreground">
+                    Mã đề: {attempt.quizId}
                   </p>
-                  <div className="mt-3 flex flex-wrap items-center gap-2 text-xs font-semibold text-slate-600">
-                    <span className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2.5 py-1">
-                      <Clock3 size={13} />
-                      Nộp bài: {formatDateTime(attempt.completedAt)}
+                  <div className="mt-3 flex flex-wrap items-center gap-2 text-xs font-semibold">
+                    <span className="inline-flex items-center gap-1.5 rounded-full bg-muted px-2.5 py-1 text-muted-foreground">
+                      <Clock3 size={12} />
+                      Nộp: {formatDateTime(attempt.completedAt)}
                     </span>
-                    <span className="rounded-full bg-slate-100 px-2.5 py-1">
-                      Thời gian làm: {formatDuration(attempt.timeSpentSeconds)}
+                    <span className="rounded-full bg-muted px-2.5 py-1 text-muted-foreground">
+                      {formatDuration(attempt.timeSpentSeconds)}
                     </span>
-                    <span className="rounded-full bg-slate-100 px-2.5 py-1">
-                      Trả lời: {attempt.answerCount} câu
+                    <span className="rounded-full bg-muted px-2.5 py-1 text-muted-foreground">
+                      {attempt.answerCount} câu
                     </span>
                   </div>
                 </div>
 
-                <div className="flex flex-col items-start gap-2 md:items-end">
-                  <p className="text-2xl font-black text-indigo-700">
-                    {attempt.score.toFixed(2)}
-                    <span className="ml-1 text-base font-bold text-slate-500">
-                      / 100
-                    </span>
-                  </p>
-                  <span
-                    className={clsx(
-                      'inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-bold ring-1',
-                      statusClassName(attempt)
-                    )}
-                  >
-                    {attempt.isPassed ? (
-                      <CheckCircle2 size={13} />
-                    ) : (
-                      <XCircle size={13} />
-                    )}
-                    {statusLabel(attempt)}
-                  </span>
+                <div className="flex flex-row items-center gap-4 md:flex-col md:items-end">
+                  <div className="text-right">
+                    <p className="text-2xl font-black text-primary">
+                      {attempt.score.toFixed(2)}
+                      <span className="ml-1 text-sm font-semibold text-muted-foreground">
+                        / 100
+                      </span>
+                    </p>
+                  </div>
+
+                  <StatusBadge attempt={attempt} />
 
                   <button
                     onClick={() => setSelectedAttemptId(attempt.attemptId)}
-                    className="mt-1 rounded-xl bg-black px-3 py-2 text-sm font-semibold text-white transition hover:bg-slate-800"
+                    className="inline-flex items-center gap-1.5 rounded-xl bg-primary px-3.5 py-2 text-sm font-semibold text-primary-foreground transition hover:opacity-90"
                   >
+                    <Eye size={14} />
                     Xem chi tiết
                   </button>
                 </div>
@@ -276,28 +316,31 @@ const ExamHistoryPage = () => {
         </section>
       )}
 
-      <section className="mt-5 flex flex-wrap items-center justify-between gap-3 rounded-2xl bg-white px-4 py-3 shadow-sm ring-1 ring-slate-200">
-        <p className="text-sm font-medium text-slate-600">
-          Trang {metadata?.page || page} / {totalPages}
-        </p>
+      {/* ── Pagination ── */}
+      {totalPages > 1 && (
+        <section className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border bg-background px-5 py-3">
+          <p className="text-sm font-medium text-muted-foreground">
+            Trang {metadata?.page || page} / {totalPages}
+          </p>
 
-        <div className="flex items-center gap-2">
-          <button
-            onClick={() => setPage((prev) => Math.max(1, prev - 1))}
-            disabled={(metadata?.page || page) <= 1}
-            className="rounded-lg border border-slate-200 px-3 py-2 text-sm font-semibold text-slate-700 disabled:cursor-not-allowed disabled:opacity-50"
-          >
-            Trước
-          </button>
-          <button
-            onClick={() => setPage((prev) => Math.min(totalPages, prev + 1))}
-            disabled={(metadata?.page || page) >= totalPages}
-            className="rounded-lg border border-slate-200 px-3 py-2 text-sm font-semibold text-slate-700 disabled:cursor-not-allowed disabled:opacity-50"
-          >
-            Sau
-          </button>
-        </div>
-      </section>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setPage((prev) => Math.max(1, prev - 1))}
+              disabled={(metadata?.page || page) <= 1}
+              className="rounded-xl border px-3 py-2 text-sm font-semibold text-muted-foreground transition hover:bg-muted hover:text-foreground disabled:cursor-not-allowed disabled:opacity-40"
+            >
+              Trước
+            </button>
+            <button
+              onClick={() => setPage((prev) => Math.min(totalPages, prev + 1))}
+              disabled={(metadata?.page || page) >= totalPages}
+              className="rounded-xl border px-3 py-2 text-sm font-semibold text-muted-foreground transition hover:bg-muted hover:text-foreground disabled:cursor-not-allowed disabled:opacity-40"
+            >
+              Sau
+            </button>
+          </div>
+        </section>
+      )}
 
       <AnswerReviewModal
         isOpen={Boolean(selectedAttemptId)}

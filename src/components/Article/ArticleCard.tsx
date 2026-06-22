@@ -39,10 +39,10 @@ export function ArticleCard({
 
   const getCategoryColor = (categoryName?: string) => {
     const colors: Record<string, string> = {
-      default: 'bg-gray-100 text-gray-700',
-      'Kỹ năng': 'bg-blue-100 text-blue-700',
-      'Công nghệ': 'bg-purple-100 text-purple-700',
-      'Học tập': 'bg-green-100 text-green-700',
+      default: 'bg-muted text-muted-foreground',
+      'Kỹ năng': 'bg-blue-500/15 text-blue-600 dark:text-blue-400',
+      'Công nghệ': 'bg-purple-500/15 text-purple-600 dark:text-purple-400',
+      'Học tập': 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400',
     };
     if (!categoryName) return colors.default;
     return (
@@ -59,7 +59,7 @@ export function ArticleCard({
       <div
         onClick={handleClick}
         className={cn(
-          'group relative block cursor-pointer overflow-hidden rounded-xl border-2 border-black bg-white transition-all hover:-translate-y-1 hover:shadow-xl',
+          'group relative block cursor-pointer overflow-hidden rounded-xl border bg-background transition-all hover:-translate-y-1 hover:shadow-lg hover:shadow-foreground/5',
           className
         )}
         role="button"
@@ -84,9 +84,8 @@ export function ArticleCard({
               alt={title}
               className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
             />
-            {/* Overlay on hover */}
-            <div className="absolute inset-0 bg-black/60 opacity-0 transition-opacity duration-300 group-hover:opacity-100 flex items-center justify-center">
-              <span className="inline-flex items-center gap-2 rounded-full bg-white px-6 py-2 text-sm font-semibold text-black">
+            <div className="absolute inset-0 bg-foreground/60 opacity-0 transition-opacity duration-300 group-hover:opacity-100 flex items-center justify-center">
+              <span className="inline-flex items-center gap-2 rounded-full bg-background px-6 py-2 text-sm font-semibold text-foreground">
                 Đọc ngay
                 <svg
                   className="h-4 w-4"
@@ -118,18 +117,18 @@ export function ArticleCard({
                   {category.name}
                 </span>
               )}
-              <h3 className="mt-3 text-xl font-bold leading-tight text-gray-900 group-hover:text-primary transition-colors line-clamp-2 md:text-2xl">
+              <h3 className="mt-3 text-xl font-bold leading-tight text-foreground group-hover:text-primary transition-colors line-clamp-2 md:text-2xl">
                 {title}
               </h3>
-              <p className="mt-2 text-sm text-gray-600 line-clamp-3 md:line-clamp-4">
+              <p className="mt-2 text-sm text-muted-foreground line-clamp-3 md:line-clamp-4">
                 {summary}
               </p>
             </div>
             <div className="mt-4 flex items-center justify-between">
-              <span className="text-xs text-gray-500">
+              <span className="text-xs text-muted-foreground">
                 {formatDate(createdAt)}
               </span>
-              <span className="inline-flex items-center gap-1 text-sm font-semibold text-black group-hover:translate-x-1 transition-transform">
+              <span className="inline-flex items-center gap-1 text-sm font-semibold text-foreground group-hover:translate-x-1 transition-transform">
                 Đọc ngay
                 <svg
                   className="h-4 w-4"
@@ -157,7 +156,7 @@ export function ArticleCard({
     <div
       onClick={handleClick}
       className={cn(
-        'group relative block cursor-pointer overflow-hidden rounded-xl border-2 border-black bg-white transition-all hover:-translate-y-1 hover:shadow-xl',
+        'group relative block cursor-pointer overflow-hidden rounded-xl border bg-background transition-all hover:-translate-y-1 hover:shadow-lg hover:shadow-foreground/5',
         className
       )}
       role="button"
@@ -181,7 +180,6 @@ export function ArticleCard({
           alt={title}
           className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
         />
-        {/* Category badge */}
         {category && (
           <span
             className={cn(
@@ -192,9 +190,8 @@ export function ArticleCard({
             {category.name}
           </span>
         )}
-        {/* Overlay on hover */}
-        <div className="absolute inset-0 bg-black/60 opacity-0 transition-opacity duration-300 group-hover:opacity-100 flex items-center justify-center">
-          <span className="inline-flex items-center gap-2 rounded-full bg-white px-6 py-2 text-sm font-semibold text-black">
+        <div className="absolute inset-0 bg-foreground/60 opacity-0 transition-opacity duration-300 group-hover:opacity-100 flex items-center justify-center">
+          <span className="inline-flex items-center gap-2 rounded-full bg-background px-6 py-2 text-sm font-semibold text-foreground">
             Đọc ngay
             <svg
               className="h-4 w-4"
@@ -215,15 +212,19 @@ export function ArticleCard({
 
       {/* Content */}
       <div className="p-4">
-        <h3 className="text-base font-bold leading-snug text-gray-900 group-hover:text-primary transition-colors line-clamp-2">
+        <h3 className="text-base font-bold leading-snug text-foreground group-hover:text-primary transition-colors line-clamp-2">
           {title}
         </h3>
         {variant !== 'compact' && (
-          <p className="mt-2 text-sm text-gray-600 line-clamp-2">{summary}</p>
+          <p className="mt-2 text-sm text-muted-foreground line-clamp-2">
+            {summary}
+          </p>
         )}
         <div className="mt-3 flex items-center justify-between">
-          <span className="text-xs text-gray-500">{formatDate(createdAt)}</span>
-          <span className="inline-flex items-center gap-1 text-xs font-semibold text-black group-hover:translate-x-1 transition-transform">
+          <span className="text-xs text-muted-foreground">
+            {formatDate(createdAt)}
+          </span>
+          <span className="inline-flex items-center gap-1 text-xs font-semibold text-foreground group-hover:translate-x-1 transition-transform">
             Đọc ngay
             <svg
               className="h-3 w-3"
@@ -283,7 +284,7 @@ export function ArticleCardWithImage({
     <div
       onClick={handleClick}
       className={cn(
-        'group relative block cursor-pointer overflow-hidden rounded-xl border-2 border-black bg-white transition-all hover:-translate-y-1 hover:shadow-xl',
+        'group relative block cursor-pointer overflow-hidden rounded-xl border bg-background transition-all hover:-translate-y-1 hover:shadow-lg hover:shadow-foreground/5',
         className
       )}
       role="button"
@@ -310,15 +311,13 @@ export function ArticleCardWithImage({
           alt={title}
           className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
         />
-        {/* Category badge */}
         {category && (
-          <span className="absolute left-3 top-3 rounded bg-blue-100 px-2 py-1 text-xs font-semibold text-blue-700">
+          <span className="absolute left-3 top-3 rounded bg-blue-500/15 px-2 py-1 text-xs font-semibold text-blue-600 dark:text-blue-400">
             {category.name}
           </span>
         )}
-        {/* Overlay on hover */}
-        <div className="absolute inset-0 bg-black/60 opacity-0 transition-opacity duration-300 group-hover:opacity-100 flex items-center justify-center">
-          <span className="inline-flex items-center gap-2 rounded-full bg-white px-6 py-2 text-sm font-semibold text-black">
+        <div className="absolute inset-0 bg-foreground/60 opacity-0 transition-opacity duration-300 group-hover:opacity-100 flex items-center justify-center">
+          <span className="inline-flex items-center gap-2 rounded-full bg-background px-6 py-2 text-sm font-semibold text-foreground">
             Đọc ngay
             <svg
               className="h-4 w-4"
@@ -339,13 +338,17 @@ export function ArticleCardWithImage({
 
       {/* Content */}
       <div className="p-4">
-        <h3 className="text-base font-bold leading-snug text-gray-900 group-hover:text-primary transition-colors line-clamp-2">
+        <h3 className="text-base font-bold leading-snug text-foreground group-hover:text-primary transition-colors line-clamp-2">
           {title}
         </h3>
-        <p className="mt-2 text-sm text-gray-600 line-clamp-2">{summary}</p>
+        <p className="mt-2 text-sm text-muted-foreground line-clamp-2">
+          {summary}
+        </p>
         <div className="mt-3 flex items-center justify-between">
-          <span className="text-xs text-gray-500">{formatDate(createdAt)}</span>
-          <span className="inline-flex items-center gap-1 text-xs font-semibold text-black group-hover:translate-x-1 transition-transform">
+          <span className="text-xs text-muted-foreground">
+            {formatDate(createdAt)}
+          </span>
+          <span className="inline-flex items-center gap-1 text-xs font-semibold text-foreground group-hover:translate-x-1 transition-transform">
             Đọc ngay
             <svg
               className="h-3 w-3"
