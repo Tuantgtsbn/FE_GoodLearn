@@ -14,7 +14,7 @@ import {
 import clsx from 'clsx';
 import { Button } from '@/components/ui/button';
 import PaymentTable from './components/PaymentTable';
-import CommonInput from '@/components/CommonInput';
+import { Input } from '@/components/ui/input';
 
 const ITEMS_PER_PAGE = 10;
 
@@ -92,19 +92,19 @@ export default function PaymentManagement() {
             <div className="sm:col-span-6 md:col-span-8">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                <CommonInput
+                <Input
                   type="text"
                   placeholder="Tìm ID đơn hàng..."
                   value={searchInput}
                   onChange={(e) => setSearchInput(e.target.value)}
-                  className="pl-10"
+                  className="pl-10 h-10"
                 />
               </div>
             </div>
 
             <div className="sm:col-span-6 md:col-span-4">
               <Select value={paymentStatus} onValueChange={setPaymentStatus}>
-                <SelectTrigger className="w-full h-[50px]">
+                <SelectTrigger className="w-full h-10">
                   <SelectValue placeholder="Lọc theo trạng thái" />
                 </SelectTrigger>
                 <SelectContent>
@@ -136,12 +136,13 @@ export default function PaymentManagement() {
               </span>
             )}
             {(debouncedSearch || paymentStatus) && (
-              <button
+              <Button
+                variant="outline"
                 onClick={handleReset}
-                className="text-sm text-muted-foreground transition hover:text-foreground"
+                className="text-sm"
               >
                 ✕ Xóa bộ lọc
-              </button>
+              </Button>
             )}
           </div>
         </div>

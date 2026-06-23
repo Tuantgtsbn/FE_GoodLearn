@@ -28,6 +28,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import ApiSubject from '@/api/ApiSubject';
+import { Button } from '@/components/ui/button';
 
 const ITEMS_PER_PAGE = 9;
 
@@ -350,13 +351,14 @@ const QuizzListPage = () => {
               </SelectContent>
             </Select>
 
-            <button
+            <Button
               onClick={resetFilters}
-              className="inline-flex items-center justify-center gap-2 rounded-xl border px-3 py-2.5 text-sm font-semibold text-muted-foreground transition hover:bg-muted hover:text-foreground"
+              variant="outline"
+              className="text-sm font-semibold h-full"
             >
               <Filter size={16} />
               Xóa bộ lọc
-            </button>
+            </Button>
           </div>
 
           <div className="flex flex-wrap items-center gap-2 border-t pt-4">

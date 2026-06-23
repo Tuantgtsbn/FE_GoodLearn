@@ -812,14 +812,14 @@ const Library = () => {
             gradeLevel ||
             sortBy !== 'createdAt' ||
             scope !== 'mine') && (
-            <button
+            <Button
               type="button"
               onClick={resetFilters}
-              className="inline-flex items-center gap-2 self-start rounded-xl bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition hover:opacity-90"
+              className="inline-flex items-center gap-2 self-start rounded-xl text-sm font-semibold"
             >
               <ArrowRight size={14} className="rotate-180" />
               Xóa bộ lọc
-            </button>
+            </Button>
           )}
         </div>
       </section>

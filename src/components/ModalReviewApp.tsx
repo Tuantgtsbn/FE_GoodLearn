@@ -143,7 +143,7 @@ export default function ModalReviewApp({
         <div className="text-center space-y-3">
           <div className="flex items-center justify-center gap-3">
             <div>
-              <p className="text-4xl font-bold text-gray-900">
+              <p className="text-4xl font-bold text-gray-900 dark:text-foreground">
                 {stats?.averageRating?.toFixed(1) || '0.0'}
               </p>
               <div className="flex justify-center gap-0.5 mt-1">
@@ -160,7 +160,7 @@ export default function ModalReviewApp({
                   </span>
                 ))}
               </div>
-              <p className="text-md text-gray-500 mt-1">
+              <p className="text-md text-muted-foreground mt-1">
                 {stats?.totalReviews || 0} đánh giá
               </p>
             </div>
@@ -170,30 +170,32 @@ export default function ModalReviewApp({
               {ratingStats.length > 0
                 ? ratingStats.map((stat) => (
                     <div key={stat.stars} className="flex items-center gap-2">
-                      <span className="text-xs text-gray-600 w-6">
+                      <span className="text-xs text-muted-foreground w-6">
                         {stat.stars}
                       </span>
-                      <div className="flex-1 h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                      <div className="flex-1 h-1.5 bg-gray-200 dark:bg-zinc-800 rounded-full overflow-hidden">
                         <div
-                          className="h-full bg-black transition-all duration-300"
+                          className="h-full bg-black dark:bg-white transition-all duration-300"
                           style={{ width: `${stat.percentage}%` }}
                         ></div>
                       </div>
-                      <span className="text-xs text-gray-500 w-12 text-right">
+                      <span className="text-xs text-muted-foreground w-12 text-right">
                         <span>{stat.percentage}%</span>
                       </span>
                     </div>
                   ))
                 : [5, 4, 3, 2, 1].map((star) => (
                     <div key={star} className="flex items-center gap-2">
-                      <span className="text-xs text-gray-600 w-6">{star}</span>
-                      <div className="flex-1 h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                      <span className="text-xs text-muted-foreground w-6">
+                        {star}
+                      </span>
+                      <div className="flex-1 h-1.5 bg-gray-200 dark:bg-zinc-800 rounded-full overflow-hidden">
                         <div
-                          className="h-full bg-black transition-all duration-300"
+                          className="h-full bg-black dark:bg-white transition-all duration-300"
                           style={{ width: '0%' }}
                         ></div>
                       </div>
-                      <span className="text-xs text-gray-500 w-12 text-right">
+                      <span className="text-xs text-muted-foreground w-12 text-right">
                         0%
                       </span>
                     </div>
@@ -211,7 +213,7 @@ export default function ModalReviewApp({
             value={content}
             onChange={(e) => setContent(e.target.value)}
             placeholder="Chia sẻ cảm nhận của cậu ở đây nhé..."
-            className="w-full h-24 p-3 text-sm border rounded-lg focus:outline-none focus:ring-1 focus:ring-gray-400 focus:border-transparent resize-none placeholder:text-gray-400"
+            className="w-full h-24 p-3 text-sm border border-input bg-transparent rounded-lg focus:outline-none focus:ring-1 focus:ring-ring focus:border-transparent resize-none placeholder:text-muted-foreground"
             disabled={isSubmitting}
             maxLength={1000}
           />

@@ -69,7 +69,7 @@ function PriceLandingPage() {
   });
 
   return (
-    <div className="min-neo-screen text-black font-heading mx_LandingPagePrice">
+    <div className="min-neo-screen text-foreground font-heading mx_LandingPagePrice">
       <header className="py-16 px-4 text-center relative overflow-hidden">
         <div className="absolute top-10 left-10 text-4xl transform -rotate-12 hidden md:block">
           💰

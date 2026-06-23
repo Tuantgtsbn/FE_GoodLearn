@@ -6,14 +6,16 @@ export default function Privacy() {
   return (
     <div className="mx_Privacy">
       <header className="max-w-4xl mx-auto mt-12 mb-16 px-4 text-center">
-        <div className="inline-block bg-neo-purple brutal-border px-4 py-1 rounded-full mb-6 font-bold uppercase tracking-widest text-sm brutal-shadow">
+        <div className="inline-block bg-neo-purple brutal-border px-4 py-1 rounded-full mb-6 font-bold uppercase tracking-widest text-sm brutal-shadow text-black">
           Quyền riêng tư là trên hết
         </div>
-        <h1 className="text-5xl md:text-7xl font-bold mb-6">
+        <h1 className="text-5xl dark:text-white md:text-7xl font-bold mb-6">
           Chính Sách{' '}
-          <span className="bg-neo-pink brutal-border px-4 py-2">Bảo Mật</span>
+          <span className="bg-neo-pink brutal-border px-4 py-2 text-black">
+            Bảo Mật
+          </span>
         </h1>
-        <p className="text-xl font-medium max-w-2xl mx-auto leading-relaxed">
+        <p className="text-xl dark:text-white font-medium max-w-2xl mx-auto leading-relaxed">
           Tại GoodLearn, chúng mình cam kết bảo vệ dữ liệu của các bạn học sinh
           như cách các bạn bảo vệ điểm số của mình vậy!
         </p>
@@ -38,13 +40,13 @@ export default function Privacy() {
               <path d="m21 21-4.3-4.3"></path>
             </svg>
           </div>
-          <h2 className="text-3xl font-bold mb-6 flex items-center gap-3">
+          <h2 className="text-3xl dark:text-white font-bold mb-6 flex items-center gap-3">
             <span className="w-8 h-8 bg-foreground text-background rounded-full flex items-center justify-center text-sm">
               01
             </span>
             Thông tin chúng tôi thu thập
           </h2>
-          <div className="space-y-4 text-lg leading-relaxed">
+          <div className="space-y-4 text-lg dark:text-white leading-relaxed">
             <p>
               Để mang lại trải nghiệm học tập tốt nhất, GoodLearn chỉ thu thập
               những thông tin thực sự cần thiết:
@@ -78,13 +80,13 @@ export default function Privacy() {
           className=" bg-background brutal-border rounded-2xl p-8 brutal-shadow relative"
           data-purpose="privacy-section"
         >
-          <h2 className="text-3xl font-bold mb-6 flex items-center gap-3">
+          <h2 className="text-3xl dark:text-white font-bold mb-6 flex items-center gap-3">
             <span className="w-8 h-8 bg-foreground text-background rounded-full flex items-center justify-center text-sm">
               02
             </span>
             Cách chúng tôi sử dụng thông tin
           </h2>
-          <div className="grid md:grid-cols-2 gap-6">
+          <div className="grid dark:text-white md:grid-cols-2 gap-6">
             <div className="bg-neo-purple/30 p-6 rounded-xl brutal-border">
               <h3 className="font-bold text-xl mb-2">Cá nhân hóa</h3>
               <p>
@@ -100,7 +102,7 @@ export default function Privacy() {
               </p>
             </div>
           </div>
-          <p className="mt-6 font-medium italic">
+          <p className="mt-6 dark:text-white font-medium italic">
             Chúng mình cam kết không bao giờ bán dữ liệu của bạn cho bất kỳ bên
             thứ ba nào!
           </p>
@@ -123,13 +125,13 @@ export default function Privacy() {
               <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
             </svg>
           </div>
-          <h2 className="text-3xl font-bold mb-6 flex items-center gap-3">
+          <h2 className="text-3xl dark:text-white font-bold mb-6 flex items-center gap-3">
             <span className="w-8 h-8 bg-foreground text-background rounded-full flex items-center justify-center text-sm">
               03
             </span>
             Bảo mật dữ liệu
           </h2>
-          <div className="space-y-4 text-lg">
+          <div className="space-y-4 dark:text-white text-lg">
             <p>Hệ thống của chúng mình sử dụng các lớp bảo mật mạnh mẽ:</p>
             <div className="flex flex-wrap gap-4">
               <div className="bg-foreground text-background px-4 py-2 rounded-lg font-bold">
@@ -142,14 +144,14 @@ export default function Privacy() {
                 Giám sát 24/7
               </div>
             </div>
-            <p className="mt-4 pr-15">
+            <p className="mt-4 dark:text-white pr-15">
               Nếu có bất kỳ sự cố nào xảy ra, chúng mình sẽ thông báo ngay lập
               tức cho bạn qua email trong vòng 24 giờ.
             </p>
           </div>
         </section>
         <section
-          className="bg-neo-pink brutal-border rounded-2xl p-10 brutal-shadow text-center"
+          className="bg-neo-pink brutal-border rounded-2xl p-10 brutal-shadow text-center text-black"
           data-purpose="contact-card"
         >
           <h2 className="text-4xl font-bold mb-4">Bạn còn thắc mắc?</h2>
@@ -159,7 +161,7 @@ export default function Privacy() {
           </p>
           <button
             onClick={() => navigate('/contact')}
-            className="inline-block bg-background brutal-border px-8 py-4 rounded-2xl font-black text-2xl brutal-shadow brutal-shadow-hover transition-all"
+            className="inline-block bg-background text-foreground brutal-border px-8 py-4 rounded-2xl font-black text-2xl brutal-shadow brutal-shadow-hover transition-all"
           >
             Gửi Email Ngay!
           </button>

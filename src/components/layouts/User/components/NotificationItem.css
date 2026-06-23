@@ -6,8 +6,16 @@
   background-color: rgba(0, 0, 0, 0.04);
 }
 
+.dark .notification-item-root:hover {
+  background-color: rgba(255, 255, 255, 0.08);
+}
+
 .notification-item-root:not(.read):hover {
   background-color: rgba(59, 130, 246, 0.1);
+}
+
+.dark .notification-item-root:not(.read):hover {
+  background-color: rgba(59, 130, 246, 0.15);
 }
 
 .notification-item-root:hover .notification-unread-indicator {

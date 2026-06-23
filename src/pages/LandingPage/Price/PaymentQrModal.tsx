@@ -83,15 +83,15 @@ function PaymentQrModal({ open, onOpenChange, payment }: PaymentQrModalProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange} modal={true}>
       <DialogContent
-        className="w-[calc(90%-2rem)] border-[3px] gap-0 overflow-hidden rounded-md border-black bg-white p-0 sm:max-w-4xl"
+        className="w-[calc(90%-2rem)] border-[3px] gap-0 overflow-hidden rounded-md border-black dark:border-zinc-800 bg-white dark:bg-zinc-950 p-0 sm:max-w-4xl"
         showCloseButton={false}
         onInteractOutside={(event) => event.preventDefault()}
         onEscapeKeyDown={(event) => event.preventDefault()}
       >
         <div className="grid grid-cols-1 md:grid-cols-[400px_minmax(0,1fr)]">
-          <div className="border-r-[3px] border-black bg-[#efefef] px-6 py-8">
-            <div className="rounded-sm border border-black bg-white p-2 shadow-[4px_4px_0_0_rgba(0,0,0,0.15)]">
-              <div className="rounded-sm border border-black bg-[#101923] p-4">
+          <div className="border-r-[3px] border-black dark:border-zinc-800 bg-[#efefef] dark:bg-zinc-900 px-6 py-8">
+            <div className="rounded-sm border border-black dark:border-zinc-800 bg-white dark:bg-zinc-950 p-2 shadow-[4px_4px_0_0_rgba(0,0,0,0.15)]">
+              <div className="rounded-sm border border-black dark:border-zinc-800 bg-[#101923] p-4">
                 {!isQrLoadError ? (
                   <img
                     src={payment.linkQR}
@@ -107,10 +107,10 @@ function PaymentQrModal({ open, onOpenChange, payment }: PaymentQrModalProps) {
               </div>
             </div>
 
-            <p className="mt-5 text-center text-[9px] font-semibold uppercase tracking-widest text-slate-600">
+            <p className="mt-5 text-center text-[9px] font-semibold uppercase tracking-widest text-slate-600 dark:text-zinc-400">
               Mã thanh toán
             </p>
-            <p className="mt-1 text-center text-xs font-bold tracking-wide text-slate-900">
+            <p className="mt-1 text-center text-xs font-bold tracking-wide text-slate-900 dark:text-zinc-100">
               {payment.orderId}
             </p>
           </div>
@@ -119,50 +119,50 @@ function PaymentQrModal({ open, onOpenChange, payment }: PaymentQrModalProps) {
             <button
               type="button"
               onClick={() => onOpenChange(false)}
-              className="absolute top-3 right-3 inline-flex h-6 w-6 items-center justify-center rounded-sm text-black hover:bg-slate-100"
+              className="absolute top-3 right-3 inline-flex h-6 w-6 items-center justify-center rounded-sm text-black dark:text-white hover:bg-slate-100 dark:hover:bg-zinc-800"
               aria-label="Đóng modal thanh toán"
             >
               <X size={14} />
             </button>
 
-            <DialogTitle className="pr-8 text-xl font-black text-black">
+            <DialogTitle className="pr-8 text-xl font-black text-black dark:text-white">
               Thanh toán khóa học
             </DialogTitle>
-            <DialogDescription className="mt-1 text-xs text-slate-500">
+            <DialogDescription className="mt-1 text-xs text-slate-500 dark:text-zinc-400">
               Quét mã QR dưới đây để hoàn tất việc mua gói học tập.
             </DialogDescription>
 
-            <div className="mt-3 rounded-sm border border-black p-2.5">
-              <p className="text-[10px] font-semibold uppercase tracking-wide text-slate-500">
+            <div className="mt-3 rounded-sm border border-black dark:border-zinc-800 p-2.5">
+              <p className="text-[10px] font-semibold uppercase tracking-wide text-slate-500 dark:text-zinc-400">
                 Tên gói
               </p>
               <div className="mt-1 flex items-center justify-between gap-2">
-                <p className="text-lg font-medium leading-none text-black">
+                <p className="text-lg font-medium leading-none text-black dark:text-white">
                   {packageName}
                 </p>
-                <span className="rounded-sm border border-black px-2 py-0.5 text-[10px] font-bold uppercase">
+                <span className="rounded-sm border border-black dark:border-zinc-800 px-2 py-0.5 text-[10px] font-bold uppercase text-black dark:text-white">
                   {packageType}
                 </span>
               </div>
 
-              <div className="mt-3 space-y-2 border-y border-slate-200 py-3 text-xs">
-                <p className="flex items-center gap-2 text-slate-700">
+              <div className="mt-3 space-y-2 border-y border-slate-200 dark:border-zinc-800 py-3 text-xs">
+                <p className="flex items-center gap-2 text-slate-700 dark:text-zinc-300">
                   <Coins size={13} />
                   {maxCredits} credits
                 </p>
-                <p className="flex items-center gap-2 text-slate-700">
+                <p className="flex items-center gap-2 text-slate-700 dark:text-zinc-300">
                   <Clapperboard size={13} />
                   {maxCreateVideos} AI video generations
                 </p>
-                <p className="flex items-center gap-2 text-slate-700">
+                <p className="flex items-center gap-2 text-slate-700 dark:text-zinc-300">
                   <Mic size={13} />
                   {maxVoiceCalls} AI voice calls
                 </p>
               </div>
 
-              <div className="mt-2 flex items-center justify-between text-xs font-semibold uppercase text-slate-500">
+              <div className="mt-2 flex items-center justify-between text-xs font-semibold uppercase text-slate-500 dark:text-zinc-400">
                 <span>Tổng cộng</span>
-                <span className="text-lg font-black text-black normal-case">
+                <span className="text-lg font-black text-black dark:text-white normal-case">
                   {formatCurrency(payment.amount)}
                 </span>
               </div>
@@ -172,7 +172,7 @@ function PaymentQrModal({ open, onOpenChange, payment }: PaymentQrModalProps) {
               type="button"
               disabled={isCheckingStatus}
               onClick={() => void handleCheckPaymentStatusAndClose()}
-              className="mt-4 inline-flex w-full items-center justify-center rounded-sm border border-black bg-black px-4 py-2.5 text-sm font-black text-white hover:bg-black/90 disabled:cursor-not-allowed disabled:opacity-70"
+              className="mt-4 inline-flex w-full items-center justify-center rounded-sm border border-black dark:border-zinc-800 bg-black dark:bg-white px-4 py-2.5 text-sm font-black text-white dark:text-black hover:bg-black/90 dark:hover:bg-white/90 disabled:cursor-not-allowed disabled:opacity-70"
             >
               {isCheckingStatus ? 'Đang kiểm tra...' : 'Tôi đã thanh toán'}
             </button>
@@ -180,7 +180,7 @@ function PaymentQrModal({ open, onOpenChange, payment }: PaymentQrModalProps) {
               type="button"
               disabled={isCheckingStatus}
               onClick={() => void handleCheckPaymentStatusAndClose()}
-              className="mt-2 inline-flex w-full items-center justify-center rounded-sm border border-black bg-white px-4 py-2.5 text-sm font-medium text-black hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-70"
+              className="mt-2 inline-flex w-full items-center justify-center rounded-sm border border-black dark:border-zinc-800 bg-white dark:bg-zinc-900 px-4 py-2.5 text-sm font-medium text-black dark:text-white hover:bg-slate-50 dark:hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-70"
             >
               Hủy
             </button>

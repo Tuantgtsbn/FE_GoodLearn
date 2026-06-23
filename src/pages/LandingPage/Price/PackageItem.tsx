@@ -10,9 +10,9 @@ type PackageItemProps = {
 };
 
 const CARD_STYLES = [
-  'bg-white',
-  'bg-neo-yellow relative transform md:scale-105',
-  'bg-neo-cyan',
+  'bg-white dark:bg-zinc-900',
+  'bg-neo-yellow text-black relative transform md:scale-105',
+  'bg-neo-cyan text-black',
 ] as const;
 
 const ICONS = ['✅', '🔥', '🔥'] as const;
@@ -67,7 +67,13 @@ function PackageItem({ pkg, index, isBuying, onBuy }: PackageItemProps) {
       ) : null}
 
       <h3 className="text-2xl font-black mb-2">{pkg.name}</h3>
-      <p className="font-bold text-black/60 mb-6">{pkg.description}</p>
+      <p
+        className={`font-bold mb-6 ${
+          index % 3 === 0 ? 'text-muted-foreground' : 'text-black/60'
+        }`}
+      >
+        {pkg.description}
+      </p>
 
       <div className="text-4xl font-black mb-8">{formatPrice(finalPrice)}</div>
 
@@ -82,7 +88,7 @@ function PackageItem({ pkg, index, isBuying, onBuy }: PackageItemProps) {
           {isBuying ? 'Đang tạo thanh toán...' : 'Nâng cấp ngay'}
         </button>
       ) : (
-        <div className="w-full py-4 bg-white neo-border rounded-xl font-black text-center text-lg">
+        <div className="w-full py-4 bg-white text-black dark:bg-zinc-800 dark:text-white neo-border rounded-xl font-black text-center text-lg">
           Gói miễn phí
         </div>
       )}

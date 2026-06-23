@@ -3,6 +3,7 @@ import ApiUser from '@/api/ApiUser';
 import DatePickerComponent from '@/components/DatePicker';
 import ErrorMessage from '@/components/ErrorMessage';
 import Avatar from '@/components/ui/Avatar';
+import { Button } from '@/components/ui/button';
 import {
   Select,
   SelectContent,
@@ -113,6 +114,7 @@ export default function AccountSetting() {
     register: registerPassword,
     handleSubmit: handleSubmitPassword,
     reset: resetPasswordForm,
+    watch: watchPassword,
     formState: { errors: errorsPassword },
   } = useForm<PasswordFormValues>({
     resolver: zodResolver(passwordSchema),
@@ -121,6 +123,9 @@ export default function AccountSetting() {
       newPassword: '',
     },
   });
+
+  const watchCurrentPassword = watchPassword('currentPassword');
+  const watchNewPassword = watchPassword('newPassword');
 
   const {
     mutate: changePassword,
@@ -248,25 +253,24 @@ export default function AccountSetting() {
                 JPG, GIF hoặc PNG. Tối đa 2MB.
               </p>
               <div className="flex gap-2">
-                <button
-                  type="button"
+                <Button
                   onClick={openFileDialog}
-                  className="px-3 py-1.5 text-xs font-bold border border-border-muted rounded bg-foreground text-background hover:bg-zinc-50 transition-colors"
+                  className="text-xs font-bold rounded"
                 >
                   Tải lên
-                </button>
-                <button
-                  type="button"
+                </Button>
+                <Button
+                  variant="destructive"
                   onClick={() => {
                     if (avatarInputRef.current)
                       avatarInputRef.current.value = '';
                     setAvatarPreview(avatarUrl);
                     avatarFileRef.current = null;
                   }}
-                  className="px-3 py-1.5 text-xs font-bold text-red-500 hover:bg-red-50 transition-colors rounded"
+                  className="text-xs font-bold rounded"
                 >
                   Xóa
-                </button>
+                </Button>
               </div>
             </div>
           </div>
@@ -399,16 +403,16 @@ export default function AccountSetting() {
               <ErrorMessage message={errorsProfile.bio.message} />
             )}
           </div>
-          <button
+          <Button
             type="submit"
             disabled={
               isPendingUpdateProfile ||
               (!isProfileDirty && !avatarFileRef?.current)
             }
-            className="w-fit px-6 py-2.5 bg-primary disabled:bg-gray-300 dark:bg-white text-white dark:text-background font-bold rounded-lg custom-shadow hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-none transition-all"
+            className="w-fit font-bold rounded-lg"
           >
             Lưu thay đổi
-          </button>
+          </Button>
         </form>
       </section>
       <hr className="border-border-muted dark:border-zinc-800 mb-12" />
@@ -457,13 +461,17 @@ export default function AccountSetting() {
               )}
             </div>
           </div>
-          <button
+          <Button
             type="submit"
-            disabled={isPendingChangePassword}
-            className="w-fit px-6 py-2.5 bg-primary dark:bg-white text-white dark:text-background font-bold rounded-lg custom-shadow hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-none transition-all"
+            disabled={
+              isPendingChangePassword ||
+              !watchCurrentPassword?.trim() ||
+              !watchNewPassword?.trim()
+            }
+            className="w-fit font-bold rounded-lg"
           >
             Cập nhật mật khẩu
-          </button>
+          </Button>
         </form>
       </section>
     </div>

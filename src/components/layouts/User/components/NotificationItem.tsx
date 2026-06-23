@@ -147,7 +147,8 @@ export function NotificationDetail({
     >
       <div
         style={{
-          backgroundColor: 'white',
+          backgroundColor: 'var(--background)',
+          color: 'var(--foreground)',
           borderRadius: 16,
           padding: 24,
           maxWidth: 500,
@@ -178,12 +179,12 @@ export function NotificationDetail({
                 justifyContent: 'center',
               }}
             >
-              {getNotificationIcon(notification, 'stroke-[#000]')}
+              {getNotificationIcon(notification, 'stroke-current')}
             </div>
             <div>
               <div
                 style={{
-                  color: 'rgba(0, 0, 0, 0.87)',
+                  color: 'var(--foreground)',
                   fontSize: '1.25rem',
                   fontWeight: 500,
                 }}
@@ -214,7 +215,7 @@ export function NotificationDetail({
             style={{
               marginBottom: 12,
               fontWeight: 600,
-              color: 'rgba(0, 0, 0, 0.87)',
+              color: 'var(--foreground)',
               fontSize: '1.25rem',
             }}
           >
@@ -225,7 +226,7 @@ export function NotificationDetail({
         {/* Message */}
         <div
           style={{
-            color: 'rgba(0, 0, 0, 0.87)',
+            color: 'var(--foreground)',
             lineHeight: 1.6,
             marginBottom: 16,
             whiteSpace: 'pre-wrap',
@@ -238,7 +239,7 @@ export function NotificationDetail({
         {/* Timestamp */}
         <div
           style={{
-            color: 'rgba(0, 0, 0, 0.6)',
+            color: 'var(--muted-foreground)',
             display: 'block',
             marginBottom: 16,
             fontSize: '0.75rem',
@@ -251,7 +252,7 @@ export function NotificationDetail({
         <div
           style={{
             height: 1,
-            backgroundColor: '#e0e0e0',
+            backgroundColor: 'var(--border)',
             marginTop: 16,
             marginBottom: 16,
           }}
@@ -266,17 +267,15 @@ export function NotificationDetail({
         >
           {!isReadLocal && (
             <Button
-              className=" hover:text-black hover:bg-white! flex-1 p-[6px_14px] border border-gray-300 rounded-md transition-colors duration-200"
+              variant="outline"
+              className="flex-1 p-[6px_14px] rounded-md transition-colors duration-200"
               onClick={handleMarkAsRead}
               disabled={markAsReadMutation.isPending}
             >
               Đánh dấu đã đọc
             </Button>
           )}
-          <Button
-            onClick={onClose}
-            className="bg-white  text-black hover:text-white hover:bg-black! flex-1 p-[6px_14px] border border-gray-300 rounded-md transition-colors duration-200"
-          >
+          <Button onClick={onClose} variant="default" className="flex-1">
             Đóng
           </Button>
         </div>
@@ -343,17 +342,17 @@ export default function NotificationItem({
           alignItems: 'center',
           justifyContent: 'center',
           flexShrink: 0,
-          backgroundColor: '#efefef',
+          backgroundColor: 'var(--muted)',
         }}
       >
-        {getNotificationIcon(notification, 'text-[#000]')}
+        {getNotificationIcon(notification, 'text-foreground')}
       </div>
       {/* Content */}
       <div style={{ flex: 1, minWidth: 0 }}>
         {notification.title && (
           <div
             style={{
-              color: 'black',
+              color: 'var(--foreground)',
               marginBottom: 4,
               lineHeight: 1.4,
               fontWeight: notification.isRead ? 400 : 600,
@@ -364,7 +363,7 @@ export default function NotificationItem({
         )}
         <div
           style={{
-            color: 'rgba(107, 114, 128, 1)',
+            color: 'var(--muted-foreground)',
             display: '-webkit-box',
             WebkitLineClamp: 2,
             WebkitBoxOrient: 'vertical',
@@ -376,7 +375,7 @@ export default function NotificationItem({
         </div>
         <div
           style={{
-            color: 'rgba(0, 0, 0, 0.38)',
+            color: 'var(--muted-foreground)',
             display: 'block',
             marginTop: 4,
             fontSize: '0.75rem',

@@ -55,7 +55,7 @@ export function SearchBar({
             onKeyDown={handleKeyDown}
             placeholder={placeholder}
             className={cn(
-              'h-10 w-full border pl-2 pr-20 text-sm placeholder:text-muted-foreground focus-visible:ring-primary',
+              'h-10 w-full border pl-2 pr-20 text-sm placeholder:text-muted-foreground',
               inputClassName
             )}
           />

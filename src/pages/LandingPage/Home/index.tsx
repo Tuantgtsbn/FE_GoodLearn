@@ -46,7 +46,7 @@ function HomeLandingPage() {
           <div className="relative inline-block">
             <h1 className="text-5xl md:text-7xl font-heading leading-tight">
               Học Giỏi Hơn <br /> Cùng AI -{' '}
-              <span className="bg-brandCyan px-2 border-2 border text-[50px]">
+              <span className="bg-brandCyan px-2 border-2 text-[50px]">
                 Không Lo
               </span>{' '}
               Buồn Ngủ!
@@ -62,7 +62,7 @@ function HomeLandingPage() {
           <div className="flex flex-wrap gap-4">
             <button
               onClick={() => navigate('/app')}
-              className="bg-foreground text-background px-8 py-4 border-2 border rounded-2xl font-extrabold text-lg shadow-brutal hover:bg-brandPurple transition-colors"
+              className="bg-foreground text-background px-8 py-4 border-2 rounded-2xl font-extrabold text-lg shadow-brutal hover:bg-brandPurple transition-colors"
             >
               Bắt đầu miễn phí
             </button>
@@ -70,7 +70,7 @@ function HomeLandingPage() {
               onClick={() => {
                 navigate('/feature');
               }}
-              className="bg-background px-8 py-4 border-2 border rounded-2xl font-extrabold text-lg shadow-brutal-sm hover:shadow-brutal transition-all"
+              className="bg-background px-8 py-4 border-2 rounded-2xl font-extrabold text-lg shadow-brutal-sm hover:shadow-brutal transition-all"
             >
               Tìm hiểu thêm
             </button>
@@ -80,25 +80,25 @@ function HomeLandingPage() {
           className="flex-1 relative w-full max-w-md md:max-w-none"
           data-purpose="hero-illustration"
         >
-          <div className="bg-brandPink border-2 border rounded-2xl p-6 shadow-brutal relative z-[9]">
+          <div className="bg-brandPink border-2 rounded-2xl p-6 shadow-brutal relative z-[9]">
             <div className="space-y-4">
-              <div className="bg-background border-2 border p-3 rounded-xl max-w-[80%] shadow-brutal-sm">
+              <div className="bg-background border-2 p-3 rounded-xl max-w-[80%] shadow-brutal-sm">
                 <p className="font-bold">AI ơi, định lý Pi-ta-go là gì? 🤔</p>
               </div>
-              <div className="bg-brandCyan border-2 border p-3 rounded-xl max-w-[80%] ml-auto shadow-brutal-sm">
+              <div className="bg-brandCyan border-2 p-3 rounded-xl max-w-[80%] ml-auto shadow-brutal-sm">
                 <p className="font-bold">
                   Dễ thôi! Để mình hướng dẫn bạn nhé... ✨
                 </p>
               </div>
             </div>
           </div>
-          <div className="absolute -top-6 -left-6 w-16 h-16 bg-brandYellow border-2 border rounded-full flex items-center justify-center text-3xl shadow-brutal-sm z-9 animate-bounce">
+          <div className="absolute -top-6 -left-6 w-16 h-16 bg-brandYellow border-2 rounded-full flex items-center justify-center text-3xl shadow-brutal-sm z-9 animate-bounce">
             💡
           </div>
-          <div className="absolute -bottom-4 right-4 w-12 h-12 bg-background border-2 border rounded-lg flex items-center justify-center text-2xl shadow-brutal-sm z-20">
+          <div className="absolute -bottom-4 right-4 w-12 h-12 bg-background border-2 rounded-lg flex items-center justify-center text-2xl shadow-brutal-sm z-20">
             ✍️
           </div>
-          <div className="absolute top-1/2 -right-8 w-14 h-14 bg-brandPurple border-2 border rounded-full flex items-center justify-center text-2xl shadow-brutal-sm z-20">
+          <div className="absolute top-1/2 -right-8 w-14 h-14 bg-brandPurple border-2 rounded-full flex items-center justify-center text-2xl shadow-brutal-sm z-20">
             ⭐
           </div>
         </section>
@@ -119,7 +119,7 @@ function HomeLandingPage() {
           </p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          <div className="brutal-card bg-brandYellow border-2 border p-8 rounded-2xl shadow-brutal">
+          <div className="brutal-card bg-brandYellow border-2 p-8 rounded-2xl shadow-brutal">
             <div className="text-4xl mb-4">💬</div>
             <h3 className="text-2xl font-heading mb-2">Hỏi đáp AI</h3>
             <p className="font-semibold opacity-80">
@@ -127,7 +127,7 @@ function HomeLandingPage() {
               dễ hiểu trong tích tắc.
             </p>
           </div>
-          <div className="brutal-card bg-brandPink border-2 border p-8 rounded-2xl shadow-brutal">
+          <div className="brutal-card bg-brandPink border-2 p-8 rounded-2xl shadow-brutal">
             <div className="text-4xl mb-4">📝</div>
             <h3 className="text-2xl font-heading mb-2">Quiz Tương Tác</h3>
             <p className="font-semibold opacity-80">
@@ -135,7 +135,7 @@ function HomeLandingPage() {
               hiệu quả và kiểm tra kiến thức ngay lập tức.
             </p>
           </div>
-          <div className="brutal-card bg-background border-2 border p-8 rounded-2xl shadow-brutal">
+          <div className="brutal-card bg-background border-2 p-8 rounded-2xl shadow-brutal">
             <div className="text-4xl mb-4">📹</div>
             <h3 className="text-2xl font-heading mb-2">Flashcards, Video</h3>
             <p className="font-semibold opacity-80">
@@ -143,7 +143,7 @@ function HomeLandingPage() {
               dễ hiểu, dễ thuộc.
             </p>
           </div>
-          <div className="brutal-card bg-brandCyan border-2 border p-8 rounded-2xl shadow-brutal">
+          <div className="brutal-card bg-brandCyan border-2 p-8 rounded-2xl shadow-brutal">
             <div className="text-4xl mb-4">🎤</div>
             <h3 className="text-2xl font-heading mb-2">Giải trí</h3>
             <p className="font-semibold opacity-80">
@@ -182,10 +182,10 @@ function HomeLandingPage() {
               bộ lên rất nhiều. Giải thích rất dễ hiểu!"
             </p>
           </div>
-          <div className="relative bg-emerald-100 border-2 border p-6 rounded-sm shadow-brutal rotate-3 hover:rotate-0 transition-transform">
+          <div className="relative bg-emerald-100 border-2 p-6 rounded-sm shadow-brutal rotate-3 hover:rotate-0 transition-transform">
             <div className="sticky-note-tape"></div>
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-12 h-12 bg-brandCyan border-2 border rounded-full overflow-hidden">
+              <div className="w-12 h-12 bg-brandCyan border-2 rounded-full overflow-hidden">
                 <img
                   alt="Avatar"
                   className="w-full h-full object-cover"
@@ -202,10 +202,10 @@ function HomeLandingPage() {
               video nói về môn Lịch sử để ôn tập, rất hữu ích!"
             </p>
           </div>
-          <div className="relative bg-pink-100 border-2 border p-6 rounded-sm shadow-brutal -rotate-1 hover:rotate-0 transition-transform">
+          <div className="relative bg-pink-100 border-2 p-6 rounded-sm shadow-brutal -rotate-1 hover:rotate-0 transition-transform">
             <div className="sticky-note-tape"></div>
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-12 h-12 bg-brandPurple border-2 border rounded-full overflow-hidden">
+              <div className="w-12 h-12 bg-brandPurple border-2 rounded-full overflow-hidden">
                 <img
                   alt="Avatar"
                   className="w-full h-full object-cover"
@@ -269,7 +269,7 @@ function HomeLandingPage() {
             <button
               type="button"
               onClick={handleClickRegister}
-              className="bg-black text-white px-8 py-4 border-2 border rounded-2xl font-extrabold shadow-brutal-sm hover:translate-y-[-2px] hover:shadow-brutal transition-all"
+              className="bg-black text-white px-8 py-4 border-2 rounded-2xl font-extrabold shadow-brutal-sm hover:translate-y-[-2px] hover:shadow-brutal transition-all"
             >
               Đăng ký ngay
             </button>

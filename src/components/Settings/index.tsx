@@ -13,7 +13,7 @@ export default function UserSetting({ onClose }: IUserSettingProps) {
   return (
     <div className="relative w-[90%] md:w-full max-w-[800px] bg-white dark:bg-zinc-950 border border-border-muted dark:border-zinc-800 rounded-xl overflow-hidden shadow-2xl flex flex-col md:flex-row min-h-[600px]">
       <aside className="w-full md:w-64 border-r border-border-muted dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/50 p-6 flex flex-col gap-2">
-        <div className="flex items-center gap-2 mb-8 px-2">
+        <div className="flex items-center gap-2 mb-3 px-2">
           <Settings size={20} className="text-primary dark:text-white" />
           <h2 className="font-bold text-lg tracking-tight">Cài đặt</h2>
         </div>
